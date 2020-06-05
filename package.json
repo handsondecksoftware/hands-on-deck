@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/themennice/hands-on-deck#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "http": "0.0.1-security"
   }
 }
