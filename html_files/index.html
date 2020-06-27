@@ -1,23 +1,41 @@
+<!-------------------------------------------------------------
+- index.html -- homepage for the website once admin is logged in
+-
+- Ryan Stolys, 26/06/20
+-     - Created Page 
+- Denys Dziubii,	26/06/20
+-     - Navigation bar development 
+-
+-------------------------------------------------------------->
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--<link rel="stylesheet" href="css_files/main.css"> -->
+    <!-- Style Sheets -->
+    <link rel="stylesheet" href="../css_files/main.css"> 
+    <link rel="stylesheet" href="../css_files/navBar.css"> 
+
+    <!-- Scripts -->
+    <script src="../js_files/navBar.js"></script>
+
+    <!-- Page Title -->
+    <title>Hands On Deck - Home</title>
 
   </head>
 
   <body>
 
     <div class="topnav">
-      <a href="/"><img src="images/HOD_Logo.png" class="logo"/></a>
+      <a href="home.html"><img src="../images/HOD_Logo.png" class="logo"/></a>
       <a href="/" class="name">Hands-on-Deck Volunteering</a>
       <div class="right">
         <a href="/" class="active">Home</a>
-        <a href="#opportunities">Opportunities</a>
-        <a href="#volunteers">Volunteers</a>
-        <a href="#teams">Teams</a>
+        <a href="oppourtunities.html">Opportunities</a>
+        <a href="volunteers.html">Volunteers</a>
+        <a href="teams.html">Teams</a>
         <a href="#logout">Log out</a>
       </div>
     </div>
@@ -25,10 +43,10 @@
 
 
     <div style="padding-left:16px">
-      <h1>My First Heading</h1>
-      <p>My first paragraph.</p>
-      <h2>This is more testing</h2>
+      <h1>Home Page</h1>
     </div>
+
+
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -37,7 +55,7 @@
     <!-- Add React js scripts here -->
   </body>
 
-
+<!--
   <style>
     body {
       margin: 0;
@@ -95,5 +113,7 @@
       float: right;
     }
   </style>
+
+  -->
   
 </html>
