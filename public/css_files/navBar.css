@@ -1,0 +1,61 @@
+/*******************************************************************
+* navBar.css -- styling for the navigation bar on each page 
+*                   
+* Ryan Stolys,	26/06/20
+*    - File Created
+* Denys Dziubii,	26/06/20
+*    - Initial styling added
+*
+*******************************************************************/
+
+
+.topnav {
+  overflow: hidden;
+  background-color: #1a6600;
+  height: 60px;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: bold;
+  margin-top: 5px;
+  display: inline;
+}
+
+.topnav a:hover {
+  background-color: #cccc00;
+  color: white;
+  margin-top: 5px;
+  border-radius: 7px;
+}
+
+.topnav a.active {
+  background-color: #cccc00;
+  color: white;
+  border-radius: 7px;
+  text-align: right;
+}
+
+.topnav a.name:hover {
+  background-color: #1a6600;
+}
+
+.logo {
+  float: left;
+  padding: 1px;
+  padding-left: 20px;
+  height: 58px;
+  background-color: #1a6600;
+}
+
+.topnav a.name {
+  width: 200px;
+  margin: 0;
+  opacity:1.0;
+  padding-right: 70px;
+}
