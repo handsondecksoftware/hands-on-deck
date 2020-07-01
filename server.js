@@ -13,6 +13,10 @@ var http = require('http');
 
 var server = app.listen(process.env.PORT || 5000, () => console.log(`Listening on 5000`));
 
+app.use(express.static(__dirname + '/public'));
+
+
 app.get('/', function(request, response){
-    response.sendFile(__dirname + '/html_files/index.html');
+    response.sendFile(__dirname + '/views/html_files/index.html');
 });
+

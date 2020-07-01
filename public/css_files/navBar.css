@@ -28,7 +28,7 @@
 }
 
 .topnav a:hover {
-  background-color: #cccc00;
+  background-color: rgb(20,60,0);
   color: white;
   margin-top: 5px;
   border-radius: 7px;

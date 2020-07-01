@@ -17,6 +17,10 @@ body, html {
   margin: 0;
 }
 
+h1{
+  color: white;
+}
+
 .bg {
   /* The image used */
   background-image: url('/images/gym.jpg');
