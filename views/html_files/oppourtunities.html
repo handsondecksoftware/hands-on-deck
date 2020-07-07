@@ -13,11 +13,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Style Sheets -->
-    <link rel="stylesheet" href="../css_files/oppourtunities.css">
+    <link rel="stylesheet" href="../css_files/oppourtunties.css">
     <link rel="stylesheet" href="../css_files/navBar.css"> 
+    <link rel="stylesheet" href="../css_files/table.css"> 
+
+    <!-- Font Awesome 6-->
+    <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
-    <script src="../js_files/navBar.js"></script>
 
     <!-- Page Title -->
     <title>Hands On Deck - Oppourtunties</title>
@@ -26,12 +29,69 @@
 
   <body>
 
-    <!-- Load nav bar into this page -->
-    <div id="navigationBar"></div>
+    <!--Add navigation bar-->
 
 
     <div>
       <h1>Oppourtunities Page</h1>
+    </div>
+
+    <div class="table"> 
+      <span class="table-title">Oppourtunities:</span>
+      <table id="oppourtuntiesTable"> 
+        <tr>
+          <th class="table-oppourtunity_title">Title</th>
+          <th class="table-oppourtunity_type">Type</th>
+          <th class="table-oppourtunity_numVol">Number of Volunteers</th>
+          <th class="table-oppourtunity_date">Date</th> 
+          <th class="table-oppourtunity_time">Time</th> 
+          <th class="table-oppourtunity_view">View</th>
+        </tr>
+        <tr>
+          <td>Operation Christmas Child</td>
+          <td>Local Community</td> 
+          <td>55</td>
+          <td>Nov. 23, 2020</td>
+          <td>6:30 PM</td>
+          <td><i class="fas fa-eye table-view"></i></td> 
+        </tr>
+        <tr>
+          <td>Special Olympics</td>
+          <td>Local Community</td> 
+          <td>5</td>
+          <td>Nov. 24, 2020</td>
+          <td>7:30 PM</td>
+          <td><i class="fas fa-eye table-view"></i></td> 
+        </tr>
+      </table>
+    </div>
+
+    <!-- Used for viewing the oppourtunity-->
+    <div class="table"> 
+      <span class="table-title">Volunteers:</span>
+      <table id="viewVolunteersForOppourtunityTable"> 
+        <tr>
+          <th class="table-volunteers_name">Name</th>
+          <th class="table-volunteers_email">Email</th>
+          <th class="table-volunteers_team">Team</th>
+          <th class="table-volunteers_Vhrs">Hours</th> 
+          <th class="table-volunteers_view">View</th>
+        </tr>
+        <tr>
+          <td>Ryan Stolys</td>
+          <td>rstolys@sfu.ca</td> 
+          <td>Men's Golf</td>
+          <td>1.25</td>
+          <td><i class="fas fa-eye table-view"></i></td> 
+        </tr>
+        <tr>
+          <td>Jayden Cole</td>
+          <td>jcole@sfu.ca</td> 
+          <td>Men's Swimming</td>
+          <td>2.5</td>
+          <td><i class="fas fa-eye table-view"></i></td> 
+        </tr>
+      </table>
     </div>
 
 
