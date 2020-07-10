@@ -17,7 +17,11 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(request, response){
-    response.sendFile(__dirname + '/views/html_files/index.html');
+    response.sendFile(__dirname + '/views/html_files/signIn.html');
+});
+
+app.get('/index.html', function(request, response){
+  response.sendFile(__dirname + '/views/html_files/index.html');
 });
 
 app.get('/volunteers.html', function(request, response){
@@ -30,4 +34,10 @@ app.get('/oppourtunities.html', function(request, response){
 
 app.get('/teams.html', function(request, response){
   response.sendFile(__dirname + '/views/html_files/teams.html');
+});
+
+
+app.get('/signIn.html', function(request, response){
+  console.log('Logout Request Recieved');
+  response.sendFile(__dirname + '/views/html_files/signIn.html');
 });

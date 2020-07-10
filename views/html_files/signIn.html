@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Style Sheets -->
-    <link rel="stylesheet" href="../css_files/volunteers.css">
+    <link rel="stylesheet" href="../css_files/signIn.css">
     <link rel="stylesheet" href="../css_files/navBar.css"> 
 
     <!-- Font Awesome 6-->
@@ -29,12 +29,20 @@
 
   <body>
 
-    <!-- Load nav bar into this page --> <!-- Will look different for this page -->
-    <div id="navigationBar"></div>
+    <!--Add navigation bar-->
+    <div class="navigationBar">
+      <a href="/"><img src="../images/HOD_Logo.png" class="logo"/></a>
+      <div class="topnav">
+        <a href="/" class="name">Hands-on-Deck Volunteering</a>
+        <div class="right">
+          <a href="/" class="active">Log in</a>
+        </div>
+      </div>
+    </div>
 
 
     <div>
-      <h1>Sign In Page</h1>
+      <h1 class="center"><a href="/index.html">Sign Me In</a></h1>
     </div>
 
 
@@ -45,5 +53,12 @@
 
     <!-- Add React js scripts here -->
   </body>
+
+  <style>
+    .center{
+      text-align: center;
+      margin-top: 20%;
+    }
+  </style>
   
 </html>
