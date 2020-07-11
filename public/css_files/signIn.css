@@ -1,0 +1,22 @@
+/*******************************************************************
+* signIn.css -- styling for the signIn page of the website 
+*                   
+* Ryan Stolys,	10/07/20
+*    - File Created
+*
+*******************************************************************/
+
+
+.bg {
+  /* The image used */
+  background-image: url('/images/gym.jpg');
+
+  /* Full height */
+  height: 100%; 
+  margin-top: -21px;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 120%;
+}

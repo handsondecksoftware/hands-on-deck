@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Style Sheets -->
+    <link rel="stylesheet" href="../css_files/general.css"> 
     <link rel="stylesheet" href="../css_files/main.css"> 
     <link rel="stylesheet" href="../css_files/navBar.css"> 
 
@@ -44,9 +45,43 @@
       </div>
     </div>
 
-    <div class="bg">
-      <h1 style="padding-left:20px; padding-top:20px">Home Page</h1>
+
+      <!--Volunteer % pie chart-->
+    <div id="home-welcome">
+      <div class="home-title">
+        <span class="title">Welcome!</span> <br>
+      </div>
+
+      <div style="height:100px">
+        Pie Chart Goes Here
+      </div>
+
+      <div class="home-subTitle">
+        <div class="subTitle paddingBottom10">Active: <span class="resultText" id="numActiveVolunteers">120</span></div> <br>
+        <div class="subTitle paddingBottom10">Inactive: <span class="resultText" id="numInactiveVolunteers">275</span></div> <br>
+      </div>
     </div>
+
+
+    <!--Volunteer hours pie chart-->
+    <div id="home-institution">
+      <div class="home-title"> 
+        <span class="title">Institution: <br> <span class="resultText" id="institutionName">Simon Fraser Univeristy</span> </span>
+      </div>
+
+      <div style="height:100px">
+        Pie Chart Goes Here
+      </div>
+
+      <div class="home-subTitle">
+        <div class="subTitle paddingBottom10">Goal: <span class="resultText" id="volunteerHoursGoal">750</span></div> <br>
+        <div class="subTitle paddingBottom10">Current Progress: <span class="resultText" id="volunteerHoursTotal">547.5</span></div> <br>
+      </div>
+    </div>
+
+    
+
+
 
     
     <!-- Load React. -->
