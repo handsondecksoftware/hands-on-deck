@@ -1,0 +1,29 @@
+/*******************************************************************
+* button.css -- styling for the buttons on website
+*                   
+*
+* Ryan Stolys, 15/07/20
+*    - File Created
+*    - Intial styling taken from popup.css
+*
+*******************************************************************/
+
+
+button{
+  padding-top: 8px;
+  display: inline-block;
+  width: 90%;
+  height: 50px;
+  background-color: #c8c800;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 20px;
+}
+
+button:hover{
+  cursor: pointer;
+}
+
+button:active{
+  background-color: #adad02;
+}

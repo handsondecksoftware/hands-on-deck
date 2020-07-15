@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../css_files/teams.css">
     <link rel="stylesheet" href="../css_files/navBar.css"> 
     <link rel="stylesheet" href="../css_files/table.css"> 
+    <link rel="stylesheet" href="../css_files/button.css"> 
 
     <!-- Font Awesome 6-->
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
@@ -46,35 +47,44 @@
     </div>
 
 
-    <div>
-      <h1>Teams Page</h1>
-    </div>
+    <div class="pageContainer">
 
-    <div class="table"> 
-      <span class="table-title">Teams:</span>
-      <table id="teamsTable"> 
-        <tr class="table-top">
-          <th class="table-team_name">Team Name</th>
-          <th class="table-team_sex">Sex</th>
-          <th class="table-team_NoV">Number of Volunteers</th>
-          <th class="table-team_Vhrs">Volunteer Hours</th> 
-          <th class="table-team_view">View</th>
-        </tr>
-        <tr>
-          <td>Golf</td>
-          <td>Men</td> 
-          <td>9</td>
-          <td>54</td>
-          <td><i class="fas fa-eye table-view"></i></td> 
-        </tr>
-        <tr>
-          <td>Golf</td>
-          <td>Women</td> 
-          <td>9</td>
-          <td>59</td>
-          <td><i class="fas fa-eye table-view"></i></td> 
-        </tr>
-      </table>
+
+      <div class="addTeamButton">
+        <button id="addTeamButton">Add Team</button>
+      </div>
+
+      <div class="searchTeam">
+        <button id="searchTeam">Search</button> <!-- Will be changed to input field-->
+      </div>
+
+      <div class="table"> 
+        <span class="table-title">Teams:</span>
+        <table id="teamsTable"> 
+          <tr class="table-top">
+            <th class="table-team_name">Team Name</th>
+            <th class="table-team_sex">Sex</th>
+            <th class="table-team_NoV">Number of Volunteers</th>
+            <th class="table-team_Vhrs">Volunteer Hours</th> 
+            <th class="table-team_view">View</th>
+          </tr>
+          <tr>
+            <td>Golf</td>
+            <td>Men</td> 
+            <td>9</td>
+            <td>54</td>
+            <td><i class="fas fa-eye table-view"></i></td> 
+          </tr>
+          <tr>
+            <td>Golf</td>
+            <td>Women</td> 
+            <td>9</td>
+            <td>59</td>
+            <td><i class="fas fa-eye table-view"></i></td> 
+          </tr>
+        </table>
+      </div>
+
     </div>
 
 

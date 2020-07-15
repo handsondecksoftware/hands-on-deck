@@ -16,3 +16,27 @@ body, html {
   height: 100%;
   margin: 0;
 }
+
+.addOppButton{
+  width: 33%;
+  padding-left: 100px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  float: left;
+}
+
+.searchOppourtunity{
+  width: 33%;
+  float: left;
+  padding-bottom: 25px;
+}
+
+.sortOppourtunity{
+  width: 33%;
+  float: left;
+  padding-bottom: 25px;
+}
+
+#viewVolunteersForOppourtunityTableDiv{
+  display: none;
+}

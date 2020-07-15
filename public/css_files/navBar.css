@@ -49,12 +49,12 @@
   float: left;
   padding: 1px;
   padding-left: 20px;
-  height: 58px;
+  height: 60px;
   background-color: #1a6600;
 }
 
 .topnav a.name {
-  width: 200px;
+  width: 300px;
   margin: 0;
   opacity:1.0;
   padding-right: 70px;

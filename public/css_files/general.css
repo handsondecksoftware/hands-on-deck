@@ -27,6 +27,13 @@ h1{
   color: black;
 }
 
+.pageContainer{
+  display: inline-block;
+  padding: 10px;
+  margin-top: 25px;
+  height: 100%;
+}
+
 .title{
   color: #1a6600;
   text-align: left;
