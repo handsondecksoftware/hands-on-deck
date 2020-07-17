@@ -34,7 +34,9 @@ body, html {
 .sortOppourtunity{
   width: 33%;
   float: left;
-  padding-bottom: 25px;
+  padding-top: 15px;
+  padding-left: 25px;
+  padding-bottom: 40px;
 }
 
 #viewVolunteersForOppourtunityTableDiv{

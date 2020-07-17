@@ -17,7 +17,7 @@ function init()
   document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
   document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
   
-  
+  initSlider('Oppourtunties');
   }
 
 
