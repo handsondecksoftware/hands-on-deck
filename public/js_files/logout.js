@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////
-// oppourtunities.js -- frontend behaviour for oppourtunities page
+// logout.js -- frontend behaviour when user tries to logout
 //                  
 //
-// Ryan Stolys, 15/07/20
+// Ryan Stolys, 18/07/20
 //    - File Created
 //    - Intial behaviour 
 //
@@ -14,16 +14,13 @@
 // Will initialize 
 //
 //////////////////////////////////////////////////////////////////////// 
-function init()
+function initLogout()
   {
   //Setup open and close of popup box
-  document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
-  
-  initSlider('Oppourtunties');
+  document.getElementById('logoutButton').onclick = function(){toggleLogoutUserBox()};
+  document.getElementById('cancelLogoutChoice').onclick = function(){toggleLogoutUserBox()};
+  document.getElementById('yesLogoutChoice').onclick = function(){logoutUser()};
 
-  initLogout();
   }
 
 
@@ -33,18 +30,18 @@ function init()
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleOppourtuntiyBoxVisibility()
+function toggleLogoutUserBox()
   {
   //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('addOppourtunityPopup').style.display; 
+  var currentState = document.getElementById('logoutPopup').style.display; 
 
   if(currentState === "none")
     {
-    document.getElementById('addOppourtunityPopup').style.display = "block"; 
+    document.getElementById('logoutPopup').style.display = "block"; 
     }
   else 
     {
-    document.getElementById('addOppourtunityPopup').style.display = "none"; 
+    document.getElementById('logoutPopup').style.display = "none"; 
     }
 
   return;
@@ -58,7 +55,12 @@ function toggleOppourtuntiyBoxVisibility()
 // currently does nothing, just closes  the oppourtunity box
 //
 ////////////////////////////////////////////////////////////////////////
-function addOppourtunity()
+function logoutUser()
   {
-  toggleOppourtuntiyBoxVisibility();
+  toggleLogoutUserBox();
+
+  //Do stuff here to logout user officially
+
+  //Move to signin page
+  window.location.href = '/signIn.html';
   }

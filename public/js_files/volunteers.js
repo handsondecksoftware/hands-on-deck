@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////
-// oppourtunities.js -- frontend behaviour for oppourtunities page
+// volunteers.js -- frontend behaviour for volunteer page
 //                  
 //
-// Ryan Stolys, 15/07/20
+// Ryan Stolys, 18/07/20
 //    - File Created
 //    - Intial behaviour 
 //
@@ -17,11 +17,11 @@
 function init()
   {
   //Setup open and close of popup box
-  document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
+  // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
+  document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtuntiyBoxVisibility()};
+  document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
   
-  initSlider('Oppourtunties');
+  initSlider('Volunteers');
 
   initLogout();
   }
@@ -33,18 +33,18 @@ function init()
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleOppourtuntiyBoxVisibility()
+function toggleVolOppourtuntiyBoxVisibility()
   {
   //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('addOppourtunityPopup').style.display; 
+  var currentState = document.getElementById('volunteerOppourtunityPopup').style.display; 
 
   if(currentState === "none")
     {
-    document.getElementById('addOppourtunityPopup').style.display = "block"; 
+    document.getElementById('volunteerOppourtunityPopup').style.display = "block"; 
     }
   else 
     {
-    document.getElementById('addOppourtunityPopup').style.display = "none"; 
+    document.getElementById('volunteerOppourtunityPopup').style.display = "none"; 
     }
 
   return;
@@ -58,7 +58,7 @@ function toggleOppourtuntiyBoxVisibility()
 // currently does nothing, just closes  the oppourtunity box
 //
 ////////////////////////////////////////////////////////////////////////
-function addOppourtunity()
+function toggleVolOppourtuntiyBoxVisibility()
   {
   toggleOppourtuntiyBoxVisibility();
   }

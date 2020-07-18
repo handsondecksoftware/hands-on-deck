@@ -42,3 +42,21 @@ body, html {
 #viewVolunteersForOppourtunityTableDiv{
   display: none;
 }
+
+
+/* If being used on phone*/
+@media only screen and (max-width: 900px) {
+  .addOppButton{
+    width: 85%;
+  }
+  
+  .searchOppourtunity{
+    width: 85%;
+    float: left;
+  }
+  
+  .sortOppourtunity{
+    width: 85%;
+    float: left;
+  }
+}

@@ -27,6 +27,7 @@
     <!-- Scripts -->
     <script src="../js_files/oppourtunities.js"></script>
     <script src="../js_files/slider.js"></script>
+    <script src="../js_files/logout.js"></script>
 
 
     <!-- Page Title -->
@@ -64,8 +65,8 @@
 
       <div class="sortOppourtunity">
         <div class="sliderLabel" id="oppTimeFrameLabel">Present</div>
-        <div class="sliderContainer oppTimeFrame">
-          <input type="range" min="1" max="3" value="2" class="slider" id="oppTimeFrame">
+        <div class="sliderContainer sliderWidth">
+          <input type="range" min="0" max="2" value="1" class="slider" id="oppTimeFrame">
         </div>
       </div>
 
@@ -141,6 +142,27 @@
                   <div class="popup-buttons-add"><button id="addOppourtunityChoice">Add</button></div>
               </div>
           </div>
+      </div>
+
+
+      <!-- Pop up box for logging out -->
+      <div id="logoutPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1> </h1> <!--No text, just here for spacing-->
+            </div>
+            <div class="popup-content">
+                
+              <div class="subTitle">
+                Are you sure you want to logout?
+              </div>
+
+            </div>
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button id="cancelLogoutChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button id="yesLogoutChoice">Yes</button></div>
+            </div>
+        </div>
       </div>
 
     </div>

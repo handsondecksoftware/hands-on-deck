@@ -23,13 +23,16 @@
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
+    <script src="../js_files/volunteers.js"></script>
+    <script src="../js_files/slider.js"></script>
+    <script src="../js_files/logout.js"></script>
 
     <!-- Page Title -->
     <title>Hands On Deck - Volunteers</title>
 
   </head>
 
-  <body>
+  <body onload="init();">
 
     <!--Add navigation bar-->
     <div class="navigationBar">
@@ -41,7 +44,7 @@
           <a href="/oppourtunities.html">Opportunities</a>
           <a href="/volunteers.html" class="active">Volunteers</a>
           <a href="/teams.html">Teams</a>
-          <a href="/signIn.html">Log out</a>
+          <a id="logoutButton">Log out</a>
         </div>
       </div>
     </div>
@@ -117,20 +120,53 @@
         </table>
       </div>
 
+
       <!-- Pop up box for adding volunteers -->
-      <div class = "popup-greyOut">
-          <div class = "popup-box">
-              <div class = "popup-title" >
-                  <h1>I am a title</h1>
+      <div id="volunteerOppourtunityPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1 id="oppourtunityTitle">Oppourtunity Title</h1>
+            </div>
+            <div class="popup-content">
+                
+              <!--Will need to add styling to make slider elements position correctly in popup up-->
+              <div class="sliderLabel" id="oppValidatedLabel">Yes</div>
+              <div class="sliderContainer sliderWidth">
+                <input type="range" min="0" max="1" value="0" class="slider" id="oppValidated">
               </div>
-              <div class = "popup-content">
-                  <p>I am content in the popup box</p>
+
+              <div class="sliderLabel" id="oppOccurredLabel">Yes</div>
+              <div class="sliderContainer sliderWidth">
+                <input type="range" min="0" max="1" value="0" class="slider" id="oppOccurred">
               </div>
-              <div class = "popup-buttons">
-                  <div class = "popup-buttons-add">Add</div>
-                  <div class = "popup-buttons-cancel">Cancel</div>
+
+            </div>
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button id="cancelVolunteerOppourtunityChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button id="saveVolunteerOppourtunityChoice">Save</button></div>
+            </div>
+        </div>
+      </div>
+
+
+      <!-- Pop up box for logging out -->
+      <div id="logoutPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1> </h1> <!--No text, just here for spacing-->
+            </div>
+            <div class="popup-content">
+                
+              <div class="subTitle">
+                Are you sure you want to logout?
               </div>
-          </div>
+
+            </div>
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button id="cancelLogoutChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button id="yesLogoutChoice">Yes</button></div>
+            </div>
+        </div>
       </div>
 
     </div>

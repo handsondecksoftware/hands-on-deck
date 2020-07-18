@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////
-// oppourtunities.js -- frontend behaviour for oppourtunities page
+// teams.js -- frontend behaviour for teams page
 //                  
 //
-// Ryan Stolys, 15/07/20
+// Ryan Stolys, 18/07/20
 //    - File Created
 //    - Intial behaviour 
 //
@@ -17,34 +17,33 @@
 function init()
   {
   //Setup open and close of popup box
-  document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-  document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
+  document.getElementById('addTeamButton').onclick = function(){toggleTeamBoxVisibility()};
+  document.getElementById('cancelTeamChoice').onclick = function(){toggleTeamBoxVisibility()};
+  document.getElementById('addTeamChoice').onclick = function(){addTeam()};
   
-  initSlider('Oppourtunties');
+  initSlider('Teams');
 
   initLogout();
   }
 
 
-
-////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 // 
-// Will eiter display or hide the add oppourtuntiy box depending on the current state
+// Will eiter display or hide the add team box depending on the current state
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleOppourtuntiyBoxVisibility()
+function toggleTeamBoxVisibility()
   {
   //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('addOppourtunityPopup').style.display; 
+  var currentState = document.getElementById('addTeamPopup').style.display; 
 
   if(currentState === "none")
     {
-    document.getElementById('addOppourtunityPopup').style.display = "block"; 
+    document.getElementById('addTeamPopup').style.display = "block"; 
     }
   else 
     {
-    document.getElementById('addOppourtunityPopup').style.display = "none"; 
+    document.getElementById('addTeamPopup').style.display = "none"; 
     }
 
   return;
@@ -58,7 +57,7 @@ function toggleOppourtuntiyBoxVisibility()
 // currently does nothing, just closes  the oppourtunity box
 //
 ////////////////////////////////////////////////////////////////////////
-function addOppourtunity()
+function addTeam()
   {
-  toggleOppourtuntiyBoxVisibility();
+  toggleTeamBoxVisibility();
   }
