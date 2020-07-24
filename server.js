@@ -13,33 +13,34 @@ var http = require('http');
 
 var server = app.listen(process.env.PORT || 5000, () => console.log(`Listening on 5000`));
 
+app.set('view engine', 'ejs') // added by Denys
+
 app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(request, response){
-    response.sendFile(__dirname + '/views/html_files/signIn.html');
+  response.render('pages/signIn');
 });
 
 app.get('/index.html', function(request, response){
-  response.sendFile(__dirname + '/views/html_files/index.html');
+  response.render('pages/index');
 });
 
 app.get('/volunteers.html', function(request, response){
-  response.sendFile(__dirname + '/views/html_files/volunteers.html');
+  response.render('pages/volunteers');
 });
 
 app.get('/oppourtunities.html', function(request, response){
-  response.sendFile(__dirname + '/views/html_files/oppourtunities.html');
+  response.render('pages/oppourtunities');
 });
 
 app.get('/teams.html', function(request, response){
-  response.sendFile(__dirname + '/views/html_files/teams.html');
+  response.render('pages/teams');
 });
-
 
 app.get('/signIn.html', function(request, response){
   console.log('Logout Request Recieved');
-  response.sendFile(__dirname + '/views/html_files/signIn.html');
+  response.render('pages/signIn');
 });
 
 

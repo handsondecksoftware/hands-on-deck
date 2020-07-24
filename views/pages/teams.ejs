@@ -1,0 +1,155 @@
+<!-------------------------------------------------------------
+- teams.html -- teams page
+-
+- Ryan Stolys, 27/06/20
+-     - Created Page 
+-
+-------------------------------------------------------------->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Style Sheets -->
+    <link rel="stylesheet" href="../css_files/general.css"> 
+    <link rel="stylesheet" href="../css_files/teams.css">
+    <link rel="stylesheet" href="../css_files/navBar.css"> 
+    <link rel="stylesheet" href="../css_files/table.css"> 
+    <link rel="stylesheet" href="../css_files/button.css"> 
+    <link rel="stylesheet" href="../css_files/popup.css"> 
+    <link rel="stylesheet" href="../css_files/slider.css"> 
+
+    <!-- Font Awesome 6-->
+    <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
+
+    <!-- Scripts -->
+    <script src="../js_files/teams.js"></script>
+    <script src="../js_files/slider.js"></script>
+    <script src="../js_files/logout.js"></script>
+
+
+
+    <!-- Page Title -->
+    <title>Hands On Deck - Teams</title>
+
+  </head>
+
+  <body onload="init()">
+
+    <!--Add navigation bar-->
+    <div class="navigationBar">
+      <a href="/"><img src="../images/HOD_Logo.png" class="logo"/></a>
+      <div class="topnav">
+        <a href="/" class="name">Hands-on-Deck Volunteering</a>
+        <div class="right">
+          <a href="/index.html">Home</a>
+          <a href="/oppourtunities.html">Opportunities</a>
+          <a href="/volunteers.html">Volunteers</a>
+          <a href="/teams.html" class="active">Teams</a>
+          <a id="logoutButton">Log out</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="pageContainer">
+
+
+      <div class="addTeamButton">
+        <button id="addTeamButton">Add Team</button>
+      </div>
+
+      <div class="searchTeam">
+        <button id="searchTeam">Search</button> <!-- Will be changed to input field-->
+      </div>
+
+      <div class="table"> 
+        <span class="table-title">Teams:</span>
+        <table id="teamsTable"> 
+          <tr class="table-top">
+            <th class="table-team_name">Team Name</th>
+            <th class="table-team_sex">Sex</th>
+            <th class="table-team_NoV">Number of Volunteers</th>
+            <th class="table-team_Vhrs">Volunteer Hours</th> 
+            <th class="table-team_view">View</th>
+          </tr>
+          <tr>
+            <td>Golf</td>
+            <td>Men</td> 
+            <td>9</td>
+            <td>54</td>
+            <td><i class="fas fa-eye table-view"></i></td> 
+          </tr>
+          <tr>
+            <td>Golf</td>
+            <td>Women</td> 
+            <td>9</td>
+            <td>59</td>
+            <td><i class="fas fa-eye table-view"></i></td> 
+          </tr>
+        </table>
+      </div>
+
+
+      <!-- Pop up box for adding Teams -->
+      <div id="addTeamPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1>Add Team</h1>
+            </div>
+            <div class="popup-content">
+
+              <!--Will need to add styling to make slider elements position correctly in popup up-->
+              <div class="sliderLabel" id="teamSexLabel">Male</div>
+              <div class="sliderContainer sliderWidth">
+                <input type="range" min="0" max="1" value="0" class="slider" id="teamSex">
+              </div>
+
+              <div class="sliderLabel" id="includeLeaderboardsLabel">Yes</div>
+              <div class="sliderContainer sliderWidth">
+                <input type="range" min="0" max="1" value="0" class="slider" id="includeLeaderboards">
+              </div>
+
+            </div>
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button id="cancelTeamChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button id="addTeamChoice">Add</button></div>
+            </div>
+        </div>
+      </div>
+
+
+      <!-- Pop up box for logging out -->
+      <div id="logoutPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1> </h1> <!--No text, just here for spacing-->
+            </div>
+            <div class="popup-content">
+                
+              <div class="subTitle">
+                Are you sure you want to logout?
+              </div>
+
+            </div>
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button id="cancelLogoutChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button id="yesLogoutChoice">Yes</button></div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Add React js scripts here -->
+  </body>
+  
+</html>
