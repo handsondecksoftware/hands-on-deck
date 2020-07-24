@@ -7,6 +7,30 @@
 ////////////////////////////////////////////////////////////
 
 
+//////////////USE INSTRUCTIONS///////////////////////////////////
+//
+//  - Add the below html code 
+//  - Set the min to 0 and the max to the number of slider options minus 1
+//  - Add a case to initalize the slider for that page it was added 
+//      All sliders on one page are initalized in a sigle case block
+//  - Add a case for the slider label where the options for the label are provided 
+//  - Written code will do the rest
+//
+//  NOTE: 
+//  - *** The labelID MUST be the same as the input id with 'Label' appended to it. ***
+//  - Ensure  the initial value provided matches the first value shown on screen
+//
+//
+//  <div class="sliderLabel" id="<inputID> + 'Label'">Yes</div>
+//  <div class="sliderContainer sliderWidth">
+//    <input type="range" min="0" max="1" value="0" class="slider" id="<inputID>">
+//   </div>
+//
+/////////////////////////////////////////////////////////////////
+
+              
+
+
 ////////////////////////////////////////////////////////////
 //
 //  Will initalize the sliders on each page
@@ -17,11 +41,25 @@ function initSlider(pageName)
   switch(pageName)
     {
     case 'Oppourtunties':
-        {
-        document.getElementById('oppTimeFrame').onclick = function(){changeSliderLabel(this.id)};
+      {
+      document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
 
-        break;
-        } 
+      break;
+      } 
+    case 'Teams':
+      {
+      document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+
+      break;
+      } 
+    case 'Volunteers':
+      {
+      document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
+
+      break;
+      } 
     default:
       //do nothing
       break;
@@ -38,20 +76,37 @@ function changeSliderLabel(sliderID)
   {
   //Get label ID
   var labelID = sliderID + "Label";
-  var currentValue;
+  var currentValue = document.getElementById(sliderID).value;
+
   var sliderOptions;
 
-  //Based on current values of label, find new values 
+  //Get slider options
   switch(sliderID)
     {
     case 'oppTimeFrame':
-      currentValue = document.getElementById(sliderID).value;
+      {
       sliderOptions = ['Past', 'Present', 'Future'];
+      break;
+      }
+    case 'teamSex':
+      {
+      sliderOptions = ['Male', 'Female'];
+      break;
+      }
+    case 'includeLeaderboards':
+    case 'oppValidated':
+    case 'oppOccured':
+      {
+      sliderOptions = ['Yes', 'No'];
+      break;
+      }
+    default:
+      //Do nothing
       break;
     }
 
   //Change slider label value
-  document.getElementById(labelID).innerHTML = sliderOptions[currentValue - 1];
+  document.getElementById(labelID).innerHTML = sliderOptions[currentValue];
 
   return;
   }
