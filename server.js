@@ -22,23 +22,23 @@ app.get('/', function(request, response){
   response.render('pages/signIn');
 });
 
-app.get('/index.html', function(request, response){
+app.get('/index', function(request, response){
   response.render('pages/index');
 });
 
-app.get('/volunteers.html', function(request, response){
+app.get('/volunteers', function(request, response){
   response.render('pages/volunteers');
 });
 
-app.get('/oppourtunities.html', function(request, response){
+app.get('/oppourtunities', function(request, response){
   response.render('pages/oppourtunities');
 });
 
-app.get('/teams.html', function(request, response){
+app.get('/teams', function(request, response){
   response.render('pages/teams');
 });
 
-app.get('/signIn.html', function(request, response){
+app.get('/signIn', function(request, response){
   console.log('Logout Request Recieved');
   response.render('pages/signIn');
 });

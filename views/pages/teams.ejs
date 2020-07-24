@@ -39,20 +39,7 @@
   <body onload="init()">
 
     <!--Add navigation bar-->
-    <div class="navigationBar">
-      <a href="/"><img src="../images/HOD_Logo.png" class="logo"/></a>
-      <div class="topnav">
-        <a href="/" class="name">Hands-on-Deck Volunteering</a>
-        <div class="right">
-          <a href="/index.html">Home</a>
-          <a href="/oppourtunities.html">Opportunities</a>
-          <a href="/volunteers.html">Volunteers</a>
-          <a href="/teams.html" class="active">Teams</a>
-          <a id="logoutButton">Log out</a>
-        </div>
-      </div>
-    </div>
-
+    <%- include ("../partials/nav.ejs") %>
 
     <div class="pageContainer">
 
