@@ -11,6 +11,9 @@ var express = require('express')
 const app = express();
 var http = require('http');
 
+//Files for databae access
+var volunteerAccess = require('./backend/volunteerAccess');
+
 var server = app.listen(process.env.PORT || 5000, () => console.log(`Listening on 5000`));
 
 app.set('view engine', 'ejs') // added by Denys
@@ -28,6 +31,8 @@ app.get('/index', function(request, response){
 
 app.get('/volunteers', function(request, response){
   response.render('pages/volunteers');
+  //var result = volunteerAccess.loadVolunteerInfo(1, -1);
+  //console.log(result);
 });
 
 app.get('/oppourtunities', function(request, response){
@@ -43,26 +48,3 @@ app.get('/signIn', function(request, response){
   response.render('pages/signIn');
 });
 
-
-//Database testing 
-const { Client } = require('pg');
-
-const client = new Client(
-  {
-  connectionString: "postgres://kuskxdbbzhvwkz:68cbfc9d44fbc241c4f3e26a56327d009f5f6e4b75d04a7c0874e9b2536c1ade@ec2-3-222-30-53.compute-1.amazonaws.com:5432/d8sc0ku4m33dnj", //process.env.DATABASE_URL,  //This is undefined. We  need to insert the actual URL -- I couldnt find it
-  ssl: 
-    {
-    rejectUnauthorized: false
-    }
-  });
-
-client.connect();
-
-client.query('SELECT * FROM volunteer;', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) 
-    {
-    console.log(JSON.stringify(row));
-    }
-  client.end();
-});
