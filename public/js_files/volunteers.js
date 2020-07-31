@@ -18,9 +18,10 @@ function init()
   {
   //Setup open and close of popup box
   // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
-  document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtuntiyBoxVisibility()};
+  document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtunityBoxVisibility()};
   document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
-  
+  document.getElementById('addVolunteerButton').onclick = function(){toggleVolOppourtunityBoxVisibility()};
+
   initSlider('Volunteers');
 
   initLogout();
@@ -33,7 +34,7 @@ function init()
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleVolOppourtuntiyBoxVisibility()
+function toggleVolOppourtunityBoxVisibility()
   {
   //Open the add oppourtuntiy popup box
   var currentState = document.getElementById('volunteerOppourtunityPopup').style.display; 
@@ -48,17 +49,4 @@ function toggleVolOppourtuntiyBoxVisibility()
     }
 
   return;
-  }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will check inputs and add oppourtuntiy if valid, or provide errors if not
-//
-// currently does nothing, just closes  the oppourtunity box
-//
-////////////////////////////////////////////////////////////////////////
-function toggleVolOppourtuntiyBoxVisibility()
-  {
-  toggleOppourtuntiyBoxVisibility();
   }
