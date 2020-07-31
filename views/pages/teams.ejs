@@ -88,16 +88,40 @@
             </div>
             <div class="popup-content">
 
-              <!--Will need to add styling to make slider elements position correctly in popup up-->
-              <div class="sliderLabel" id="teamSexLabel">Male</div>
-              <div class="sliderContainer sliderWidth">
-                <input type="range" min="0" max="1" value="0" class="slider" id="teamSex">
+              <div class="row_25p">
+                <div class="col_60p subTitle2"> Team Name</div>
+                <div class="col_40p">
+                  <input class="search" type="text" placeholder="Team Name"> <!--Search class defines the input text styling-->
+                </div>
               </div>
 
-              <div class="sliderLabel" id="includeLeaderboardsLabel">Yes</div>
-              <div class="sliderContainer sliderWidth">
-                <input type="range" min="0" max="1" value="0" class="slider" id="includeLeaderboards">
+              <div class="row_25p">
+                <div class="col_60p subTitle2">  Team Sex</div>
+                <div class="col_40p">
+                  <div class="sliderLabel" id="teamSexLabel">Male</div>
+                  <div class="sliderContainer sliderWidth">
+                    <input type="range" min="0" max="1" value="0" class="slider" id="teamSex">
+                  </div>
+                </div>
               </div>
+
+              <div class="row_25p">
+                <div class="col_60p subTitle2"> Include in Leaderboards</div>
+                <div class="col_40p">
+                  <div class="sliderLabel" id="includeLeaderboardsLabel">Yes</div>
+                  <div class="sliderContainer sliderWidth">
+                    <input type="range" min="0" max="1" value="0" class="slider" id="includeLeaderboards">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row_25p">
+                <div class="col_60p subTitle2">  Upload Team Roster</div>
+                <div class="col_40p">
+                  <button class="button" type="submit"> Choose File</button>
+                </div>
+              </div>
+              
 
             </div>
             <div class="popup-buttons">
