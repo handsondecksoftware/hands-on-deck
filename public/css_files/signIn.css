@@ -95,15 +95,15 @@ input[type="submit"]
 
 .alert-error {
 	position: relative;
-	top: 185px;
-	padding-top: 10px;
+	top: 60px;
+	padding-top: 5px;
 	text-align: center;
 	color: white;
 
 	background-color: #d22d2d;
 	margin: 0 auto;
 	width: 220px;
-	height: 40px;
+	height: 30px;
 	border: 1px solid #808080;
 	border-radius: 7px;
 }
