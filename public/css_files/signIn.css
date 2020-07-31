@@ -28,16 +28,86 @@ body, html {
 
 .signup {
   color: lightblue;
-	margin: 42px;
+	margin: 40px;
 	text-align: middle;
 	float:left;
 }
-
 .prompt {
-  background-color: rgba(169,169,169, 0.8);
-  margin: 0 auto;
+
+	background-color: rgba(180,180,180, 0.7);
+	backdrop-filter: blur(2px);
+	margin: 0 auto;
+	margin-top: -10px;
 	width: 470px;
-	height: 550px;
-	border: 1px solid #696969;
+	height: 540px;
+	border: 1px solid #808080;
 	border-radius: 7px;
+}
+
+.prompt .login_logo {
+	width: 180px;
+	height: 180px;
+	position: absolute;
+	left: 145px;
+	top: 30px;
+}
+
+::placeholder {
+  color: #EEEEEE;
+}
+
+input[type="text"],[type="password"]
+{
+	position: relative;
+	top: 200px;
+    font-size: 21px;
+    padding-left: 20px;
+    padding-right: 140px;
+    background-color: black;
+ 	color: white;
+	font-weight: 1;
+	height: 52px;
+	border-radius: 7px;
+	margin-bottom: 7px;
+}
+
+input[type="submit"]
+{
+	position: relative;
+	top: 190px;
+    font-size: 27px;
+    font-weight: bold;
+    background-color: #cccc00;
+ 	color: black;
+	height: 72px;
+	width: 220px;
+	margin-left: auto;
+	border: 10px;
+	border: 1px solid #999900;
+	border-radius: 7px;
+	text-align: center;
+	left: 85px;
+}
+
+.alert-error {
+	position: relative;
+	top: 185px;
+	padding-top: 10px;
+	text-align: center;
+	color: white;
+
+	background-color: #d22d2d;
+	margin: 0 auto;
+	width: 220px;
+	height: 40px;
+	border: 1px solid #808080;
+	border-radius: 7px;
+}
+
+.forgot {
+	position: relative;
+	top: 180px;
+	left: 140px;
+	text-align: center;
+	color: #404040;
 }

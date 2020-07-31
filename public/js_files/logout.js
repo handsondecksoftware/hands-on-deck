@@ -62,5 +62,5 @@ function logoutUser()
   //Do stuff here to logout user officially
 
   //Move to signin page
-  window.location.href = '/signIn';
+  window.location.href = '/logout';
   }
