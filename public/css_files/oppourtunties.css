@@ -43,7 +43,6 @@ body, html {
   display: none;
 }
 
-
 /* If being used on phone*/
 @media only screen and (max-width: 900px) {
   .addOppButton{

@@ -348,6 +348,10 @@ margin-left: 250px !important;
   height: 15%;
 }
 
+.row_16p{
+  height: 16.6667%;
+}
+
 .row_17_5p{
   height: 17.5%;
 }
@@ -479,6 +483,11 @@ margin-left: 250px !important;
 .col_33p{
   float: left;
   width: 33.33%;
+}
+
+.col_37p{
+  float: left;
+  width: 37.5%;
 }
 
 .col_40p{

@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="../css_files/popup.css"> 
     <link rel="stylesheet" href="../css_files/button.css"> 
     <link rel="stylesheet" href="../css_files/slider.css"> 
+    <link rel="stylesheet" href="../css_files/myDatepicker.css">
 
     <!-- Font Awesome 6-->
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
@@ -28,6 +29,7 @@
     <script src="../js_files/oppourtunities.js"></script>
     <script src="../js_files/slider.js"></script>
     <script src="../js_files/logout.js"></script>
+    <script src="../js_files/myDatepicker.js"></script>
 
 
     <!-- Page Title -->
@@ -123,7 +125,67 @@
                   <h1>Add Oppourtunity</h1>
               </div>
               <div class="popup-content">
-                  I am content in the popup box
+                  
+                <div class="col_50p row_100p">
+                  <div class="row_25p">
+                    <div class="col_25p subTitle2"> Title:</div>
+                    <div class="col_75p"> 
+                      <input class="search" type="text" placeholder="Title">
+                    </div>
+                  </div>
+                  <div class="row_25p">
+                    <div class="col_25p subTitle2"> Date:</div>
+                    <div class="col_75p"> 
+                      <input class="search" type="text" id="addOppourtunityDate" placeholder="YYYY-MM-DD">
+                      <div id="addOppourtunityDatePicker" class="hideDP" style="z-index:10"></div>
+                    </div>
+                  </div>
+                  <div class="row_25p">
+                    <div class="col_25p subTitle2"> Time:</div>
+                    <div class="col_37p">
+                      Input 1
+                    </div>
+                    <div class="col_37p">
+                      Input 2
+                    </div>
+                  </div>
+                  <div class="row_25p">
+                    <div class="col_25p subTitle2"> Type:</div>
+                    <div class="col_75p"> 
+                      Dropdown menu here...
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col_50p row_100p">
+                  <div class="row_25p">
+                    <div class="col_33p subTitle2"> Viewable By:</div>
+                    <div class="col_66p"> 
+                      Dropdown menu here...
+                    </div>
+                  </div>
+                  <div class="row_25p">
+                    <div class="col_33p subTitle2"> Volunteer Limit:</div>
+                    <div class="col_66p"> 
+                      Dropdown menu here...
+                    </div>
+                  </div>
+                  <div class="row_50p">
+                    <div class="row_20p subTitle2"> Coordinator Information</div>
+                    <div class="row_40p"> 
+                      <div class="col_50p"> 
+                        <input class="search" type="text" placeholder="Name">
+                      </div>
+                      <div class="col_50p"> 
+                        <input class="search" type="text" placeholder="Email">
+                      </div>
+                    </div>
+                    <div class="row_40p"> 
+                      <input class="search" type="text" placeholder="Phone Number">
+                    </div>
+                  </div>
+                </div>
+
               </div>
               <div class="popup-buttons">
                   <div class="popup-buttons-cancel"><button id="cancelOppourtunityChoice">Cancel</button></div>

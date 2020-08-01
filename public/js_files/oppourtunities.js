@@ -23,6 +23,8 @@ function init()
   
   initSlider('Oppourtunties');
 
+  createDatePicker("addOppourtunityDate", "addOppourtunityDatePicker", 1);
+
   initLogout();
   }
 
