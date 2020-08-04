@@ -22,6 +22,7 @@ function init()
   document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
   
   initSlider('Oppourtunties');
+  initDropdowns('Oppourtunties');
 
   createDatePicker("addOppourtunityDate", "addOppourtunityDatePicker", 1);
 
@@ -63,4 +64,64 @@ function toggleOppourtuntiyBoxVisibility()
 function addOppourtunity()
   {
   toggleOppourtuntiyBoxVisibility();
+  }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will find the various types of an oppourtunity that are availible and add them
+//
+////////////////////////////////////////////////////////////////////////
+function fillOppourtunityTypeOptions(dropdownID)
+  {
+  //Get the oppourtunity Type options 
+  //getOppourtunityTypes() -- need to specify that these are from SFU
+  var types = ['Special Olympics', 'Pub Nights', 'Game Day']; 
+
+  //Get reference to div to add  types to it 
+  var dropdownDiv = document.getElementById(dropdownID);
+  
+  for(var i = 0; i < types.length; i++)
+    {
+    var dropdownOption = document.createElement('a');
+    dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
+    dropdownOption.classList = "dropdown-option";
+    dropdownOption.innerHTML = types[i];
+    dropdownDiv.appendChild(dropdownOption);
+
+    //create dom function call 
+    document.getElementById(dropdownID + '_option_' + i).onclick = function(){selectDropdownOption(this.id)};
+    }
+
+  return;
+  }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will find the various types of an oppourtunity that are availible and add them
+//
+////////////////////////////////////////////////////////////////////////
+function fillOppourtunityViewableByOptions(dropdownID)
+  {
+  //Get the teams Type options 
+  //getTeamsForViewable() -- need to specify that these are from SFU
+  var types = ['M - Golf', 'F - Golf', 'M - Swim']; 
+
+  //Get reference to div to add  types to it 
+  var dropdownDiv = document.getElementById(dropdownID);
+  
+  for(var i = 0; i < types.length; i++)
+    {
+    var dropdownOption = document.createElement('a');
+    dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
+    dropdownOption.classList = "dropdown-option";
+    dropdownOption.innerHTML = types[i];
+    dropdownDiv.appendChild(dropdownOption);
+
+    //create dom function call 
+    document.getElementById(dropdownID + '_option_' + i).onclick = function(){selectDropdownOption(this.id)};
+    }
+
+  return;
   }

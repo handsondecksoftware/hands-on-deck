@@ -11,6 +11,7 @@
 .sliderContainer {
   width: 70%; /* Width of the outside container */
   float: left;
+  z-index: 3;
 }
 
 .sliderContainer.sliderWidth{

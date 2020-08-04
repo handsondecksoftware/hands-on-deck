@@ -43,6 +43,7 @@ function initSlider(pageName)
     case 'Oppourtunties':
       {
       document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('addOppourtunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
 
       break;
       } 
@@ -86,6 +87,12 @@ function changeSliderLabel(sliderID)
     case 'oppTimeFrame':
       {
       sliderOptions = ['Past', 'Present', 'Future'];
+      break;
+      }
+    case 'addOppourtunityVolunteerLimit':
+      {
+      sliderOptions = newArrayFrom1toN(14); 
+      sliderOptions.push('No Limit');
       break;
       }
     case 'teamSex':

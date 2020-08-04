@@ -9,7 +9,7 @@
 *******************************************************************/
 
 
-button{
+.button{
   padding-top: 8px;
   display: inline-block;
   width: 90%;
@@ -20,10 +20,10 @@ button{
   font-size: 20px;
 }
 
-button:hover{
+.button:hover{
   cursor: pointer;
 }
 
-button:active{
+.button:active{
   background-color: #adad02;
 }

@@ -1,0 +1,82 @@
+/*******************************************************************
+* dropdown.css -- dropdown menu styling 
+*                   
+* Ryan Stolys,	04/08/20
+*    - File Created
+*
+*******************************************************************/
+
+/* 
+#cccc00 -- yellow
+#1a6600 -- green 
+*/
+
+.dropdown{
+  border: 1px solid #1a6600;
+  position: relative;
+  width: 80%;
+  height: 30px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  z-index: 5;
+}
+
+.dropdown-button{
+  color: black;
+  background-color: #f1f1f1;
+  width: 100%;
+  padding: 4px 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-title{	
+  width: 100%;
+}
+
+.dropdown-disabled{
+  background-color: rgb(200,200,200) !important;
+}
+
+.dropdown-title{
+  float: left;
+  margin-left: 10px;
+  margin-top: 2px;
+  transition: transform .3s;
+}
+
+.fa-angle-right{
+  float: right;
+  margin-right: 5px;
+  margin-top: 2px;
+  transition: transform .3s;
+}
+
+.rotate-90{
+  transform: rotate(90deg);
+}
+
+.dropdown-content {
+  transition: all 0.4s ease-out; 
+  max-height: 20em;
+  overflow: hidden;
+  background-color: #dfdbdb;
+  border-radius: 4px;
+  display: none;
+  z-index: 10;
+}
+
+.dropdown-option{
+  display:block;
+  padding: 2px;
+  margin: 5px;
+  height: 25px;
+  z-index: 10;
+}
+
+.dropdown-option:hover{
+  cursor: pointer;
+  background: rgb(204, 204, 0, 0.7);
+  border-radius: 4px;
+}
