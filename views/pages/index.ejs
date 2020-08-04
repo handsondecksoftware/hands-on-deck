@@ -25,7 +25,9 @@
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
+    <script src="../js_files/home.js"></script>
     <script src="../js_files/logout.js"></script>
+    <script src="../js_files/d3.js"></script>
 
     <!-- Page Title -->
     <title>Hands On Deck - Home</title>
@@ -34,23 +36,23 @@
 
 
 
-  <body onload="initLogout()">
+  <body onload="init()">
 
     <%- include ("../partials/nav.ejs") %>
 
       <!--Volunteer % pie chart-->
     <div id="home-welcome">
       <div class="home-title">
-        <span class="title">Welcome!</span> <br>
+        <span class="title">Welcome!</span>
       </div>
 
-      <div style="height:100px">
+      <div id="numberOfVolunteersPieChart" class="svg-container" style="height:200px">
         Pie Chart Goes Here
       </div>
 
       <div class="home-subTitle">
-        <div class="subTitle paddingBottom10">Active: <span class="resultText" id="numActiveVolunteers">120</span></div> <br>
-        <div class="subTitle paddingBottom10">Inactive: <span class="resultText" id="numInactiveVolunteers">275</span></div> <br>
+        <div class="subTitle paddingBottom10">Active: <span class="resultText" id="numActiveVolunteers">##</span></div> <br>
+        <div class="subTitle paddingBottom10">Inactive: <span class="resultText" id="numInactiveVolunteers">##</span></div> <br>
       </div>
     </div>
 
@@ -58,16 +60,16 @@
     <!--Volunteer hours pie chart-->
     <div id="home-institution">
       <div class="home-title"> 
-        <span class="title">Institution: <br> <span class="resultText" id="institutionName">Simon Fraser Univeristy</span> </span>
+        <span class="title">Institution: <br> <span class="resultText" id="institutionName">Hands On Deck University</span> </span>
       </div>
 
-      <div style="height:100px">
+      <div id="volunteerHoursPieChart" class="svg-container" style="height:200px">
         Pie Chart Goes Here
       </div>
 
       <div class="home-subTitle">
-        <div class="subTitle paddingBottom10">Goal: <span class="resultText" id="volunteerHoursGoal">750</span></div> <br>
-        <div class="subTitle paddingBottom10">Current Progress: <span class="resultText" id="volunteerHoursTotal">547.5</span></div> <br>
+        <div class="subTitle paddingBottom10">Goal: <span class="resultText" id="volunteerHoursGoal">##</span></div> <br>
+        <div class="subTitle paddingBottom10">Current Progress: <span class="resultText" id="volunteerHoursTotal">##</span></div> <br>
       </div>
     </div>
 
