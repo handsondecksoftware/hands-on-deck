@@ -21,6 +21,7 @@ global.loggedIn = false;
 
 // Added by Denys: delete after db is working on Ryan's end
 const { Pool, Client } = require('pg');
+const { exit } = require('process');
 const pool = new Pool(
   {
   connectionString: "postgres://kuskxdbbzhvwkz:68cbfc9d44fbc241c4f3e26a56327d009f5f6e4b75d04a7c0874e9b2536c1ade@ec2-3-222-30-53.compute-1.amazonaws.com:5432/d8sc0ku4m33dnj", //process.env.DATABASE_URL,  //This is undefined. We  need to insert the actual URL -- I couldnt find it
@@ -88,7 +89,7 @@ app.get('/logout', authcheck, function (req, res) {
 	// set loggedIn to false as the user is logged out
     loggedIn = false;
     res.redirect('/');
-})
+});
 
 app.post('/signIn', async function (request, response) {
 	// post method was specified in signIn.ejs form
@@ -97,7 +98,7 @@ app.post('/signIn', async function (request, response) {
 	try {
 			// get username and password from signIn.ejs
 			var uname = request.body.username;
-			var password = request.body.password;
+      var password = request.body.password;
 
 			// using asynchronus function, check if the input data belong to one of the entries in the db
 			const client = await pool.connect();

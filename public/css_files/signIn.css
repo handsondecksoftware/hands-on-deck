@@ -15,105 +15,74 @@ body, html {
 .bg {
   /* The image used */
   background-image: url('/images/gym.jpg');
-
-  /* Full height */
-  height: 100%; 
-  margin-top: -21px;
-
-  /* Center and scale the image nicely */
+  min-height: 100%;
   background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 
-.signup {
-  color: lightblue;
-	text-align: middle;
-  float:left;
-  height: 60%;
-  width: 100%
-}
-
-.prompt {
-	background-color: rgba(180,180,180, 0.7);
-	backdrop-filter: blur(2px);
-	margin: 0 auto;
-	margin-top: -10px;
-	width: 470px;
+.signIn-prompt {
+  position:absolute;
+  top:50%;
+  left:50%;
+  width: 40%;
+  transform:translate(-50%,-50%);
+  -ms-transform:translate(-50%,-50%);
+  margin: 0 auto;
 	height: 540px;
-	border: 1px solid #808080;
-	border-radius: 7px;
+  border-radius: 5px;
+  padding-top: 25px !important;
+  padding: 15px;
 }
 
-.prompt .login_logo {
-	width: 180px;
-	height: 180px;
-	position: relative;
-	left: 145px;
-	top: 30px;
+.signIn-logo {
+  height: 100%; /* This is 162px for a height of 540 in prompt window */
+  width: 32%;  /* This is set to match 162px for a width of 470 in prompt window  */
+  margin-left: 34%;
+  margin-right: 34%;
 }
 
-::placeholder {
-  color: #616161;
+.signIn-submit{
+  padding-top:10px;
+  padding-left: 5%;
 }
 
-input[type="text"],[type="password"]
-{
-	position: relative;
-  top: 60px;
-  font-size: 21px;
-  margin-left: 5%;
-  margin-right: 5%;
-  width: 90%;
-  padding-left: 20px;
-  padding-right: 20px;
-  background-color: white;
- 	color: black;
-	font-weight: medium;
-	height: 52px;
-	border-radius: 7px;
-	margin-bottom: 7px;
+.signIn-input{
+  padding-top: 10px;
+  padding-left: 5%;
 }
 
-input[type="submit"]
-{
-	position: relative;
-  top: 60px;
-  margin-left: 25%;
-  margin-right: 25%;
-  font-size: 27px;
-  font-weight: bold;
-  background-color: #cccc00;
- 	color: black;
-	height: 72px;
-	width: 50%;
-	border: 10px;
-	border: 1px solid #999900;
-	border-radius: 7px;
-	text-align: center;
-}
-
-.alert-error {
-	position: relative;
-	top: 60px;
+.signIn-errorAlert {
 	padding-top: 5px;
 	text-align: center;
 	color: white;
-
 	background-color: #d22d2d;
 	margin: 0 auto;
-	width: 220px;
+	width: 50%;
 	height: 30px;
-	border: 1px solid #808080;
-	border-radius: 7px;
+	border-radius: 5px;
 }
 
-.forgot {
-	position: relative;
-  top: 50px;
-  width: 26%;
-  margin-left: 37%;
-  margin-right: 37%;
-	text-align: center;
-	color: #404040;
+.signIn-forgotPassword{
+  text-align: center;
+}
+
+/* Phone */
+@media (max-width: 500px) {
+  .signIn-prompt {
+    width: 85%;
+  }
+  
+  .signIn-logo {
+    width: 60%;  /* This is set to match 162px for a width of 470 in prompt window  */
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+/* Smaller Phone */
+@media (max-width: 320px) {
+  .signIn-prompt {
+    margin-top: 10px;
+    height: 450px;
+  }
 }
