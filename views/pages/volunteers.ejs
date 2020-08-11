@@ -3,6 +3,7 @@
 -
 - Ryan Stolys, 27/06/20
 -     - Created Page 
+-     - Added divs to seperate multiple pages and added input fields (10/08/20)
 -
 -------------------------------------------------------------->
 
@@ -19,6 +20,8 @@
     <link rel="stylesheet" href="../css_files/table.css"> 
     <link rel="stylesheet" href="../css_files/popup.css">
     <link rel="stylesheet" href="../css_files/button.css">
+    <link rel="stylesheet" href="../css_files/textInput.css">
+
     <!-- Font Awesome 6-->
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
@@ -39,76 +42,86 @@
 
     <div class="pageContainer"> 
 
+      <div id="volunteerMainPage">
 
-      <div class="addVolunteerButton">
-        <button class="button" id="addVolunteerButton">Add Volunteer</button>
+        <div style="height: 60px">  <!-- Define height of top section to avoid spacing issues with text above table-->
+          <div class="addVolunteerButton">
+            <button class="button" id="addVolunteerButton">Add Volunteer</button>
+          </div>
+    
+          <div class="searchVolunteer paddingTop5">
+            <input class="textInput" type="text" placeholder="Search" id="searchVolunteers">
+          </div>
+        </div>
+
+        <!-- Displays list of volunteers-->
+        <div id="volunteersTableDiv" class="table"> 
+          <span class="table-title">Volunteers:</span>
+          <table id="volunteersTable"> 
+            <tr>
+              <th class="table-volunteers_name">Name</th>
+              <th class="table-volunteers_email">Email</th>
+              <th class="table-volunteers_team">Team</th>
+              <th class="table-volunteers_Vhrs">Volunteer Hours</th> 
+              <th class="table-volunteers_view">View</th>
+            </tr>
+            <tr>
+              <td>Ryan Stolys</td>
+              <td>rstolys@sfu.ca</td> 
+              <td>Men's Golf</td>
+              <td>23</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+            <tr>
+              <td>Jayden Cole</td>
+              <td>jcole@sfu.ca</td> 
+              <td>Men's Swimming</td>
+              <td>25</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+          </table>
+        </div>
+      
+      </div>
+      
+
+      <div id="viewVolunteerPage">
+
+        <!-- Used to show the volunteer history of volunteer-->
+        <div id="volunteerHistoryTableDiv" class="table"> 
+          <span class="table-title">Volunteer History:</span>
+          <table id="volunteerHistoryTable"> 
+            <tr>
+              <th class="table-oppourtunity_title">Title</th>
+              <th class="table-oppourtunity_type">Type</th>
+              <th class="table-oppourtunity_numVol">Number of Hours</th>
+              <th class="table-oppourtunity_date">Date</th> 
+              <th class="table-oppourtunity_time">Time</th> 
+              <th class="table-oppourtunity_view">View</th>
+            </tr>
+            <tr>
+              <td>Operation Christmas Child</td>
+              <td>Local Community</td> 
+              <td>2.5</td>
+              <td>Nov. 23, 2020</td>
+              <td>6:30 PM</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+            <tr>
+              <td>Special Olympics</td>
+              <td>Local Community</td> 
+              <td>1.25</td>
+              <td>Nov. 24, 2020</td>
+              <td>7:30 PM</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+          </table>
+        </div>
+
       </div>
 
-      <div class="searchVolunteer">
-        <button class="button" id="searchVolunteer">Search</button> <!-- Will be changed to input field-->
-      </div>
 
-
-      <!-- Displays list of volunteers-->
-      <div id="volunteersTableDiv" class="table"> 
-        <span class="table-title">Volunteers:</span>
-        <table id="volunteersTable"> 
-          <tr>
-            <th class="table-volunteers_name">Name</th>
-            <th class="table-volunteers_email">Email</th>
-            <th class="table-volunteers_team">Team</th>
-            <th class="table-volunteers_Vhrs">Volunteer Hours</th> 
-            <th class="table-volunteers_view">View</th>
-          </tr>
-          <tr>
-            <td>Ryan Stolys</td>
-            <td>rstolys@sfu.ca</td> 
-            <td>Men's Golf</td>
-            <td>23</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-          <tr>
-            <td>Jayden Cole</td>
-            <td>jcole@sfu.ca</td> 
-            <td>Men's Swimming</td>
-            <td>25</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-        </table>
-      </div>
-
-      <!-- Used to show the volunteer history of volunteer-->
-      <div id="volunteerHistoryTableDiv" class="table"> 
-        <span class="table-title">Volunteer History:</span>
-        <table id="volunteerHistoryTable"> 
-          <tr>
-            <th class="table-oppourtunity_title">Title</th>
-            <th class="table-oppourtunity_type">Type</th>
-            <th class="table-oppourtunity_numVol">Number of Hours</th>
-            <th class="table-oppourtunity_date">Date</th> 
-            <th class="table-oppourtunity_time">Time</th> 
-            <th class="table-oppourtunity_view">View</th>
-          </tr>
-          <tr>
-            <td>Operation Christmas Child</td>
-            <td>Local Community</td> 
-            <td>2.5</td>
-            <td>Nov. 23, 2020</td>
-            <td>6:30 PM</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-          <tr>
-            <td>Special Olympics</td>
-            <td>Local Community</td> 
-            <td>1.25</td>
-            <td>Nov. 24, 2020</td>
-            <td>7:30 PM</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-        </table>
-      </div>
-
-
+  
       <!-- Pop up box for adding volunteers -->
       <div id="volunteerOppourtunityPopup" class="popup-greyOut" style="display:none">
         <div class="popup-box">
@@ -123,16 +136,16 @@
                     </div>
                     <div class="row_16p">
                       <div class="col_50p subTitle2">
-                        <input class="search" type="text" placeholder="First">
+                        <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName">
                       </div>
                       <div class="col_50p subTitle2">
-                        <input class="search" type="text" placeholder="Last">
+                        <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName">
                       </div>
                     </div>
                     <div class="row_16p">
                       <div class="col_30p subTitle2"> Email:</div>
                       <div class="col_70p subTitle2">
-                        <input class="search" type="text" placeholder="Email">
+                        <input class="textInput" type="text" placeholder="Email" id="volunteerInfo-email">
                       </div>
                     </div>
                     <div class="row_16p"></div>
@@ -146,13 +159,13 @@
                     </div>
                     <div class="row_16p">
                         <div class="col_100p subTitle2">
-                            <input class="search" type="text" placeholder="Team">
+                          <input class="textInput" type="text" placeholder="Email" id="volunteerInfo-team">
                         </div>
                     </div>
                     <div class="row_16p">
                         <div class="col_30p subTitle2"> Role:</div>
                         <div class="col_70p subTitle2">
-                          <input class="search" type="text" placeholder="Type">
+                          <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-role">
                         </div>
                     </div>
                     <div class="row_16p"></div>
@@ -173,18 +186,11 @@
 
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">
-        <div class="popup-box">
-            <div class="popup-title" >
-                <h1> </h1> <!--No text, just here for spacing-->
-            </div>
-            <div class="popup-content">
-                
-              <div class="subTitle">
+        <div class="logout-popup">
+            <div class="logout-content subTitle">
                 Are you sure you want to logout?
-              </div>
-
             </div>
-            <div class="popup-buttons">
+            <div class="logout-buttons">
                 <div class="popup-buttons-cancel"><button class="button" id="cancelLogoutChoice">Cancel</button></div>
                 <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
             </div>

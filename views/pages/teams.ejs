@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="../css_files/button.css"> 
     <link rel="stylesheet" href="../css_files/popup.css"> 
     <link rel="stylesheet" href="../css_files/slider.css"> 
+    <link rel="stylesheet" href="../css_files/dropdown.css"> 
+    <link rel="stylesheet" href="../css_files/textInput.css"> 
 
     <!-- Font Awesome 6-->
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
@@ -44,46 +46,117 @@
     <div class="pageContainer">
 
 
-      <div class="addTeamButton">
-        <button class="button" id="addTeamButton">Add Team</button>
+      <div id="teamMainPage">
+
+        <div style="height: 60px">
+          <div class="addTeamButton">
+            <button class="button" id="addTeamButton">Add Team</button>
+          </div>
+    
+          <div class="searchTeam paddingTop7">
+            <input class="textInput" type="text" placeholder="Search" id="searchTeams">
+          </div>
+        </div>
+  
+        <!-- Will display all of the teams for the specific institution-->
+        <div class="table"> 
+          <span class="table-title">Teams:</span>
+          <table id="teamsTable"> 
+            <tr class="table-top">
+              <th class="table-team_name">Team Name</th>
+              <th class="table-team_sex">Sex</th>
+              <th class="table-team_NoV">Number of Volunteers</th>
+              <th class="table-team_Vhrs">Volunteer Hours</th> 
+              <th class="table-team_view">View</th>
+            </tr>
+            <tr>
+              <td>Golf</td>
+              <td>Men</td> 
+              <td>9</td>
+              <td>54</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+            <tr>
+              <td>Golf</td>
+              <td>Women</td> 
+              <td>9</td>
+              <td>59</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+          </table>
+        </div>
+
       </div>
 
-      <div class="searchTeam">
-        <button class="button" id="searchTeam">Search</button> <!-- Will be changed to input field-->
-      </div>
 
-      <div class="table"> 
-        <span class="table-title">Teams:</span>
-        <table id="teamsTable"> 
-          <tr class="table-top">
-            <th class="table-team_name">Team Name</th>
-            <th class="table-team_sex">Sex</th>
-            <th class="table-team_NoV">Number of Volunteers</th>
-            <th class="table-team_Vhrs">Volunteer Hours</th> 
-            <th class="table-team_view">View</th>
-          </tr>
-          <tr>
-            <td>Golf</td>
-            <td>Men</td> 
-            <td>9</td>
-            <td>54</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-          <tr>
-            <td>Golf</td>
-            <td>Women</td> 
-            <td>9</td>
-            <td>59</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-        </table>
+      <div id="viewTeamPage">
+
+        <div style="height:125px;margin-left:10%;">
+          <div class="row_60p">
+            <div class="col_50p">
+              <div class="col_33p subTitle2">   Team Name</div>
+              <div class="col_66p">
+                <input class="textInput" type="text" value="Golf" id="teamInfo-name">
+              </div>
+            </div>
+            <div class="col_50p">
+              <div class="col_30p subTitle2">   Sex:</div>
+              <div class="col_50p">
+                <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
+                <div class="sliderContainer sliderWidth">
+                  <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
+                </div>
+              </div>
+              <div class="col_20p"><!--For Spacing--></div>
+            </div>
+          </div>
+          <div class="row_40p">
+            <div class="col_30p subTitle2">   Include In Leaderboards:</div>
+              <div class="col_40p">
+                <div class="sliderLabel textColor-black" id="teamInfoIncludeLeaderboardsLabel">Yes</div>
+                <div class="sliderContainer sliderWidth">
+                  <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoIncludeLeaderboards">
+                </div>
+              </div>
+              <div class="col_30p"><!--For Spacing--></div>
+          </div>
+        </div>
+
+        <!-- Will display all of the teams for the specific institution-->
+        <div class="table"> 
+          <span class="table-title">Team Members:</span>
+          <table id="teamsTable"> 
+            <tr class="table-top">
+              <th class="table-volunteer_name">Name</th>
+              <th class="table-volunteer_email">Email</th>
+              <th class="table-volunteer_teams">Teams</th>
+              <th class="table-volunteer_hours">Volunteer Hours</th> 
+              <th class="table-volunteer_view">View</th>
+            </tr>
+            <tr>
+              <td>Ryan Stolys</td>
+              <td>rstolys@sfu.a</td> 
+              <td>M - Golf</td>
+              <td>23</td>
+              <td><i id="viewVolunteerInfo" class="fas fa-eye table-view"></i></td> 
+            </tr>
+            <tr>
+              <td>Golf</td>
+              <td>Women</td> 
+              <td>9</td>
+              <td>59</td>
+              <td><i class="fas fa-eye table-view"></i></td> 
+            </tr>
+          </table>
+        </div>
       </div>
+      
 
 
       <!-- Pop up box for adding Teams -->
       <div id="addTeamPopup" class="popup-greyOut" style="display:none">
         <div class="popup-box">
-            <div class="popup-title" >
+            <div class="popup-title">
                 <h1>Add Team</h1>
             </div>
             <div class="popup-content">
@@ -91,7 +164,7 @@
               <div class="row_25p">
                 <div class="col_60p subTitle2"> Team Name</div>
                 <div class="col_40p">
-                  <input class="search" type="text" placeholder="Team Name"> <!--Search class defines the input text styling-->
+                  <input class="textInput" type="text" placeholder="Team Name" id="addTeam-name">
                 </div>
               </div>
 
@@ -131,21 +204,75 @@
         </div>
       </div>
 
+      <!-- Pop up box for viewing Volunteers on Teams -->
+      <div id="viewVolunteerPopup" class="popup-greyOut" style="display:none">
+        <div class="popup-box">
+            <div class="popup-title" >
+                <h1>View Volunteer</h1>
+            </div>
+            <div class="popup-content">
+              <div class="col_50p row_100p">
+                <div class="row_50p">
+                  <div class="row_25p text-center subTitle2">  Name:</div>
+                  <div class="row_75p">
+                    <div class="col_50p">
+                      <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName">
+                    </div>
+                    <div class="col_50p">
+                      <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName">
+                    </div>
+                  </div>
+                </div>
+                <div class="row_50p">
+                  <div class="col_30p paddingTop5 subTitle2"> Email:</div>
+                  <div class="col_70p">
+                    <input class="textInput" type="text" placeholder="Email" id="volunteerInfo-email">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col_50p row_100p">
+                <div class="row_50p">
+                  <div class="row_25p text-center subTitle2">  Team:</div>
+                  <div class="row_25p">
+                    <div class="dropdown">
+                      <button class="dropdown-button"><span id="viewVolunteer-team">  Team</span><i class="fa fa-angle-right" id="dropdown-arrow-addOppourtunityType"></i></button>
+                      <div id="addOppourtunityTypeOptions" class="dropdown-content">
+                        <!--Will not add any options since we are only using this as a place to show what value is-->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row_50p">
+                  <div class="col_25p subTitle2">  Role:</div>
+                  <div class="col_75p"> 
+                    <div class="dropdown">
+                      <button class="dropdown-button"><span id="viewVolunteer-role">  Role</span><i class="fa fa-angle-right" id="dropdown-arrow-addOppourtunityType"></i></button>
+                      <div id="addOppourtunityTypeOptions" class="dropdown-content">
+                        <!--Will not add any options since we are only using this as a place to show what value is-->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>  
+  
+            <div class="popup-buttons">
+                <div class="popup-buttons-cancel"><button class="button" id="cancelViewVolunteer">Cancel</button></div>
+                <div class="popup-buttons-add"><button class="button" id="editViewVolunteer">Edit</button></div>
+            </div>
+        </div>
+      </div>
+
 
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">
-        <div class="popup-box">
-            <div class="popup-title" >
-                <h1> </h1> <!--No text, just here for spacing-->
-            </div>
-            <div class="popup-content">
-                
-              <div class="subTitle">
+        <div class="logout-popup">
+            <div class="logout-content subTitle">
                 Are you sure you want to logout?
-              </div>
-
             </div>
-            <div class="popup-buttons">
+            <div class="logout-buttons">
                 <div class="popup-buttons-cancel"><button class="button" id="cancelLogoutChoice">Cancel</button></div>
                 <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
             </div>

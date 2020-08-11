@@ -24,6 +24,10 @@
 }
 
 
-#volunteerHistoryTableDiv{
+#viewVolunteerPage{
   display: none;
+}
+
+#volunteerMainPage{
+  display: block;
 }

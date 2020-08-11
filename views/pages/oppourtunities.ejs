@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../css_files/button.css"> 
     <link rel="stylesheet" href="../css_files/slider.css"> 
     <link rel="stylesheet" href="../css_files/dropdown.css"> 
+    <link rel="stylesheet" href="../css_files/textInput.css">
     <link rel="stylesheet" href="../css_files/myDatepicker.css">
 
     <!-- Font Awesome 6-->
@@ -52,8 +53,8 @@
         <button class="button" id="addOppourtunityButton">Add Oppourtunity</button>
       </div>
 
-      <div class="searchOppourtunity">
-        <button class="button" id="searchOppourtunity">Search</button> <!-- Will be changed to input field-->
+      <div class="searchOppourtunity paddingTop5">
+        <input class="textInput" type="text" placeholder="Search" id="searchOppourtunities">
       </div>
 
       <div class="sortOppourtunity">
@@ -133,23 +134,23 @@
                   <div class="row_25p">
                     <div class="col_25p subTitle2"> Title:</div>
                     <div class="col_75p"> 
-                      <input class="search" type="text" placeholder="Title">
+                      <input class="textInput" type="text" placeholder="Title" id="addOppourtuntiy-title">
                     </div>
                   </div>
                   <div class="row_25p">
                     <div class="col_25p subTitle2"> Date:</div>
                     <div class="col_75p"> 
-                      <input class="search" type="text" id="addOppourtunityDate" placeholder="YYYY-MM-DD">
+                      <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOppourtunity-date">
                       <div id="addOppourtunityDatePicker" class="hideDP" style="z-index:10"></div>
                     </div>
                   </div>
                   <div class="row_25p">
                     <div class="col_25p subTitle2"> Time:</div>
                     <div class="col_37p">
-                      Input 1
+                      <input class="textInput" type="text" placeholder="Start Time" id="addOppourtunity-startTime">
                     </div>
                     <div class="col_37p">
-                      Input 2
+                      <input class="textInput" type="text" placeholder="End Time" id="addOppourtunity-endTime">
                     </div>
                   </div>
                   <div class="row_25p">
@@ -191,14 +192,14 @@
                     <div class="row_20p subTitle2"> Coordinator Information</div>
                     <div class="row_40p"> 
                       <div class="col_50p"> 
-                        <input class="search" type="text" placeholder="Name">
+                        <input class="textInput" type="text" placeholder="Name" id="addOppourtunity-coordinatorName">
                       </div>
                       <div class="col_50p"> 
-                        <input class="search" type="text" placeholder="Email">
+                        <input class="textInput" type="text" placeholder="Email" id="addOppourtunity-coordinatorEmail">
                       </div>
                     </div>
                     <div class="row_40p"> 
-                      <input class="search" type="text" placeholder="Phone Number">
+                      <input class="textInput" type="text" placeholder="Phone Number" id="addOppourtunity-coordinatorPhoneNumber">
                     </div>
                   </div>
                 </div>
@@ -214,18 +215,11 @@
 
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">
-        <div class="popup-box">
-            <div class="popup-title" >
-                <h1> </h1> <!--No text, just here for spacing-->
-            </div>
-            <div class="popup-content">
-                
-              <div class="subTitle">
+        <div class="logout-popup">
+            <div class="logout-content subTitle">
                 Are you sure you want to logout?
-              </div>
-
             </div>
-            <div class="popup-buttons">
+            <div class="logout-buttons">
                 <div class="popup-buttons-cancel"><button class="button" id="cancelLogoutChoice">Cancel</button></div>
                 <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
             </div>

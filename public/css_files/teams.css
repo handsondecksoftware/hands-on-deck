@@ -22,3 +22,11 @@
   padding-right: 20%;
   padding-bottom: 25px;
 }
+
+#teamMainPage{
+  display: block;
+}
+
+#viewTeamPage{
+  display: none;
+}

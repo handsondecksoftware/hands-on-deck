@@ -51,13 +51,15 @@ function initSlider(pageName)
       {
       document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
       document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('teamInfoSex').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('teamInfoIncludeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
 
       break;
       } 
     case 'Volunteers':
       {
-      document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
+      //document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
+      //document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
 
       break;
       } 
@@ -96,11 +98,13 @@ function changeSliderLabel(sliderID)
       break;
       }
     case 'teamSex':
+    case 'teamInfoSex':
       {
       sliderOptions = ['Male', 'Female'];
       break;
       }
     case 'includeLeaderboards':
+    case 'teamInfoIncludeLeaderboards':
     case 'oppValidated':
     case 'oppOccured':
       {

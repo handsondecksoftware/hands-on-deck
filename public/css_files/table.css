@@ -67,7 +67,7 @@ td:first-child, th:first-child {
 }
 
 /**************TABLE WIDTHS************************************************************/
-/*Teams*/
+/*Teams 1*/
 .table-team_name{
   width: 40%;
 }
@@ -85,6 +85,27 @@ td:first-child, th:first-child {
 }
 
 .table-team_view{
+  width: 5%;
+}
+
+/*Teams 2*/
+.table-volunteer_name{
+  width: 25%;
+}
+
+.table-volunteer_email{
+  width: 25%;
+}
+
+.table-volunteer_team{
+  width: 25%;
+}
+
+.table-volunteer_hours{
+  width: 20%;
+}
+
+.table-volunteer_view{
   width: 5%;
 }
 

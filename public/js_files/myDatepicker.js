@@ -48,7 +48,7 @@ function createDatePicker(inputId, datePickerID, dpNum)       //dpNum will allow
   const topLevelDiv = document.createElement('div');
   topLevelDiv.className = "datepickerFrame";
   topLevelDiv.id = topLevelID;
-  topLevelDiv.style = "z-index:2; display:inline-block; text-align:center";
+  topLevelDiv.style = "z-index:10; display:inline-block; text-align:center";
   
   document.getElementById(datePickerID).appendChild(topLevelDiv); 
 

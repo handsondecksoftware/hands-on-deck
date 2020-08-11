@@ -57,13 +57,13 @@ function authcheck(req, res, next) {
 
 app.get('/', function(request, response){
 	if(loggedIn)
-		response.redirect('index');
+		response.redirect('home');
   	else
   		response.redirect('signIn');
 });
 
-app.get('/index', authcheck, function(request, response){
-  response.render('pages/index', { home: true, opps: false, volunt: false, teams: false});
+app.get('/home', authcheck, function(request, response){
+  response.render('pages/home', { home: true, opps: false, volunt: false, teams: false});
 });
 
 app.get('/volunteers', authcheck, function(request, response){

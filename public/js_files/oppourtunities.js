@@ -24,7 +24,7 @@ function init()
   initSlider('Oppourtunties');
   initDropdowns('Oppourtunties');
 
-  createDatePicker("addOppourtunityDate", "addOppourtunityDatePicker", 1);
+  createDatePicker("addOppourtunity-date", "addOppourtunityDatePicker", 1);
 
   initLogout();
   }
