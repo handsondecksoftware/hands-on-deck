@@ -20,3 +20,8 @@
   border: 1px solid black;
 }
 
+.search input[type=text]:focus {
+  padding: 6px;
+  margin-top: 8px;
+  margin-right: 16px;
+}

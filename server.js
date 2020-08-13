@@ -111,7 +111,7 @@ app.post('/signIn', async function (request, response) {
             if(result.rows[0])
             {	
             	loggedIn = true;
-         		response.redirect('index');
+         		response.redirect('home');
          	}
          	// otherwise, redirect to signIn page and send a message to be shown in the red box
             else
