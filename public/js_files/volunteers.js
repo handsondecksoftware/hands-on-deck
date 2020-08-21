@@ -21,6 +21,8 @@ function init()
   document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtunityBoxVisibility()};
   document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
   document.getElementById('addVolunteerButton').onclick = function(){toggleVolOppourtunityBoxVisibility()};
+  document.getElementById('viewVolunteerButton').onclick = function(){toggleViewVolVisibility()};
+  document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
 
   initSlider('Volunteers');
 
@@ -35,18 +37,38 @@ function init()
 //
 ////////////////////////////////////////////////////////////////////////
 function toggleVolOppourtunityBoxVisibility()
-  {
-  //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('volunteerOppourtunityPopup').style.display; 
+{
+    //Open the add oppourtuntiy popup box
+    var currentState = document.getElementById('volunteerOppourtunityPopup').style.display; 
 
-  if(currentState === "none")
+    if(currentState === "none")
     {
-    document.getElementById('volunteerOppourtunityPopup').style.display = "block"; 
+        document.getElementById('volunteerOppourtunityPopup').style.display = "block"; 
     }
-  else 
+    else 
     {
-    document.getElementById('volunteerOppourtunityPopup').style.display = "none"; 
+        document.getElementById('volunteerOppourtunityPopup').style.display = "none"; 
     }
 
   return;
-  }
+}
+
+
+function toggleViewVolVisibility()
+{
+    // Turn on/off a specific volunteers' hours page
+    var currentState = document.getElementById('viewVolunteerPage').style.display;
+    
+    if(currentState === "none")
+    {
+        document.getElementById('volunteerMainPage').style.display = "none";
+        document.getElementById('viewVolunteerPage').style.display = "block";
+    }
+    else
+    {
+        document.getElementById('viewVolunteerPage').style.display = "none";
+        document.getElementById('volunteerMainPage').style.display = "block";
+    }
+
+    return;
+}

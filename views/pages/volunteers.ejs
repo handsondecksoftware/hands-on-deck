@@ -70,14 +70,14 @@
               <td>rstolys@sfu.ca</td> 
               <td>Men's Golf</td>
               <td>23</td>
-              <td><i class="fas fa-eye table-view"></i></td> 
+              <td><i class="fas fa-eye table-view" id="viewVolunteerButton"></i></td> 
             </tr>
             <tr>
               <td>Jayden Cole</td>
               <td>jcole@sfu.ca</td> 
               <td>Men's Swimming</td>
               <td>25</td>
-              <td><i class="fas fa-eye table-view"></i></td> 
+              <td><i class="fas fa-eye table-view" id="viewVolunteerButton"></i></td> 
             </tr>
           </table>
         </div>
@@ -85,9 +85,48 @@
       </div>
       
 
-      <div id="viewVolunteerPage">
-
+      <div id="viewVolunteerPage" style="display: none;">
         <!-- Used to show the volunteer history of volunteer-->
+        <div id="volunteerHistoryTitle">
+
+            <div class="col_33p row_100p">
+                <div class="row_50p">
+                    <div class="col_100p subTitle2"> Name:</div>
+                </div>
+                <div class="row_50p">
+                  <div class="col_50p subTitle2">
+                    <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName">
+                  </div>
+                  <div class="col_50p subTitle2">
+                    <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName">
+                  </div>
+                </div>
+            </div>
+
+            <div class="col_33p row_100p">
+                <div class="row_50p">
+                    <div class="col_100p subTitle2"> Team:</div>
+                </div>
+                <div class="row_50p">
+                    <div class="col_100p subTitle2">
+                      <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-team">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col_33p row_100p">
+                <div class="row_50p">
+                    <div class="col_100p subTitle2"> Role:</div>
+                </div>
+                <div class="row_50p">
+                    <div class="col_100p subTitle2">
+                      <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-team">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
         <div id="volunteerHistoryTableDiv" class="table"> 
           <span class="table-title">Volunteer History:</span>
           <table id="volunteerHistoryTable"> 
@@ -116,8 +155,9 @@
               <td><i class="fas fa-eye table-view"></i></td> 
             </tr>
           </table>
-        </div>
-
+        </div> 
+        <button class="button col_16p" style="width: 30%;" id="returnToVolList"> Return to Volunteers</button>
+        
       </div>
 
 
@@ -199,6 +239,11 @@
 
     </div>
 
+    <!-- Specific volunteer viewer page -->
+    <div id="volunteerViewerPage" style="display: none;">
+
+
+    </div>
 
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
