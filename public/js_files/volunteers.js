@@ -21,7 +21,6 @@ function init()
   document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtunityBoxVisibility()};
   document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
   document.getElementById('addVolunteerButton').onclick = function(){toggleVolOppourtunityBoxVisibility()};
-  document.getElementById('viewVolunteerButton').onclick = function(){toggleViewVolVisibility()};
   document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
 
   initSlider('Volunteers');
@@ -54,6 +53,11 @@ function toggleVolOppourtunityBoxVisibility()
 }
 
 
+////////////////////////////////////////////////////////////////////////
+//
+// Will display or hide a specific volunteers volunteering history
+//
+////////////////////////////////////////////////////////////////////////
 function toggleViewVolVisibility()
 {
     // Turn on/off a specific volunteers' hours page
@@ -71,4 +75,40 @@ function toggleViewVolVisibility()
     }
 
     return;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Populates a specific volunteer's name and team from the full Volunteers
+// list to the individual's volunteering page
+//
+////////////////////////////////////////////////////////////////////////
+function showVolunteer(e){
+    e = e || event;
+    var eventEl = e.srcElement || e.target, 
+    parent = eventEl.parentNode,
+    isRow = function(el) {
+                return el.tagName.match(/tr/i);
+            };
+
+    // Move up the DOM until tr is reached
+    while (parent = parent.parentNode) {
+        if (isRow(parent)) {
+            // Get Name, Team, and Role of Volunteer from the clicked row
+            var volName = parent.cells.item(0).innerHTML;
+            var volTeam = parent.cells.item(2).innerHTML;
+
+            document.getElementById("volName").innerHTML = volName;
+            document.getElementById("volTeam").innerHTML = volTeam;
+
+            //TODO: Get volunteer "role" and populate table with instances where this individual volunteered
+
+            // Flip page visibility
+            toggleViewVolVisibility()
+
+           return true;
+        }
+    }
+    return false;
 }

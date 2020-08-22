@@ -70,14 +70,14 @@
               <td>rstolys@sfu.ca</td> 
               <td>Men's Golf</td>
               <td>23</td>
-              <td><i class="fas fa-eye table-view" id="viewVolunteerButton"></i></td> 
+              <td><i class="fas fa-eye table-view" onclick="showVolunteer()"></i></td> 
             </tr>
             <tr>
               <td>Jayden Cole</td>
               <td>jcole@sfu.ca</td> 
               <td>Men's Swimming</td>
               <td>25</td>
-              <td><i class="fas fa-eye table-view" id="viewVolunteerButton"></i></td> 
+              <td><i class="fas fa-eye table-view" onclick="showVolunteer()"></i></td> 
             </tr>
           </table>
         </div>
@@ -94,12 +94,7 @@
                     <div class="col_100p subTitle2"> Name:</div>
                 </div>
                 <div class="row_50p">
-                  <div class="col_50p subTitle2">
-                    <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName">
-                  </div>
-                  <div class="col_50p subTitle2">
-                    <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName">
-                  </div>
+                    <div id="volName" class="subTitle2"></div>
                 </div>
             </div>
 
@@ -108,9 +103,7 @@
                     <div class="col_100p subTitle2"> Team:</div>
                 </div>
                 <div class="row_50p">
-                    <div class="col_100p subTitle2">
-                      <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-team">
-                    </div>
+                    <div id="volTeam" class="subTitle2"></div>
                 </div>
             </div>
 
