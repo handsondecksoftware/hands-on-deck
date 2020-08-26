@@ -5,6 +5,9 @@
 -     - Created Page 
 -     - Added divs to seperate multiple pages and added input fields (10/08/20)
 -
+- Jayden Cole, 23/08/20
+-     - Added Specific Volunteer page, and style touch ups
+-
 -------------------------------------------------------------->
 
 <!DOCTYPE html>
@@ -41,7 +44,8 @@
     <%- include ("../partials/nav.ejs") %>
 
     <div class="pageContainer"> 
-
+    
+      <!-- Volunteers main page -->
       <div id="volunteerMainPage">
 
         <div style="height: 60px">  <!-- Define height of top section to avoid spacing issues with text above table-->
@@ -64,13 +68,15 @@
               <th class="table-volunteers_team">Team</th>
               <th class="table-volunteers_Vhrs">Volunteer Hours</th> 
               <th class="table-volunteers_view">View</th>
+              <th class="table-volunteers_delete">Delete</th>
             </tr>
             <tr>
               <td>Ryan Stolys</td>
               <td>rstolys@sfu.ca</td> 
               <td>Men's Golf</td>
               <td>23</td>
-              <td><i class="fas fa-eye table-view" onclick="showVolunteer()"></i></td> 
+              <td><i class="fas fa-eye table-view" onclick="showVolunteer()"></i></td>
+              <td><i class="fa fa-trash table-view"></i></td>
             </tr>
             <tr>
               <td>Jayden Cole</td>
@@ -78,15 +84,16 @@
               <td>Men's Swimming</td>
               <td>25</td>
               <td><i class="fas fa-eye table-view" onclick="showVolunteer()"></i></td> 
+              <td><i class="fa fa-trash table-view"></i></td>
             </tr>
           </table>
         </div>
       
       </div>
       
-
+      <!-- Used to show the volunteer history of volunteer -->
       <div id="viewVolunteerPage" style="display: none;">
-        <!-- Used to show the volunteer history of volunteer-->
+        
         <div id="volunteerHistoryTitle">
 
             <div class="col_33p row_100p">
@@ -152,8 +159,6 @@
         <button class="button col_16p" style="width: 30%;" id="returnToVolList"> Return to Volunteers</button>
         
       </div>
-
-
   
       <!-- Pop up box for adding volunteers -->
       <div id="volunteerOppourtunityPopup" class="popup-greyOut" style="display:none">
@@ -216,7 +221,6 @@
         </div>
       </div>
 
-
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">
         <div class="logout-popup">
@@ -229,12 +233,6 @@
             </div>
         </div>
       </div>
-
-    </div>
-
-    <!-- Specific volunteer viewer page -->
-    <div id="volunteerViewerPage" style="display: none;">
-
 
     </div>
 
