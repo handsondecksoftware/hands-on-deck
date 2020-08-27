@@ -75,7 +75,7 @@
               <td>Men</td> 
               <td>9</td>
               <td>54</td>
-              <td><i class="fas fa-eye table-view"></i></td> 
+              <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
               <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
             </tr>
             <tr>
@@ -83,7 +83,7 @@
               <td>Women</td> 
               <td>9</td>
               <td>59</td>
-              <td><i class="fas fa-eye table-view"></i></td> 
+              <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
               <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
             </tr>
             <tr>
@@ -91,7 +91,7 @@
                 <td>Women</td> 
                 <td>18</td>
                 <td>101</td>
-                <td><i class="fas fa-eye table-view"></i></td> 
+                <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
                 <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
             </tr>
             <tr>
@@ -99,7 +99,7 @@
                 <td>Men</td> 
                 <td>19</td>
                 <td>71</td>
-                <td><i class="fas fa-eye table-view"></i></td> 
+                <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
                 <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
               </tr>
           </table>
@@ -107,24 +107,20 @@
 
       </div>
 
-
-      <div id="viewTeamPage">
+      <div id="viewTeamPage" style="display:none">
 
         <div style="height:125px;margin-left:10%;">
           <div class="row_60p">
             <div class="col_50p">
-              <div class="col_33p subTitle2">   Team Name</div>
+              <div class="col_33p subTitle2">Team Name:</div>
               <div class="col_66p">
-                <input class="textInput" type="text" value="Golf" id="teamInfo-name">
+                <div class="subTitle2" id="teamInfo-name"></div>
               </div>
             </div>
             <div class="col_50p">
-              <div class="col_30p subTitle2">   Sex:</div>
+              <div class="col_30p subTitle2">Sex:</div>
               <div class="col_50p">
-                <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
-                <div class="sliderContainer sliderWidth">
-                  <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
-                </div>
+                <div class="subTitle2" id="teamInfoSexLabel">Male</div>
               </div>
               <div class="col_20p"><!--For Spacing--></div>
             </div>
@@ -141,7 +137,7 @@
           </div>
         </div>
 
-        <!-- Will display all of the teams for the specific institution-->
+        <!-- Will display all of the members for the specific team selected -->
         <div class="table"> 
           <span class="table-title">Team Members:</span>
           <table id="teamsTable"> 
@@ -159,14 +155,12 @@
               <td>23</td>
               <td><i id="viewVolunteerInfo" class="fas fa-eye table-view"></i></td> 
             </tr>
-            <tr>
-              <td>Golf</td>
-              <td>Women</td> 
-              <td>9</td>
-              <td>59</td>
-              <td><i class="fas fa-eye table-view"></i></td> 
-            </tr>
           </table>
+        </div>
+
+        <!-- Button to go back to all teams view -->
+        <div class="popup-buttons">
+            <div class="popup-buttons-cancel"><button class="button" id="backToAllTeamsButton">Back to all teams</button></div>
         </div>
       </div>
 
@@ -281,7 +275,6 @@
             </div>
         </div>
       </div>
-
 
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">
