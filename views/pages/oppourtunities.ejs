@@ -82,7 +82,7 @@
             <td>Nov. 23, 2020</td>
             <td>6:30 PM</td>
             <td><i class="fas fa-eye table-view"></i></td> 
-            <td><i class="fa fa-trash table-view"></i></td>
+            <td><i class="fa fa-trash table-view" onclick="deleteOpportunity()"></i></td>
           </tr>
           <tr>
             <td>Special Olympics</td>
@@ -91,12 +91,12 @@
             <td>Nov. 24, 2020</td>
             <td>7:30 PM</td>
             <td><i class="fas fa-eye table-view"></i></td> 
-            <td><i class="fa fa-trash table-view"></i></td>
+            <td><i class="fa fa-trash table-view"  onclick="deleteOpportunity()"></i></td>
           </tr>
         </table>
       </div>
 
-      <!-- Used for viewing the oppourtunity-->
+      <!-- Used for viewing the opportunity-->
       <div id="viewVolunteersForOppourtunityTableDiv" class="table"> 
         <span class="table-title">Volunteers:</span>
         <table id="viewVolunteersForOppourtunityTable"> 
@@ -124,7 +124,7 @@
         </table>
       </div>
 
-      <!-- Pop up box for adding Oppourtunities -->
+      <!-- Pop up box for adding opportunities -->
       <div id="addOppourtunityPopup" class="popup-greyOut" style="display:none">
           <div class="popup-box">
               <div class="popup-title" >
@@ -213,7 +213,6 @@
               </div>
           </div>
       </div>
-
 
       <!-- Pop up box for logging out -->
       <div id="logoutPopup" class="popup-greyOut" style="display:none">

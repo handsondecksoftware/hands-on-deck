@@ -30,7 +30,6 @@ function init()
   }
 
 
-
 ////////////////////////////////////////////////////////////////////////
 // 
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
@@ -102,8 +101,8 @@ function fillOppourtunityTypeOptions(dropdownID)
 // Will find the various types of an oppourtunity that are availible and add them
 //
 ////////////////////////////////////////////////////////////////////////
-function fillOppourtunityViewableByOptions(dropdownID)
-  {
+function fillOppourtunityViewableByOptions(dropdownID) 
+{
   //Get the teams Type options 
   //getTeamsForViewable() -- need to specify that these are from SFU
   var types = ['M - Golf', 'F - Golf', 'M - Swim']; 
@@ -124,4 +123,35 @@ function fillOppourtunityViewableByOptions(dropdownID)
     }
 
   return;
-  }
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Deletes an opportunity
+//
+////////////////////////////////////////////////////////////////////////
+function deleteOpportunity(e){
+    // Finds the row of the delete button clicked
+    e = e || event;
+    var eventEl = e.srcElement || e.target, 
+    parent = eventEl.parentNode,
+    isRow = function(el) {
+                return el.tagName.match(/tr/i);
+            };
+ 
+    // Move up the DOM until tr is reached
+    while (parent = parent.parentNode) {
+        if (isRow(parent)) {
+            // Delete the row visually
+            parent.remove()
+
+            //TODO: Delete the information from the back end
+            
+            return true;
+        }
+    }
+    
+    return false;
+}
+
