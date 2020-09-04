@@ -7,10 +7,18 @@
 //		Hi Ryan and Jayden!
 ////////////////////////////////////////////////////////////
 
+global.users = false;
+
 var express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 var http = require('http');
+var passport = require('passport');
+const cookieParser = require('cookie-parser');
+const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
+const session = require('express-session');
+
+var currentAccountsData = [];
 
 // set loggedIn to false as it is assumed no one is logged in atm
 // this will be expanded to include unique users and encryption for safe transfer over the Internet
@@ -40,12 +48,23 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(require('body-parser').urlencoded({ extended: true }))
+app.use(require('cookie-parser')())
+app.use(cookieParser('secretString'));
+
+app.use(session({
+    secret: 'bulky keyboard',
+    resave: true,
+    cookie: { maxAge: 120000 },
+    saveUninitialized: true
+}))
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Access Control will be exapanded to include passport and auth check, for now, this will do.
 // this function will be used to make sure only logged in users have access to sensitive information
 function authcheck(req, res, next) {
     // if (req.isAuthenticated()) {
-    if (loggedIn) {
+    if (req.isAuthenticated()) {
     	// if the user is logged in, proceed to the next function, as needed
         return next();
     }
@@ -55,8 +74,28 @@ function authcheck(req, res, next) {
     }
 }
 
+app.get('*', function (req, res, next) { // universal access variable, keep working
+    console.log("THE USER IS currently " + req.isAuthenticated());
+
+    global.uname = null;
+
+    if (req.user) {
+        uname = req.user[0].username;
+    }
+
+    res.locals.user = req.user || null;
+
+    if (res.locals.user != null) {
+        console.log("the user is ");
+        console.log(res.locals.user);
+    }
+
+    next();
+})
+
+
 app.get('/', function(request, response){
-	if(loggedIn)
+	if(request.isAuthenticated())
 		response.redirect('home');
   	else
   		response.redirect('signIn');
@@ -86,14 +125,25 @@ app.get('/signIn', function(request, response){
 });
 
 app.get('/logout', authcheck, function (req, res) {
-	// set loggedIn to false as the user is logged out
-    loggedIn = false;
+    req.isAuthenticated();
+    req.logout();
+    users = req.isAuthenticated();
+    console.log("Upon logout user status is " + users);
     res.redirect('/');
-});
+})
 
-app.post('/signIn', async function (request, response) {
+app.post('/signIn', passport.authenticate('local'),
+  async function (request, response) {
 	// post method was specified in signIn.ejs form
-
+  console.log("The user is being authenticated: " + request.isAuthenticated());
+  console.log("The user is currently written below");
+  console.log(request.session.passport.user);
+  if (request.body.remember) {
+      request.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+  }
+  else {
+      request.session.cookie.expires = false; // Cookie expires at end of session
+  }
 	// try catch error block
 	try {
 			// get username and password from signIn.ejs
@@ -110,8 +160,9 @@ app.post('/signIn', async function (request, response) {
             // if the result is non null, set loggedIn to true and allow acces to all other pages
             if(result.rows[0])
             {	
-            	loggedIn = true;
-         		response.redirect('home');
+            	users = request.isAuthenticated();
+              global.user_name = uname;
+         		  response.redirect('home');
          	}
          	// otherwise, redirect to signIn page and send a message to be shown in the red box
             else
@@ -123,5 +174,56 @@ app.post('/signIn', async function (request, response) {
             console.error(err);
             response.send("Error " + err);
         }
-	
+});
+
+// idea for using session based login came from a medium article https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
+passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+
+    loginAttempt();
+    async function loginAttempt() {
+        if (username.toString().includes("GOOGLE#AUTH#USER:")) {
+            return done(null, false);
+        }
+
+        const client = await pool.connect()
+        try {
+            await client.query('BEGIN')
+            console.log("CURRENT USERNAME IS " + username);
+            // currentAccountsData array is empty, see in console.log. Why?
+            var currentAccountsData = await JSON.stringify(client.query('SELECT firstname, lastname, email, password FROM volunteer WHERE firstname=$1', [username], function (err, result) {
+                if (err) {
+                    return done(err)
+                }
+                if (result.rows[0] == null) {
+                    console.log("Oops. Incorrect login details.");
+                    return done(null, false, { message: 'No user found' });
+                }
+                else {
+                    var isMatch = false;
+                    if(password == result.rows[0].password)
+                      isMatch = true;
+                        if (isMatch) {
+                            console.log("Passwords matched!");
+                            return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
+                        }
+                        else {
+                            console.log("Oops. Incorrect login details.");
+                            return done(null, false);
+                        }
+                }
+            }))
+        }
+        catch (e) { throw (e); }
+    };
+}
+))
+
+passport.serializeUser(function (user, done) {
+    //console.log(user);
+    done(null, user);
+});
+
+passport.deserializeUser(function (user, done) {
+    //console.log("deserial" + user);
+    done(null, user);
 });
