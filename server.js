@@ -30,6 +30,7 @@ global.loggedIn = false;
 // Added by Denys: delete after db is working on Ryan's end
 const { Pool, Client } = require('pg');
 const { exit } = require('process');
+const { SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION } = require('constants');
 const pool = new Pool(
   {
   connectionString: "postgres://kuskxdbbzhvwkz:68cbfc9d44fbc241c4f3e26a56327d009f5f6e4b75d04a7c0874e9b2536c1ade@ec2-3-222-30-53.compute-1.amazonaws.com:5432/d8sc0ku4m33dnj", //process.env.DATABASE_URL,  //This is undefined. We  need to insert the actual URL -- I couldnt find it
@@ -97,8 +98,8 @@ app.get('*', function (req, res, next) { // universal access variable, keep work
 app.get('/', function(request, response){
 	if(request.isAuthenticated())
 		response.redirect('home');
-  	else
-  		response.redirect('signIn');
+  else
+  	response.redirect('signIn');
 });
 
 app.get('/home', authcheck, function(request, response){
@@ -131,6 +132,22 @@ app.get('/logout', authcheck, function (req, res) {
     console.log("Upon logout user status is " + users);
     res.redirect('/');
 })
+
+////////////////////////////////////////////////////////////////////////
+// Testing post request -- testing done from general.js -- testing by Ryan 
+////////////////////////////////////////////////////////////////////////
+app.post('/test', (request, response) =>
+  {
+  var value = request.body.value;
+  console.log(value);
+
+  var returnData = {message: "You sent the following value: " + value};
+
+  response.send(returnData);
+  });
+////////////////////////////////////////////////////////////////////////
+// END OF Testing post request
+////////////////////////////////////////////////////////////////////////
 
 app.post('/signIn', passport.authenticate('local'),
   async function (request, response) {

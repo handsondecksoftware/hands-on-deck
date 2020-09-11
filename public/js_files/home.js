@@ -16,9 +16,28 @@
 //////////////////////////////////////////////////////////////////////// 
 function init()
   {
+  //testPostRequest();
+
   setupWelcomePage();
   
   initLogout();
+  }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// testing how to send a post request from javascript
+//
+//////////////////////////////////////////////////////////////////////// 
+function testPostRequest()
+  {
+  var data = {value: "This is a method test"};
+  handlePostMethod(data, "/test", response =>
+    {
+    alert(response.message);
+    });
+
+  return;
   }
 
 
