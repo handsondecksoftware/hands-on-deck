@@ -1,3 +1,11 @@
+////////////////////////////////////////////////////////////////////////
+// volunteer.js -- backend functions for volunteer related requests
+//                  
+// Ryan Stolys, 14/09/20
+//    - File Created
+//
+////////////////////////////////////////////////////////////////////////
+
 var database = require('./databaseSetup');
 var general = require('./generalAccess');
 

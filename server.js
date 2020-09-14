@@ -4,7 +4,9 @@
 //                   
 // Denys Dziubii,	26/06/20
 //    - File Created and configured
-//		Hi Ryan and Jayden!
+// Ryan Stolys, 14/09/20
+//    - File organized, added references to modularization
+//
 ////////////////////////////////////////////////////////////
 
 global.users = false;
@@ -17,6 +19,14 @@ var passport = require('passport');
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
 const session = require('express-session');
+
+
+////////////BACKEND FUCNTIONS////////////////////////////////////////////////////////////
+const volunteer = require('./backend/volunteer');
+const oppourtunity = require('./backend/oppourtunity');
+const team = require('./backend/team');
+const general = require('./backend/general');
+const auth = require('./backend/authentification');
 
 var currentAccountsData = [];
 
@@ -42,6 +52,9 @@ const pool = new Pool(
 
 var server = app.listen(process.env.PORT || 5000, () => console.log(`Listening on 5000`));
 
+////////////////////////////////////////////////////////////////////////
+// EXPRESS AND PASSPORT SETUP
+////////////////////////////////////////////////////////////////////////
 app.set('view engine', 'ejs') // added by Denys
 
 app.use(express.static(__dirname + '/public'));
@@ -61,6 +74,14 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
+////////////////////////////////////////////////////////////////////////
+// END OF EXPRESS AND PASSPORT SETUP
+////////////////////////////////////////////////////////////////////////
+
+/******************************************************************************************************
+DENYS can you move the authcheck and passport functions to the authentification file if possible 
+    we can talk about how to setup our request routing to make this happen
+*******************************************************************************************************/
 // Access Control will be exapanded to include passport and auth check, for now, this will do.
 // this function will be used to make sure only logged in users have access to sensitive information
 function authcheck(req, res, next) {
@@ -75,6 +96,9 @@ function authcheck(req, res, next) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////
+// GET REQUESTS
+////////////////////////////////////////////////////////////////////////
 app.get('*', function (req, res, next) { // universal access variable, keep working
     console.log("THE USER IS currently " + req.isAuthenticated());
 
@@ -131,10 +155,14 @@ app.get('/logout', authcheck, function (req, res) {
     users = req.isAuthenticated();
     console.log("Upon logout user status is " + users);
     res.redirect('/');
-})
+});
+////////////////////////////////////////////////////////////////////////
+// END OF GET REQUESTS
+////////////////////////////////////////////////////////////////////////
+
 
 ////////////////////////////////////////////////////////////////////////
-// Testing post request -- testing done from general.js -- testing by Ryan 
+// POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
 app.post('/test', (request, response) =>
   {
@@ -146,9 +174,14 @@ app.post('/test', (request, response) =>
   response.send(returnData);
   });
 ////////////////////////////////////////////////////////////////////////
-// END OF Testing post request
+// END OF POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
 
+
+/******************************************************************************************************
+DENYS can you move the authcheck and passport functions to the authentification file if possible 
+    we can talk about how to setup our request routing to make this happen
+*******************************************************************************************************/
 app.post('/signIn', passport.authenticate('local'),
   async function (request, response) {
 	// post method was specified in signIn.ejs form
