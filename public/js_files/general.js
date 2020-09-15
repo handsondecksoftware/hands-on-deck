@@ -47,8 +47,16 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
   var headerName = 'Content-Type';
   var headerValue = 'application/json';
 
-  //Convert JSON to string 
-  var data = JSON.stringify(dataInJSON);
+  //Convert JSON to string
+  var data;
+  if(dataInJSON == null)
+    {
+    data = null;
+    }
+  else 
+    {
+    data = JSON.stringify(dataInJSON);
+    }
 
   var xhr = new XMLHttpRequest();
   xhr.open("POST", postName, true);
@@ -62,5 +70,5 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     }
   xhr.send(data);
 
-  return returnData;
+  return;
   }

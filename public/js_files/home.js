@@ -16,29 +16,11 @@
 //////////////////////////////////////////////////////////////////////// 
 function init()
   {
-  //testPostRequest();
-
   setupWelcomePage();
   
   initLogout();
   }
 
-
-////////////////////////////////////////////////////////////////////////
-// 
-// testing how to send a post request from javascript
-//
-//////////////////////////////////////////////////////////////////////// 
-function testPostRequest()
-  {
-  var data = {value: "This is a method test"};
-  handlePostMethod(data, "/test", response =>
-    {
-    alert(response.message);
-    });
-
-  return;
-  }
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -48,30 +30,44 @@ function testPostRequest()
 //////////////////////////////////////////////////////////////////////// 
 function setupWelcomePage()
   {
-  //Get data for specific instituion
-  //var data = institutionStats(); -- need to know the volunteer id when we login or somehow keep track of that in the backend
+  //make call to get instiution stats
+  handlePostMethod(null, "/getInstitutionStats", response =>
+    {
+    var institutionData;
 
-  //This will be the format of the data revieced and will interface front end to handle this. 
-  var institutionData = {
-    institution: "Simon Fraser University", 
-    activeVolunteers: 2, 
-    inactiveVolunteers: 374, 
-    volunteerHoursGoal: 750, 
-    currentVolunteerHours: 55,
-  }
+    if(response.success)
+      {
+      institutionData = response.iStats;
+      }
+    else 
+      {
+      console.log("Error retriving instituiton stats." + response.errorCode);
+
+      //Set some default values to use
+      institutionData = 
+        {
+        institution: "Failed to load", 
+        activeVolunteers: 0, 
+        inactiveVolunteers: 1, 
+        volunteerHoursGoal: 1, 
+        currentVolunteerHours: 0,
+        }
+      }
+
+    //Fill specific values for instituion
+    document.getElementById('institutionName').innerHTML = institutionData.institution;
+    document.getElementById('numActiveVolunteers').innerHTML = institutionData.activeVolunteers;
+    document.getElementById('numInactiveVolunteers').innerHTML = institutionData.inactiveVolunteers;
+    document.getElementById('volunteerHoursGoal').innerHTML = institutionData.volunteerHoursGoal;
+    document.getElementById('volunteerHoursTotal').innerHTML = institutionData.currentVolunteerHours;
 
 
-  //Fill specific values for instituion
-  document.getElementById('institutionName').innerHTML = institutionData.institution;
-  document.getElementById('numActiveVolunteers').innerHTML = institutionData.activeVolunteers;
-  document.getElementById('numInactiveVolunteers').innerHTML = institutionData.inactiveVolunteers;
-  document.getElementById('volunteerHoursGoal').innerHTML = institutionData.volunteerHoursGoal;
-  document.getElementById('volunteerHoursTotal').innerHTML = institutionData.currentVolunteerHours;
+    //Create pie chart displaying results to user
+    createVolunteersPieChart('#numberOfVolunteersPieChart', institutionData.activeVolunteers, institutionData.inactiveVolunteers);
+    createVolunteerHoursPieChart('#volunteerHoursPieChart', institutionData.currentVolunteerHours, institutionData.volunteerHoursGoal);
+    });
 
-
-  //Create pie chart displaying results to user
-  createVolunteersPieChart('#numberOfVolunteersPieChart', institutionData.activeVolunteers, institutionData.inactiveVolunteers);
-  createVolunteerHoursPieChart('#volunteerHoursPieChart', institutionData.currentVolunteerHours, institutionData.volunteerHoursGoal);
+  return;
   }
 
 
