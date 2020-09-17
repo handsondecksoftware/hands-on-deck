@@ -396,6 +396,105 @@ margin-left: 250px !important;
 }
 
 
+/*********************Width Options***********************/
+.width5 {
+  width: 5% !important;
+}
+
+.width7_5 {
+  width: 7.5% !important;
+}
+
+
+.width10 {
+  width: 10% !important;
+}
+
+.width12_5 {
+  width: 12.5% !important;
+}
+
+.width15 {
+    width: 15% !important;
+}
+
+.width20 {
+  width: 20% !important;
+}
+
+.width25 {
+    width: 25% !important;
+}
+
+.width27_5 {
+  width: 27.5% !important;
+}
+
+.width30 {
+  width: 30% !important;
+}
+
+.width35 {
+    width: 35% !important;
+}
+
+.width40 {
+  width: 40% !important;
+}
+
+.width45 {
+  width: 45% !important;
+}
+
+.width49 {
+  width: 49% !important;
+}
+
+.width50 {
+    width: 50% !important;
+}
+
+.width55 {
+  width: 55% !important;
+}
+
+.width60{
+    width: 60% !important;
+}
+
+.width65 {
+  width: 65% !important;
+}
+
+.width70 {
+    width: 70% !important;
+}
+
+.width75 {
+    width: 75% !important;
+}
+
+.width80 {
+    width: 80% !important;
+}
+
+.width85 {
+    width: 85% !important;
+}
+
+.width90 {
+    width: 90% !important;
+}
+
+.width95 {
+    width: 95% !important;
+}
+
+.width100 {
+    width: 100% !important;
+}
+
+
 /*********************Relative Row Sizes***********************/
 .row_5p{
   height: 5%;

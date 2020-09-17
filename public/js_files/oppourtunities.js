@@ -132,6 +132,8 @@ function fillOppourtunityViewableByOptions(dropdownID)
 //
 ////////////////////////////////////////////////////////////////////////
 function deleteOpportunity(e){
+
+  if(confirm("Are you sure you want to delete this entry?")){
     // Finds the row of the delete button clicked
     e = e || event;
     var eventEl = e.srcElement || e.target, 
@@ -151,7 +153,8 @@ function deleteOpportunity(e){
             return true;
         }
     }
-    
-    return false;
+  }
+
+  return;
 }
 
