@@ -135,27 +135,8 @@ function fillOppourtunityViewableByOptions(dropdownID)
 function deleteOpportunity(e){
 
   if(confirm("Are you sure you want to delete this entry?")){
-    // Finds the row of the delete button clicked
-    e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
- 
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            // Delete the row visually
-            parent.remove()
-
-            //TODO: Delete the information from the back end
-            
-            return true;
-        }
-    }
+    // Delete entry from backend and reload table
   }
-
   return;
 }
 
