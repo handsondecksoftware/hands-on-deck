@@ -42,22 +42,24 @@
 
     <div class="pageContainer">
 
-      <div class="addOppButton">
-        <button class="button" id="addOppourtunityButton">Add Oppourtunity</button>
-      </div>
+        <!-- View all opportunities -->
+        <div  id="opportunitiesMainPage" class="pageContainer">
+            <div class="addOppButton">
+            <button class="button" id="addOppourtunityButton">Add Oppourtunity</button>
+            </div>
 
-      <div class="searchOppourtunity paddingTop5 search">
+            <div class="searchOppourtunity paddingTop5 search">
         <input class="textInput" placeholder="Search" id="searchOppourtunities">
-      </div>
+            </div>
 
-      <div class="sortOppourtunity">
+            <div class="sortOppourtunity">
         <div class="sliderLabel" id="oppTimeFrameLabel">Present</div>
         <div class="sliderContainer sliderWidth">
           <input type="range" min="0" max="2" value="1" class="slider" id="oppTimeFrame">
         </div>
-      </div>
+            </div>
 
-      <div id="oppourtuntiesTableDiv" class="table"> 
+            <div id="oppourtuntiesTableDiv" class="table"> 
         <span class="table-title">Oppourtunities:</span>
         <table id="oppourtuntiesTable"> 
           <tr>
@@ -75,7 +77,7 @@
             <td>55</td>
             <td>Nov. 23, 2020</td>
             <td>6:30 PM</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
+            <td><i class="fas fa-eye table-view" onclick="viewOpportunity()"></i></td> 
             <td><i class="fa fa-trash table-view" onclick="deleteOpportunity()"></i></td>
           </tr>
           <tr>
@@ -84,42 +86,78 @@
             <td>5</td>
             <td>Nov. 24, 2020</td>
             <td>7:30 PM</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-            <td><i class="fa fa-trash table-view"  onclick="deleteOpportunity()"></i></td>
+            <td><i class="fas fa-eye table-view" onclick="viewOpportunity()"></i></td> 
+            <td><i class="fa fa-trash table-view" onclick="deleteOpportunity()"></i></td>
           </tr>
         </table>
-      </div>
+            </div>
+        </div>
 
-      <!-- Used for viewing the opportunity-->
-      <div id="viewVolunteersForOppourtunityTableDiv" class="table"> 
-        <span class="table-title">Volunteers:</span>
-        <table id="viewVolunteersForOppourtunityTable"> 
-          <tr>
-            <th class="width25">Name</th>
-            <th class="width25">Email</th>
-            <th class="width25">Team</th>
-            <th class="width20">Hours</th> 
-            <th class="width5">View</th>
-          </tr>
-          <tr>
-            <td>Ryan Stolys</td>
-            <td>rstolys@sfu.ca</td> 
-            <td>Men's Golf</td>
-            <td>1.25</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-          <tr>
-            <td>Jayden Cole</td>
-            <td>jcole@sfu.ca</td> 
-            <td>Men's Swimming</td>
-            <td>2.5</td>
-            <td><i class="fas fa-eye table-view"></i></td> 
-          </tr>
-        </table>
-      </div>
+        <!-- Used for viewing the opportunity-->
+        <div id="viewVolunteersForOpportunityHeader" class="row_30p"  style="display:none">
+            <div class="row_10p">
+                <div class="col_33p subTitle2 text-center">Title</div>
+                <div class="col_33p subTitle2 text-center">Start</div>
+                <div class="col_33p subTitle2 text-center">End</div>
+            </div>
+            <div class="row_20p">
+                <div class="col_33p blackDisplayField text-center">Opportunity Title</div>
+                <div class="col_33p blackDisplayField text-center">3:00pm 27/08/2020</div>
+                <div class="col_30p blackDisplayField text-center">4:00pm 27/08/2020</div>
+            </div>
+            <div class="row_20p">
+                <div class="col_10p subTitle2"> </div>
+                <div class="col_10p subTitle2 paddingTop5">Type:</div>
+                <div class="col_30p blackDisplayField paddingTop5">Student engagement</div>
+                <div class="col_30p subTitle2 paddingTop5" style="text-align:right;">Volunteer Limit:</div>
+                <div class="col_15p blackDisplayField" style="text-align:left; padding-bottom: 5p">15</div>
+            </div>
+            <div class="row_20p">
+                <div class="col_12_5p subTitle2 paddingTop5">Viewable By:</div>
+                <div class="col_33p blackDisplayField">Teams</div>
+                <div class="col_25p subTitle2 paddingTop5">Coordinator Information:</div>
+                <div class="col_25p blackDisplayField">Name</div>
+            </div>
+            <div class="row_20p">
+                <div class="col_15p subTitle2"></div>
+                <div class="col_30p subTitle2"></div>
+                <div class="col_25p blackDisplayField">Email</div>
+                <div class="col_25p blackDisplayField">Phone #</div>
+            </div>
+            <div class="row_10p"></div>
+        </div>
+            
+        <div id="viewVolunteersForOppourtunityTableDiv" class="table"> 
+            <span class="table-title">Volunteers:</span>
+            <table id="viewVolunteersForOppourtunityTable"> 
+              <tr>
+                <th class="width25">Name</th>
+                <th class="width25">Email</th>
+                <th class="width25">Team</th>
+                <th class="width20">Hours</th> 
+                <th class="width5">View</th>
+              </tr>
+              <tr>
+                <td>Ryan Stolys</td>
+                <td>rstolys@sfu.ca</td> 
+                <td>Men's Golf</td>
+                <td>1.25</td>
+                <td><i class="fas fa-eye table-view"></i></td> 
+              </tr>
+              <tr>
+                <td>Jayden Cole</td>
+                <td>jcole@sfu.ca</td> 
+                <td>Men's Swimming</td>
+                <td>2.5</td>
+                <td><i class="fas fa-eye table-view"></i></td> 
+              </tr>
+            </table>
+        </div>
 
-      <!-- Pop up box for adding opportunities -->
-      <div id="addOppourtunityPopup" class="popup-greyOut" style="display:none">
+        <button id="returnToOppListButt" class="button" style="width:20%; display:none"> Return to Opportunities</button>
+
+        <!-- Pop up box for adding opportunities -->
+        <div id="addOppourtunityPopup" class="popup-greyOut" style="display:none">
           <div class="popup-box">
               <div class="popup-title" >
                   <h1>Add Oppourtunity</h1>
@@ -206,10 +244,10 @@
                   <div class="popup-buttons-add"><button class="button" id="addOppourtunityChoice">Add</button></div>
               </div>
           </div>
-      </div>
+        </div>
 
-      <!-- Pop up box for logging out -->
-      <div id="logoutPopup" class="popup-greyOut" style="display:none">
+        <!-- Pop up box for logging out -->
+        <div id="logoutPopup" class="popup-greyOut" style="display:none">
         <div class="logout-popup">
             <div class="logout-content subTitle">
                 Are you sure you want to logout?
@@ -219,7 +257,7 @@
                 <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
             </div>
         </div>
-      </div>
+        </div>
 
     </div>
 

@@ -20,6 +20,7 @@ function init()
   document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
   document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
   document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
+  document.getElementById('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
   
   initSlider('Oppourtunties');
   initDropdowns('Oppourtunties');
@@ -37,12 +38,12 @@ function init()
 ////////////////////////////////////////////////////////////////////////
 function toggleOppourtuntiyBoxVisibility()
   {
-  //Open the add oppourtuntiy popup box
+  //Change the oppourtuntiy popup box display
   var currentState = document.getElementById('addOppourtunityPopup').style.display; 
 
   if(currentState === "none")
     {
-    document.getElementById('addOppourtunityPopup').style.display = "block"; 
+    document.getElementById('addOppourtunityPopup').style.display = "block";
     }
   else 
     {
@@ -158,3 +159,45 @@ function deleteOpportunity(e){
   return;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// 
+// View an opportunity
+//
+////////////////////////////////////////////////////////////////////////
+function viewOpportunity(e){
+    document.getElementById("opportunitiesMainPage").style.display = "none";
+    document.getElementById("viewVolunteersForOpportunityHeader").style.display = "block";
+    document.getElementById("viewVolunteersForOppourtunityTableDiv").style.display = "block";
+    document.getElementById("returnToOppListButt").style.display = "block";
+
+    // Finds the row of the view button clicked
+    e = e || event;
+    var eventEl = e.srcElement || e.target, 
+    parent = eventEl.parentNode,
+    isRow = function(el) {
+                return el.tagName.match(/tr/i);
+            };
+
+    // Move up the DOM until tr is reached
+    while (parent = parent.parentNode) {
+        if (isRow(parent)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Return from viewing an opportunity
+//
+////////////////////////////////////////////////////////////////////////
+function retToOpportunityMainPage(){
+    document.getElementById('viewVolunteersForOpportunityHeader').style.display = "none";
+    document.getElementById('viewVolunteersForOppourtunityTableDiv').style.display = "none";
+    document.getElementById('returnToOppListButt').style.display = "none";
+    document.getElementById('opportunitiesMainPage').style.display = "block";
+}
