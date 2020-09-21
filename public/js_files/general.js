@@ -72,3 +72,10 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
 
   return;
   }
+
+
+function signIn()
+  {
+  //Hash the password 
+  //Send it to the server to check
+  }
