@@ -35,10 +35,9 @@ body, html {
 }
 
 .signIn-logo {
-  height: 100%; /* This is 162px for a height of 540 in prompt window */
-  width: 32%;  /* This is set to match 162px for a width of 470 in prompt window  */
-  margin-left: 34%;
-  margin-right: 34%;
+  display: inline-block;
+  width: 150px;
+  height: auto;
 }
 
 .signIn-submit{
@@ -71,12 +70,6 @@ body, html {
   .signIn-prompt {
     width: 85%;
   }
-  
-  .signIn-logo {
-    width: 60%;  /* This is set to match 162px for a width of 470 in prompt window  */
-    margin-left: 20%;
-    margin-right: 20%;
-  }
 }
 
 /* Smaller Phone */
@@ -84,5 +77,9 @@ body, html {
   .signIn-prompt {
     margin-top: 10px;
     height: 450px;
+  }
+
+  .signIn-logo {
+    width: 125px;
   }
 }

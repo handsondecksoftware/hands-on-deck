@@ -146,6 +146,13 @@ app.post('/getInstitutionStats', auth.authcheck, (request, response) =>
   });
 
 
+app.post('/getOpportunityData', auth.authcheck, (request, response) =>
+  {
+  //get the users authentification info including volunteerID
+  response.send(oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
+  });
+
+
 app.post('/signIn', passport.authenticate('local'), async function (request, response) {
   // post method was specified in signIn.ejs form
   console.log("The user is being authenticated: " + request.isAuthenticated());

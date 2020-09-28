@@ -32,7 +32,7 @@ exports.getVolunteerInstitutionID = volunteerID =>
   //Determine what institution the volunteer is from 
   if(typeof volunteerID === "number")
     {
-    database.db.query('SELECT institution_id FROM volunteer WHERE volunteer_id = ' + volunteerID + ';', (err, res) => 
+    database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (err, res) =>
       {
       if (err)
         {

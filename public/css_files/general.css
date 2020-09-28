@@ -152,6 +152,11 @@ h1{
   text-align: center;
 }
 
+/*********************Div Alignment***********************/
+.centerObj{
+  margin: auto;
+}
+
 /*********************Padding Options***********************/
 .padding-4{
   padding:4px!important
