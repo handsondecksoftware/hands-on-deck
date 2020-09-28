@@ -19,7 +19,7 @@ var passport = require('passport');
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
 const session = require('express-session');
-
+const bcrypt = require('bcryptjs');
 
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
@@ -79,13 +79,14 @@ app.use(passport.session())
 ////////////////////////////////////////////////////////////////////////
 // GET REQUESTS
 ////////////////////////////////////////////////////////////////////////
-app.get('*', function (req, res, next) { // universal access variable, keep working
+app.get('*', async function (req, res, next) { // universal access variable, keep working
     
     //Log status of user
     console.log("THE USER IS currently " + req.isAuthenticated());
 
     res.locals.user = req.user || null;
-
+    var pwd = await bcrypt.hash("jayden", 5);
+    console.log(pwd);
     if (res.locals.user != null) 
         {
         console.log("the user is");
@@ -188,41 +189,36 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
 
   loginAttempt();
   async function loginAttempt() {
-      if (username.toString().includes("GOOGLE#AUTH#USER:")) {
-          return done(null, false);
-      }
 
       try {
-          console.log("CURRENT USERNAME IS " + username);
-          database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (err, result) {
-              
-              if (err) {
-                  console.log('Error Occured: ');
-                  return done(err)
-              }
+		console.log("CURRENT USERNAME IS " + username);
+		database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (err, result) {
+  
+			if (err) {
+			  console.log('Error Occured: ');
+			  return done(err)
+			}
 
-              if (result.rows[0] == null) {
-                  console.log("Oops. Incorrect login details.");
-                  return done(null, false, { message: 'No user found' });
-              }
-              else {
-                  var isMatch = false;
+			if (result.rows[0] == null) {
+			  console.log("Oops. Incorrect login details.");
+			  return done(null, false, { message: 'No user found' });
+			}
+			else {
 
-                  //Use bcrypt to hash and salt passwords in database 
-                  if(password == result.rows[0].password)
-                    isMatch = true;
-
-                  if (isMatch) {
-                      console.log("Passwords matched!");
-                      return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
-                  }
-                  else {
-                      console.log("Oops. Incorrect login details.");
-                      return done(null, false);
-                  }
-              }
-          });
-      }
+                bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
+                	if (err) throw err;
+					else if (isMatch) {
+					  console.log("Passwords matched!");
+					  return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
+					}
+					else {
+					  console.log("Oops. Incorrect login details.");
+					  return done(null, false);
+                  	}
+              	});
+          	};
+        })
+       }
       catch (e) { throw (e); }
   };
 }
