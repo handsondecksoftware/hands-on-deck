@@ -25,7 +25,7 @@ const UNKNOWN_ERROR = 99;
 // Will get the volunteers instituion id
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerInstitutionID = volunteerID => 
+exports.getVolunteerInstitutionID = async volunteerID => 
   {
   var returnVal = -1;
 

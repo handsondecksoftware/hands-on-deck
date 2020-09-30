@@ -110,8 +110,6 @@ app.get('/home', auth.authcheck, function(request, response){
 
 app.get('/volunteers', auth.authcheck, function(request, response){
   response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
-  //var result = volunteerAccess.loadVolunteerInfo(1, -1);
-  //console.log(result);
 });
 
 app.get('/oppourtunities', auth.authcheck, function(request, response){
@@ -140,20 +138,100 @@ app.get('/logout', auth.authcheck, function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 // POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
+
+/////////GENERAL REQUESTS///////////////////////////////////////////////
 app.post('/getInstitutionStats', auth.authcheck, (request, response) =>
-  {
-  //get the users authentification info including volunteerID
-  response.send(general.getInstitutionStats(request.user[0].volunteer_id));
-  });
+    {
+    //get the users authentification info including volunteerID
+    response.send(general.getInstitutionStats(request.user[0].volunteer_id));
+    });
 
 
+/////////OPPOURTUNITY REQUESTS//////////////////////////////////////////
 app.post('/getOpportunityData', auth.authcheck, (request, response) =>
-  {
-  //get the users authentification info including volunteerID
-  response.send(oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
-  });
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
+    });
 
 
+app.post('/getOpportunityInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
+    });
+
+
+app.post('/addOppourtunity', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
+    });
+
+
+app.post('/editOppourtunity', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
+    });
+
+
+app.post('/getOppourtunityTypes', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
+    });
+
+
+app.post('/addOppourtunityType', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
+    });
+
+
+app.post('/getTeamsForViewable', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
+    });
+
+
+
+/////////VOLUNTEER REQUESTS/////////////////////////////////////////////
+app.post('/getVolunteerData', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+
+app.post('/getVolunteerInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+
+
+
+/////////TEAM REQUESTS//////////////////////////////////////////////////
+app.post('/getTeamData', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(team.getTeamData(request.user[0].volunteer_id, request.teamID));
+    });
+
+
+app.post('/getTeamInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
+    });
+
+
+
+/////////AUTHENTICATION REQUESTS////////////////////////////////////////
 app.post('/signIn', passport.authenticate('local'), async function (request, response) {
   // post method was specified in signIn.ejs form
   console.log("The user is being authenticated: " + request.isAuthenticated());
