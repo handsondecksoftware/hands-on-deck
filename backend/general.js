@@ -25,14 +25,14 @@ const UNKNOWN_ERROR = 99;
 // Will get the volunteers instituion id
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerInstitutionID = volunteerID => 
+exports.getVolunteerInstitutionID = async volunteerID => 
   {
   var returnVal = -1;
 
   //Determine what institution the volunteer is from 
   if(typeof volunteerID === "number")
     {
-    database.db.query('SELECT institution_id FROM volunteer WHERE volunteer_id = ' + volunteerID + ';', (err, res) => 
+    database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (err, res) =>
       {
       if (err)
         {

@@ -7,6 +7,13 @@
 //    - Intial behaviour 
 //
 ////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+// 
+// Global Varaibles
+//
+//////////////////////////////////////////////////////////////////////// 
+var oppourtuntiyData_gv;    //Elements of this array will be in form:
+    //{title, date, startTime, endTime, location, id, occurred, type, description, sequenceNum, numVolunteers}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -16,6 +23,10 @@
 //////////////////////////////////////////////////////////////////////// 
 function init()
   {
+  //Fill the oppourtunties table
+  fillOppourtunityTable();
+
+
   //Setup open and close of popup box
   document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
   document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
@@ -28,6 +39,84 @@ function init()
   createDatePicker("addOppourtunity-date", "addOppourtunityDatePicker", 1);
 
   initLogout();
+  }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will fill the oppourtunities table
+//
+////////////////////////////////////////////////////////////////////////
+function fillOppourtunityTable()
+  {
+  var data = {oppourtunityID: -1};
+  handlePostMethod(data, '/getOpportunityData', response =>
+    {
+    if(response.success)
+      {
+      //Set global variable to hold data from oppourtunity
+      oppourtuntiyData_gv = response.oppData;
+
+      //Get reference to table 
+      var oppourtuntityRoundTable = document.getElementById('oppourtuntiesTable');
+      var rowNum = 1;
+
+      //Fill in table elements
+      for(var oppNum = 0; oppNum < response.oppData.length; oppNum++)
+        {
+        //Create new row
+        var row = oppourtuntityRoundTable.insertRow(rowNum++);
+
+        //Create row elements 
+        var title = row.insertCell(0);
+        var type = row.insertCell(1);
+        var numVolunteers = row.insertCell(2);
+        var date = row.insertCell(3);
+        var startTime = row.insertCell(4);
+        var view = row.insertCell(5);
+        var remove = row.insertCell(6);
+        
+        //Fill in row elements
+        title.innerHTML = response.oppData[oppNum].title;
+        type.innerHTML = response.oppData[oppNum].type;
+        numVolunteers.innerHTML = response.oppData[oppNum].numVolunteers;
+        date.innerHTML = response.oppData[oppNum].date;
+        startTime.innerHTML = response.oppData[oppNum].startTime;
+
+        view.innerHTML = "<i id=\"view_" + response.oppData[oppNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewOpportunity(this.id)\"></i>";
+        remove.innerHTML = "<i id=\"delete_" + response.oppData[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id)\"></i>";
+        }
+      }
+    else 
+      {
+      console.log("Error in retriving oppourtuntiy table data. ErrorCode: " + response.errorCode);
+
+      //Add element to table to indicate we could not load the data
+      var oppourtuntityRoundTable = document.getElementById('oppourtuntiesTable');
+
+      //Create new row
+      var row = oppourtuntityRoundTable.insertRow(1);
+
+      //Create row elements 
+      var title = row.insertCell(0);
+      var type = row.insertCell(1);
+      var numVolunteers = row.insertCell(2);
+      var date = row.insertCell(3);
+      var startTime = row.insertCell(4);
+      var view = row.insertCell(5);
+      var remove = row.insertCell(6);
+      
+      //Fill in row elements
+      title.innerHTML = "Failed";
+      type.innerHTML = "to";
+      numVolunteers.innerHTML = "load";
+      date.innerHTML = "data";
+      startTime.innerHTML = "";
+
+      view.innerHTML = "";
+      remove.innerHTML = "";
+      }
+    });
   }
 
 
@@ -103,7 +192,7 @@ function fillOppourtunityTypeOptions(dropdownID)
 //
 ////////////////////////////////////////////////////////////////////////
 function fillOppourtunityViewableByOptions(dropdownID) 
-{
+  {
   //Get the teams Type options 
   //getTeamsForViewable() -- need to specify that these are from SFU
   var types = ['M - Golf', 'F - Golf', 'M - Swim']; 
@@ -124,7 +213,7 @@ function fillOppourtunityViewableByOptions(dropdownID)
     }
 
   return;
-}
+  }
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -132,7 +221,10 @@ function fillOppourtunityViewableByOptions(dropdownID)
 // Deletes an opportunity
 //
 ////////////////////////////////////////////////////////////////////////
-function deleteOpportunity(e){
+function deleteOpportunity(elementID){
+
+  //Get the elementID
+  var oppourtunityID = elementID.slice(7);    //Will remove 'delete_'
 
   if(confirm("Are you sure you want to delete this entry?")){
     // Finds the row of the delete button clicked
@@ -164,27 +256,17 @@ function deleteOpportunity(e){
 // View an opportunity
 //
 ////////////////////////////////////////////////////////////////////////
-function viewOpportunity(e){
+function viewOpportunity(elementID){
+
+    //Get the elementID
+    var oppourtunityID = elementID.slice(5);      //Will remove 'view_'
+
     document.getElementById("opportunitiesMainPage").style.display = "none";
     document.getElementById("viewVolunteersForOpportunityHeader").style.display = "block";
     document.getElementById("viewVolunteersForOppourtunityTableDiv").style.display = "block";
     document.getElementById("returnToOppListButt").style.display = "block";
 
-    // Finds the row of the view button clicked
-    e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
 
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            return true;
-        }
-    }
-    
     return false;
 }
 

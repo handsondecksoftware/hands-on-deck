@@ -19,7 +19,7 @@ var passport = require('passport');
 const cookieParser = require('cookie-parser');
 const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
 const session = require('express-session');
-
+const bcrypt = require('bcryptjs');
 
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
@@ -79,13 +79,14 @@ app.use(passport.session())
 ////////////////////////////////////////////////////////////////////////
 // GET REQUESTS
 ////////////////////////////////////////////////////////////////////////
-app.get('*', function (req, res, next) { // universal access variable, keep working
+app.get('*', async function (req, res, next) { // universal access variable, keep working
     
     //Log status of user
     console.log("THE USER IS currently " + req.isAuthenticated());
 
     res.locals.user = req.user || null;
-
+    var pwd = await bcrypt.hash("jayden", 5);
+    console.log(pwd);
     if (res.locals.user != null) 
         {
         console.log("the user is");
@@ -109,8 +110,6 @@ app.get('/home', auth.authcheck, function(request, response){
 
 app.get('/volunteers', auth.authcheck, function(request, response){
   response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
-  //var result = volunteerAccess.loadVolunteerInfo(1, -1);
-  //console.log(result);
 });
 
 app.get('/oppourtunities', auth.authcheck, function(request, response){
@@ -139,13 +138,100 @@ app.get('/logout', auth.authcheck, function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 // POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
+
+/////////GENERAL REQUESTS///////////////////////////////////////////////
 app.post('/getInstitutionStats', auth.authcheck, (request, response) =>
-  {
-  //get the users authentification info including volunteerID
-  response.send(general.getInstitutionStats(request.user[0].volunteer_id));
-  });
+    {
+    //get the users authentification info including volunteerID
+    response.send(general.getInstitutionStats(request.user[0].volunteer_id));
+    });
 
 
+/////////OPPOURTUNITY REQUESTS//////////////////////////////////////////
+app.post('/getOpportunityData', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
+    });
+
+
+app.post('/getOpportunityInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
+    });
+
+
+app.post('/addOppourtunity', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
+    });
+
+
+app.post('/editOppourtunity', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
+    });
+
+
+app.post('/getOppourtunityTypes', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
+    });
+
+
+app.post('/addOppourtunityType', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
+    });
+
+
+app.post('/getTeamsForViewable', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
+    });
+
+
+
+/////////VOLUNTEER REQUESTS/////////////////////////////////////////////
+app.post('/getVolunteerData', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+
+app.post('/getVolunteerInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+
+
+
+/////////TEAM REQUESTS//////////////////////////////////////////////////
+app.post('/getTeamData', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(team.getTeamData(request.user[0].volunteer_id, request.teamID));
+    });
+
+
+app.post('/getTeamInfo', auth.authcheck, (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
+    });
+
+
+
+/////////AUTHENTICATION REQUESTS////////////////////////////////////////
 app.post('/signIn', passport.authenticate('local'), async function (request, response) {
   // post method was specified in signIn.ejs form
   console.log("The user is being authenticated: " + request.isAuthenticated());
@@ -188,41 +274,36 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
 
   loginAttempt();
   async function loginAttempt() {
-      if (username.toString().includes("GOOGLE#AUTH#USER:")) {
-          return done(null, false);
-      }
 
       try {
-          console.log("CURRENT USERNAME IS " + username);
-          database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (err, result) {
-              
-              if (err) {
-                  console.log('Error Occured: ');
-                  return done(err)
-              }
+		console.log("CURRENT USERNAME IS " + username);
+		database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (err, result) {
+  
+			if (err) {
+			  console.log('Error Occured: ');
+			  return done(err)
+			}
 
-              if (result.rows[0] == null) {
-                  console.log("Oops. Incorrect login details.");
-                  return done(null, false, { message: 'No user found' });
-              }
-              else {
-                  var isMatch = false;
+			if (result.rows[0] == null) {
+			  console.log("Oops. Incorrect login details.");
+			  return done(null, false, { message: 'No user found' });
+			}
+			else {
 
-                  //Use bcrypt to hash and salt passwords in database 
-                  if(password == result.rows[0].password)
-                    isMatch = true;
-
-                  if (isMatch) {
-                      console.log("Passwords matched!");
-                      return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
-                  }
-                  else {
-                      console.log("Oops. Incorrect login details.");
-                      return done(null, false);
-                  }
-              }
-          });
-      }
+                bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
+                	if (err) throw err;
+					else if (isMatch) {
+					  console.log("Passwords matched!");
+					  return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
+					}
+					else {
+					  console.log("Oops. Incorrect login details.");
+					  return done(null, false);
+                  	}
+              	});
+          	};
+        })
+       }
       catch (e) { throw (e); }
   };
 }
