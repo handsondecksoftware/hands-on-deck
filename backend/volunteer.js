@@ -10,6 +10,10 @@ const database = require('./databaseSetup');
 const general = require('./general');
 
 
+const NOERROR = 0; 
+const DATABASE_ACCESS_ERROR = 1; 
+
+
 
 ////////////////////////////////////////////////////////////
 // Will get the volunteer data
@@ -21,7 +25,7 @@ const general = require('./general');
 // @param[out] volunteerData    Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerData = (clientID, volunteerID) => 
+exports.getVolunteerData = async (clientID, volunteerID) => 
   {
   var response = {success: false, errorCode: -1, volunteerData: []};
 
@@ -77,7 +81,7 @@ exports.getVolunteerData = (clientID, volunteerID) =>
 // @param[out] volunteerInfo          Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerInfo = (clientID, volunteerID) => 
+exports.getVolunteerInfo = async (clientID, volunteerID) => 
   {
   var response = {success: false, errorCode: -1, volunteerInfo: []};
 

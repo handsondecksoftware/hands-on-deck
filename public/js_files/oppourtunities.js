@@ -248,6 +248,8 @@ function viewOpportunity(elementID){
     document.getElementById("viewVolunteersForOppourtunityTableDiv").style.display = "block";
     document.getElementById("returnToOppListButt").style.display = "block";
 
+    //call to get data and fill opp data page 
+
 
     return false;
 }

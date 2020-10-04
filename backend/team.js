@@ -13,6 +13,9 @@ const general = require('./general');
 const MALE = 1; 
 const FEMALE = 0; 
 
+const NOERROR = 0; 
+const DATABASE_ACCESS_ERROR = 1; 
+
 
 ////////////////////////////////////////////////////////////
 // Will get the team data
@@ -24,7 +27,7 @@ const FEMALE = 0;
 // @param[out] volunteerData    Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getTeamData = (volunteerID, teamID) => 
+exports.getTeamData = async (volunteerID, teamID) => 
   {
   var response = {success: false, errorCode: -1, teamData: []};
 
@@ -77,7 +80,7 @@ exports.getTeamData = (volunteerID, teamID) =>
 // @param[out] volunteerInfo          Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getTeamInfo = (volunteerID, teamID) => 
+exports.getTeamInfo = async (volunteerID, teamID) => 
   {
   var response = {success: false, errorCode: -1, teamInfo: []};
 

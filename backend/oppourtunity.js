@@ -10,6 +10,9 @@ const database = require('./databaseSetup');
 const general = require('./general');
 
 
+const NOERROR = 0; 
+const DATABASE_ACCESS_ERROR = 1; 
+
 ////////////////////////////////////////////////////////////
 // Will get the oppourtunity data
 //

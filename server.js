@@ -140,93 +140,93 @@ app.get('/logout', auth.authcheck, function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 
 /////////GENERAL REQUESTS///////////////////////////////////////////////
-app.post('/getInstitutionStats', auth.authcheck, (request, response) =>
+app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(general.getInstitutionStats(request.user[0].volunteer_id));
+    response.send(await general.getInstitutionStats(request.user[0].volunteer_id));
     });
 
 
 /////////OPPOURTUNITY REQUESTS//////////////////////////////////////////
-app.post('/getOpportunityData', auth.authcheck, (request, response) =>
+app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
+    response.send(await oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
     });
 
 
-app.post('/getOpportunityInfo', auth.authcheck, (request, response) =>
+app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
+    response.send(await oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
     });
 
 
-app.post('/addOppourtunity', auth.authcheck, (request, response) =>
+app.post('/addOppourtunity', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
-app.post('/editOppourtunity', auth.authcheck, (request, response) =>
+app.post('/editOppourtunity', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
-app.post('/getOppourtunityTypes', auth.authcheck, (request, response) =>
+app.post('/getOppourtunityTypes', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
+    response.send(await oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
     });
 
 
-app.post('/addOppourtunityType', auth.authcheck, (request, response) =>
+app.post('/addOppourtunityType', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
+    response.send(await oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
     });
 
 
-app.post('/getTeamsForViewable', auth.authcheck, (request, response) =>
+app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
+    response.send(await oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
 
 
 /////////VOLUNTEER REQUESTS/////////////////////////////////////////////
-app.post('/getVolunteerData', auth.authcheck, (request, response) =>
+app.post('/getVolunteerData', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
     });
 
 
-app.post('/getVolunteerInfo', auth.authcheck, (request, response) =>
+app.post('/getVolunteerInfo', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
     });
 
 
 
 
 /////////TEAM REQUESTS//////////////////////////////////////////////////
-app.post('/getTeamData', auth.authcheck, (request, response) =>
+app.post('/getTeamData', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(team.getTeamData(request.user[0].volunteer_id, request.teamID));
+    response.send(await team.getTeamData(request.user[0].volunteer_id, request.teamID));
     });
 
 
-app.post('/getTeamInfo', auth.authcheck, (request, response) =>
+app.post('/getTeamInfo', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
-    response.send(team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
+    response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
     });
 
 
