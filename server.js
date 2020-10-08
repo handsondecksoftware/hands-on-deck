@@ -24,8 +24,7 @@ const bcrypt = require('bcryptjs');
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
-const NOERROR = 0; 
-const DATABASE_ACCESS_ERROR = 1; 
+// NONE
 ////////////////////////////////////////////////////////////////////////
 // END OF GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -34,6 +33,8 @@ const DATABASE_ACCESS_ERROR = 1;
 // REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
 const database = require('./backend/databaseSetup');
+
+const error = require('./backend/errorCodes');
 
 const volunteer = require('./backend/volunteer');
 const oppourtunity = require('./backend/oppourtunity');
@@ -70,7 +71,6 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-
 ////////////////////////////////////////////////////////////////////////
 // END OF EXPRESS AND PASSPORT SETUP
 ////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ app.get('/logout', auth.authcheck, function (req, res) {
 /////////GENERAL REQUESTS///////////////////////////////////////////////
 app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
+    
     response.send(await general.getInstitutionStats(request.user[0].volunteer_id));
     });
 
@@ -150,49 +150,42 @@ app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
 /////////OPPOURTUNITY REQUESTS//////////////////////////////////////////
 app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
     });
 
 
 app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
     });
 
 
 app.post('/addOppourtunity', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
 app.post('/editOppourtunity', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
 app.post('/getOppourtunityTypes', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
     });
 
 
 app.post('/addOppourtunityType', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
     });
 
 
 app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
@@ -201,35 +194,30 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
 /////////VOLUNTEER REQUESTS/////////////////////////////////////////////
 app.post('/getVolunteerData', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
     });
 
 
 app.post('/getVolunteerInfo', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
     });
 
 
 app.post('/editVolunteer', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await volunteer.editVolunteer(request.user[0].volunteer_id, request.volunteerData));
     });
 
 
 app.post('/addVolunteer', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.volunteerData));
     });
 
 
 app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await volunteer.updateUserInfo(request.user[0].volunteer_id, request.userInfo));
     });
 
@@ -238,35 +226,30 @@ app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
 /////////TEAM REQUESTS//////////////////////////////////////////////////
 app.post('/getTeamData', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await team.getTeamData(request.user[0].volunteer_id, request.teamID));
     });
 
 
 app.post('/getTeamInfo', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
     });
 
 
 app.post('/editTeam', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await team.editTeam(request.user[0].volunteer_id, request.teamData));
     });
 
 
 app.post('/addTeam', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await team.addTeam(request.user[0].volunteer_id, request.teamData));
     });
 
 
 app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
-    //get the users authentification info including volunteerID
     response.send(await team.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
@@ -274,24 +257,24 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
 
 /////////AUTHENTICATION REQUESTS////////////////////////////////////////
 app.post('/signIn', passport.authenticate('local'), async function (request, response) {
-  // post method was specified in signIn.ejs form
-  console.log("The user is being authenticated: " + request.isAuthenticated());
-  console.log("The user is currently written below");
-  console.log(request.session.passport.user);
+    // post method was specified in signIn.ejs form
+    console.log("The user is being authenticated: " + request.isAuthenticated());
+    console.log("The user is currently written below");
+    console.log(request.session.passport.user);
 
-  if (request.body.remember) {
-      request.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
-  }
-  else {
-      request.session.cookie.expires = false; // Cookie expires at end of session
-  }
+    if (request.body.remember) {
+        request.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+    }
+    else {
+        request.session.cookie.expires = false; // Cookie expires at end of session
+    }
 
 
-  //If user is logged in, send them to homepage
-  if(request.isAuthenticated()) {
-    //Send user to homepage
-    response.redirect('home');
-  }
+    //If user is logged in, send them to homepage
+    if(request.isAuthenticated()) {
+        //Send user to homepage
+        response.redirect('home');
+    }
 });
 ////////////////////////////////////////////////////////////////////////
 // END OF POST REQUESTS

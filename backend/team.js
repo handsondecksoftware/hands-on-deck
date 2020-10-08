@@ -8,13 +8,11 @@
 
 const database = require('./databaseSetup');
 const general = require('./general');
+const error = require('./errorCodes');
 
 
 const MALE = 1; 
 const FEMALE = 0; 
-
-const NOERROR = 0; 
-const DATABASE_ACCESS_ERROR = 1; 
 
 
 ////////////////////////////////////////////////////////////
@@ -51,14 +49,14 @@ exports.getTeamData = async (volunteerID, teamID) =>
     response.teamData.push(teamElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.teamData = null;
     response.success = false;
     }
@@ -102,14 +100,14 @@ exports.getTeamInfo = async (volunteerID, teamID) =>
     response.teamInfo.push(teamElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.teamInfo = null;
     response.success = false;
     }
@@ -154,14 +152,14 @@ exports.editTeam = async (volunteerID, teamData) =>
         */   
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -205,14 +203,14 @@ exports.addTeam = async (volunteerID, teamData) =>
         */    
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -249,14 +247,14 @@ exports.getTeamsForViewable = async volunteerID =>
         response.teamInfoBasic.push({name: "Swim", id: 1, sex: 1});
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 

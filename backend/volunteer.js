@@ -8,10 +8,8 @@
 
 const database = require('./databaseSetup');
 const general = require('./general');
+const error = require('./errorCodes');
 
-
-const NOERROR = 0; 
-const DATABASE_ACCESS_ERROR = 1; 
 
 
 
@@ -52,14 +50,14 @@ exports.getVolunteerData = async (clientID, volunteerID) =>
         response.volunteerData.push(volunteerElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.volunteerData = null;
         response.success = false;
         }
@@ -105,14 +103,14 @@ exports.getVolunteerInfo = async (clientID, volunteerID) =>
         response.volunteerInfo.push(volunteerElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.volunteerInfo = null;
         response.success = false;
         }
@@ -162,14 +160,14 @@ exports.editVolunteer = async (clientID, volunteerData) =>
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -218,14 +216,14 @@ exports.addVolunteer = async (clientID, volunteerData) =>
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -269,14 +267,14 @@ exports.updateUserInfo = async (clientID, userInfo) =>
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = NOERROR;
+        response.errorCode = error.NOERROR;
         response.success = true;
         }
-    catch (error)
+    catch (err)
         {
-        console.log("Error Occurred: " + error.message);
+        console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.code;
+        response.errorCode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -285,72 +283,3 @@ exports.updateUserInfo = async (clientID, userInfo) =>
     
     return response;
     }
-
-
-/* THIS WAS ALREADY HERE AND CAN BE USED AS REFERENCE FOR NOW BUT ISN'T USED ANYMORE
-        WILL BE DELETED ONCE WE HAVE SOME FUNCTIONAL CALLS THAT CAN BE USED AS REFERENCES
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// Will get the volunteer info from the database
-//
-// Current issues: 
-//    - will need to hold the function until the intitution id is found
-//      or include the institution id of the requester in the query (currently hard-coded to 1)
-//    - will need to determine the team name which is accessed from the team_id of the volunteer...
-//                
-//
-////////////////////////////////////////////////////////////////////////////////////////
-exports.loadVolunteerInfo = async (requesterID, volunteerID) => 
-  {
-  var returnVal = [];
-  
-  if(volunteerID === -1)
-    {
-    //Determine what institution the requester is from 
-    var institutionID = await general.getVolunteerInstitutionID(requesterID);
-    console.log("test" + institutionID);
-
-    database.db.query('SELECT firstname, lastname, email, team_id, volunteer_id FROM volunteer WHERE institution_id = 1;', (err, res) => 
-      {
-      if(err)
-        {
-        returnVal.push(-1); //Indicate an error, don't want to crash the system
-        console.log("Error fetching all the volunteer data from volunteer table. \nError: " + err);
-        }
-      else 
-        {
-        for(var i = 0; i < res.rows.length; i++)
-          {
-          returnVal.push(res.rows[i]);
-          }
-        }
-      
-      database.db.end();
-      console.log(returnVal);
-      });
-    }
-  else 
-    {
-    for(var i = 0; i < volunteerID.length; i++)
-      {
-      //Don't need to filter institution id since volunteer list is provided
-      database.db.query('SELECT firstname, lastname, email, teamname, volunteer_id FROM volunteer WHERE volunteer_id =' + volunteerID[i] + ';', (err, res) => 
-        {
-        if(err)
-          {
-          returnVal.push(-1); //Indicate an error, don't want to crash the system
-          console.log("Error fetching the volunteer data from volunteer table. \nError: " + err);
-          }
-        else 
-          {
-          returnVal.push(res.rows[i]);
-          }
-        
-        database.db.end();
-        });
-      }
-    }
-  
-  return returnVal;
-  }
-*/

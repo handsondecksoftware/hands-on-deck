@@ -30,15 +30,18 @@ exports.queryDB = async (queryString, callbackFunction) => {
   
   pool.connect().then(client => 
     {
-    return client.query(queryString).then(res => 
+    return client.query(queryString).then((err, res) => 
         {
         client.release()
-        callbackFunction(false, res);
+        callbackFunction(err, res);
         })
-      .catch(e => 
+      .catch(err => 
         {
-        client.release()
-        console.log('An Error occured');
+        client.release();
+        
+        console.log('An Unknown Error Occured');
+
+        callbackFunction(err, null);
         });
     });
 

@@ -8,10 +8,7 @@
 
 const database = require('./databaseSetup');
 const general = require('./general');
-
-
-const NOERROR = 0; 
-const DATABASE_ACCESS_ERROR = 1; 
+const error = require('./errorCodes');
 
 ////////////////////////////////////////////////////////////
 // Will get the oppourtunity data
@@ -52,14 +49,14 @@ exports.getOpportunityData = async (volunteerID, oppourtunityID) =>
     response.oppData.push(oppElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppData = null;
     response.success = false;
     }
@@ -104,14 +101,14 @@ exports.getOpportunityInfo = async (volunteerID, oppourtunityID) =>
     response.oppInfo.push(oppElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -145,14 +142,14 @@ exports.addOppourtunity = async (volunteerID, oppData) =>
     
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -185,14 +182,14 @@ exports.editOppourtunity = async (volunteerID, oppData) =>
     
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -227,14 +224,14 @@ exports.getOppourtunityTypes = async volunteerID =>
     response.oppourtunityTypes = ["SAAC Meetings", "Special Olympics", "Game Day Events", "Social Events"];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -269,14 +266,14 @@ exports.addOppourtunityType = async (volunteerID, oppourtunityType)  =>
     
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -310,14 +307,14 @@ exports.getTeamsForViewable = async volunteerID =>
     response.teams = ["M - Golf", "W - Golf", "M - Swim", "W - Swim"];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }

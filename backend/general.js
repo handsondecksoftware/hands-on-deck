@@ -7,17 +7,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-
-
-////////////////////////////////////////////////////////////////////////
-// GLOABL CONSTANTS AND VARIABLES
-////////////////////////////////////////////////////////////////////////
-const NOERROR = 0; 
-const DATABASE_ACCESS_ERROR = 1; 
-const UNKNOWN_ERROR = 99; 
-////////////////////////////////////////////////////////////////////////
-// END OF GLOABL CONSTANTS AND VARIABLES
-////////////////////////////////////////////////////////////////////////
+const error = require('./errorCodes');
 
 
 ////////////////////////////////////////////////////////////
@@ -80,14 +70,14 @@ exports.getInstitutionStats = volunteerID =>
       }
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = NOERROR;
+    response.errorCode = error.NOERROR;
     response.success = true;
     }
-  catch (error)
+  catch (err)
     {
-    console.log("Error Occurred: " + error.message);
+    console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.code;
+    response.errorCode = error.SERVER_ERROR;
     response.iStats = null;
     response.success = false;
     }
