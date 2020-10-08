@@ -213,6 +213,26 @@ app.post('/getVolunteerInfo', auth.authcheck, async (request, response) =>
     });
 
 
+app.post('/editVolunteer', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await volunteer.editVolunteer(request.user[0].volunteer_id, request.volunteerData));
+    });
+
+
+app.post('/addVolunteer', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.volunteerData));
+    });
+
+
+app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await volunteer.updateUserInfo(request.user[0].volunteer_id, request.userInfo));
+    });
+
 
 
 /////////TEAM REQUESTS//////////////////////////////////////////////////
@@ -227,6 +247,27 @@ app.post('/getTeamInfo', auth.authcheck, async (request, response) =>
     {
     //get the users authentification info including volunteerID
     response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
+    });
+
+
+app.post('/editTeam', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await team.editTeam(request.user[0].volunteer_id, request.teamData));
+    });
+
+
+app.post('/addTeam', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await team.addTeam(request.user[0].volunteer_id, request.teamData));
+    });
+
+
+app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
+    {
+    //get the users authentification info including volunteerID
+    response.send(await team.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
 

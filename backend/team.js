@@ -119,3 +119,149 @@ exports.getTeamInfo = async (volunteerID, teamID) =>
   
   return response;
   }
+
+
+////////////////////////////////////////////////////////////
+// Will edit the team to database
+//
+// @param[in]  volunteerID              volunteerID of client making function call
+// @param[in]  teamData                 Data of team to be added
+//
+// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+//
+////////////////////////////////////////////////////////////
+exports.editTeam = async (volunteerID, teamData) => 
+    {
+    var response = {success: false, errorCode: -1};
+
+    try 
+        {
+        console.log('editTeam() called by: ' + volunteerID);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Edit team data
+        //JSON element is in form
+        /*
+        teamData = 
+            { 
+            name: <string>, 
+            id: <int>, 
+            numHours: <int>, 
+            sex: <int>, 
+            leaderboards: <bool>,
+            volunteerIDs: <int> [] 
+            }; 
+        */   
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        
+        response.errorCode = NOERROR;
+        response.success = true;
+        }
+    catch (error)
+        {
+        console.log("Error Occurred: " + error.message);
+
+        response.errorCode = error.code;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of editTeam() is: ' + response.success);
+    
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
+// Will add the team to database
+//
+// @param[in]  volunteerID              volunteerID of client making function call
+// @param[in]  teamData                 Data of team to be added
+//
+// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+//
+////////////////////////////////////////////////////////////
+exports.addTeam = async (volunteerID, teamData) => 
+    {
+    var response = {success: false, errorCode: -1};
+
+    try 
+        {
+        console.log('addTeam() called by: ' + volunteerID);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Edit team data
+        //JSON element is in form
+        /*
+        teamData = 
+            { 
+            name: <string>, 
+            id: <int>, 
+            numHours: <int>, 
+            sex: <int>, 
+            leaderboards: <bool>,
+            volunteerIDs: <int> [] 
+            }; 
+        */    
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        
+        response.errorCode = NOERROR;
+        response.success = true;
+        }
+    catch (error)
+        {
+        console.log("Error Occurred: " + error.message);
+
+        response.errorCode = error.code;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of addTeam() is: ' + response.success);
+    
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
+// Will add the team to database
+//
+// @param[in]  volunteerID          volunteerID of client making function call
+//
+// @param[out] teamInfoBasic[]      return variables indicating the success or failure of the request 
+//
+////////////////////////////////////////////////////////////
+exports.getTeamsForViewable = async volunteerID => 
+    {
+    var response = {success: false, errorCode: -1, teamInfoBasic: []};
+
+    try 
+        {
+        console.log('getTeamsForViewable() called by: ' + volunteerID);
+
+        //Get the volunteers instituion
+        var institutionID = await general.getVolunteerInstitutionID(volunteerID);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Used as default values for now
+        response.teamInfoBasic.push({name: "Golf", id: 1, sex: 1});
+        response.teamInfoBasic.push({name: "Golf", id: 1, sex: 0});
+        response.teamInfoBasic.push({name: "Swim", id: 1, sex: 1});
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        
+        response.errorCode = NOERROR;
+        response.success = true;
+        }
+    catch (error)
+        {
+        console.log("Error Occurred: " + error.message);
+
+        response.errorCode = error.code;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getTeamsForViewable() is: ' + response.success);
+    
+    return response;
+    }
