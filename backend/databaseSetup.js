@@ -30,10 +30,10 @@ exports.queryDB = async (queryString, callbackFunction) => {
   
   pool.connect().then(client => 
     {
-    return client.query(queryString).then((err, res) => 
+    return client.query(queryString).then((res, err) => 
         {
         client.release()
-        callbackFunction(err, res);
+        callbackFunction(res, err);
         })
       .catch(err => 
         {

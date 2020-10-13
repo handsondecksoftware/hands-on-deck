@@ -30,6 +30,8 @@ exports.getOpportunityData = async (volunteerID, oppourtunityID) =>
 
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     //Set some default values to use for now
+    var cordinatorInfo = {name: "Ryan Stolys", email: "rstolys@sfu.ca", phone: "123-456-789"};
+    var currentVolunteers = [{name: "Jayden Cole", email: "jcole@sfu.ca", team: "M - Swim", hours: 2.5}];
     var oppElement = 
         {
         title: "Testing Opp", 
@@ -43,7 +45,9 @@ exports.getOpportunityData = async (volunteerID, oppourtunityID) =>
         viewableBy: -1, 
         description: "This is a text event that is the next SAAC meeting which we will use to test post method", 
         sequenceNum: 1, 
-        numVolunteers: 1 
+        coordinatorInfo: cordinatorInfo,
+        volunteerLimt: 10,
+        volunteers: currentVolunteers 
         };
     
     response.oppData.push(oppElement);
@@ -196,6 +200,46 @@ exports.editOppourtunity = async (volunteerID, oppData) =>
 
   //Log completion of function
   console.log('Result of editOppourtunity() is: ' + response.success);
+  
+  return response;
+  }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// Will edit oppourtunity to database
+//
+// @param[in]  volunteerID              volunteerID of client making function call
+// @param[in]  oppourtunityID           oppourtunityID to be deleted
+//
+// @param[out] {success, errorCode}     Values indicating success of add  
+//
+////////////////////////////////////////////////////////////////////////////////////
+exports.deleteOppourtunity = async (volunteerID, oppourtunityID) => 
+  {
+  var response = {success: false, errorCode: -1};
+
+  try 
+    {
+    console.log('deleteOppourtunity() called by: ' + volunteerID);
+
+    ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
+    //Need to check that this user has permission to delete oppourtunity as well
+    ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
+    
+    response.errorCode = error.NOERROR;
+    response.success = true;
+    }
+  catch (err)
+    {
+    console.log("Error Occurred: " + err.message);
+
+    response.errorCode = error.SERVER_ERROR;
+    response.oppInfo = null;
+    response.success = false;
+    }
+
+  //Log completion of function
+  console.log('Result of deleteOppourtunity() is: ' + response.success);
   
   return response;
   }

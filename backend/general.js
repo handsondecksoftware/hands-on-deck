@@ -22,7 +22,7 @@ exports.getVolunteerInstitutionID = async volunteerID =>
   //Determine what institution the volunteer is from 
   if(typeof volunteerID === "number")
     {
-    database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (err, res) =>
+    database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (res, err) =>
       {
       if (err)
         {

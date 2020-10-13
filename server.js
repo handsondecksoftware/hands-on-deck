@@ -171,6 +171,11 @@ app.post('/editOppourtunity', auth.authcheck, async (request, response) =>
     response.send(await oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
     });
 
+app.post('/deleteOppourtunity', auth.authcheck, async (request, response) =>
+    {
+    response.send(await oppourtunity.deleteOppourtunity(request.user[0].volunteer_id, request.oppourtunityID));
+    });
+
 
 app.post('/getOppourtunityTypes', auth.authcheck, async (request, response) =>
     {
@@ -301,11 +306,12 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
 
       try {
 		console.log("CURRENT USERNAME IS " + username);
-		database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (err, result) {
+		database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (result, err) {
   
 			if (err) {
-			  console.log('Error Occured: ');
-			  return done(err)
+              console.log('Error Occured: ');
+              console.log(err);
+              return done(err);
 			}
 
 			if (result.rows[0] == null) {

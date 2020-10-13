@@ -9,6 +9,46 @@
 ////////////////////////////////////////////////////////////////////////
 
 
+//Error code constants
+const NOERROR = 0;
+const DATABASE_ACCESS_ERROR = 1;
+const SERVER_ERROR = 2;
+const PERMISSION_ERROR = 3;
+
+
+const UNKNOWN_ERROR = 99; 
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will print  an error message based on the code provided
+//
+//////////////////////////////////////////////////////////////////////// 
+function printUserErrorMessage(errorCode)
+    {
+    switch(errorCode)
+        {
+        case DATABASE_ACCESS_ERROR:
+        case SERVER_ERROR:
+            {
+            alert("A server error occured. Please try again");
+            break;
+            }
+        case PERMISSION_ERROR:
+            {
+            alert("You do not have the proper permissions");
+            }
+        case UNKNOWN_ERROR:
+        default:
+            {
+            alert("An Unknown Error Occurred. Please Try Again");
+            }
+        }
+
+    return;
+    }
+
+
 ////////////////////////////////////////////////////////////////////////
 // 
 // Will create an array from 1 to n where n is specifed in the input

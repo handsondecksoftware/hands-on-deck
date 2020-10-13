@@ -7,11 +7,13 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-export const NOERROR =                  0;
+module.exports =  
+{
+    NOERROR:                    0,
+    DATABASE_ACCESS_ERROR:      1,
+    SERVER_ERROR:               2,
+    PERMISSION_ERROR:           3,
 
-export const DATABASE_ACCESS_ERROR =    1;
-export const SERVER_ERROR =             2;
-export const PERMISSION_ERROR =         3;
 
-
-export const UNKNOWN_ERROR =            99; 
+    UNKNOWN_ERROR:              99, 
+} 
