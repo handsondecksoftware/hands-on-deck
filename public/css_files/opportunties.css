@@ -25,13 +25,13 @@ body, html {
   float: left;
 }
 
-.searchOppourtunity{
+.searchOpportunity{
   width: 33%;
   float: left;
   padding-bottom: 25px;
 }
 
-.sortOppourtunity{
+.sortOpportunity{
   width: 33%;
   float: left;
   padding-top: 15px;
@@ -39,9 +39,6 @@ body, html {
   padding-bottom: 40px;
 }
 
-#viewVolunteersForOppourtunityTableDiv{
-  display: none;
-}
 
 /* If being used on phone*/
 @media only screen and (max-width: 900px) {
@@ -49,12 +46,12 @@ body, html {
     width: 85%;
   }
   
-  .searchOppourtunity{
+  .searchOpportunity{
     width: 85%;
     float: left;
   }
   
-  .sortOppourtunity{
+  .sortOpportunity{
     width: 85%;
     float: left;
   }

@@ -37,7 +37,7 @@ const database = require('./backend/databaseSetup');
 const error = require('./backend/errorCodes');
 
 const volunteer = require('./backend/volunteer');
-const oppourtunity = require('./backend/oppourtunity');
+const opportunity = require('./backend/opportunity');
 const team = require('./backend/team');
 const general = require('./backend/general');
 const auth = require('./backend/authentification');
@@ -112,8 +112,8 @@ app.get('/volunteers', auth.authcheck, function(request, response){
   response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
 });
 
-app.get('/oppourtunities', auth.authcheck, function(request, response){
-  response.render('pages/oppourtunities', { home: false, opps: true, volunt: false, teams: false});
+app.get('/opportunities', auth.authcheck, function(request, response){
+  response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false});
 });
 
 app.get('/teams', auth.authcheck, function(request, response){
@@ -147,51 +147,51 @@ app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
     });
 
 
-/////////OPPOURTUNITY REQUESTS//////////////////////////////////////////
+/////////opportunity REQUESTS//////////////////////////////////////////
 app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.getOpportunityData(request.user[0].volunteer_id, request.oppourtunityID));
+    response.send(await opportunity.getOpportunityData(request.user[0].volunteer_id, request.opportunityID));
     });
 
 
 app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.getOpportunityInfo(request.user[0].volunteer_id, request.oppourtunityID));
+    response.send(await opportunity.getOpportunityInfo(request.user[0].volunteer_id, request.opportunityID));
     });
 
 
-app.post('/addOppourtunity', auth.authcheck, async (request, response) =>
+app.post('/addOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.addOppourtunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.addopportunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
-app.post('/editOppourtunity', auth.authcheck, async (request, response) =>
+app.post('/editOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.editOppourtunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.editopportunity(request.user[0].volunteer_id, request.oppData));
     });
 
-app.post('/deleteOppourtunity', auth.authcheck, async (request, response) =>
+app.post('/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.deleteOppourtunity(request.user[0].volunteer_id, request.oppourtunityID));
-    });
-
-
-app.post('/getOppourtunityTypes', auth.authcheck, async (request, response) =>
-    {
-    response.send(await oppourtunity.getOppourtunityTypes(request.user[0].volunteer_id));
+    response.send(await opportunity.deleteopportunity(request.user[0].volunteer_id, request.opportunityID));
     });
 
 
-app.post('/addOppourtunityType', auth.authcheck, async (request, response) =>
+app.post('/getOpportunityTypes', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.addOppourtunityType(request.user[0].volunteer_id, request.oppourtunityType));
+    response.send(await opportunity.getopportunityTypes(request.user[0].volunteer_id));
+    });
+
+
+app.post('/addOpportunityType', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.addopportunityType(request.user[0].volunteer_id, request.opportunityType));
     });
 
 
 app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
-    response.send(await oppourtunity.getTeamsForViewable(request.user[0].volunteer_id));
+    response.send(await opportunity.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
 

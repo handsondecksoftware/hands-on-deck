@@ -23,19 +23,19 @@
 function init()
     {
     //Fill the oppourtunties table
-    fillOppourtunityTable();
+    fillOpportunityTable();
 
 
     //Setup open and close of popup box
-    document.getElementById('addOppourtunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-    document.getElementById('cancelOppourtunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-    document.getElementById('addOppourtunityChoice').onclick = function(){addOppourtunity()};
+    document.getElementById('addOpportunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
+    document.getElementById('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
+    document.getElementById('addOpportunityChoice').onclick = function(){addOpportunity()};
     document.getElementById('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
 
     initSlider('Oppourtunties');
     initDropdowns('Oppourtunties');
 
-    createDatePicker("addOppourtunity-date", "addOppourtunityDatePicker", 1);
+    createDatePicker("addOpportunity-date", "addOpportunityDatePicker", 1);
 
     initLogout();
     }
@@ -46,14 +46,14 @@ function init()
 // Will fill the oppourtunities table
 //
 ////////////////////////////////////////////////////////////////////////
-function fillOppourtunityTable()
+function fillOpportunityTable()
     {
-    var data = {oppourtunityID: -1};
+    var data = {OpportunityID: -1};
     handlePostMethod(data, '/getOpportunityData', response =>
         {
         if(response.success)
             {
-            //Set global variable to hold data from oppourtunity
+            //Set global variable to hold data from Opportunity
             oppourtuntiyData_gv = response.oppData;
 
             //Get reference to table 
@@ -127,15 +127,16 @@ function fillOppourtunityTable()
 function toggleOppourtuntiyBoxVisibility()
     {
     //Change the oppourtuntiy popup box display
-    var currentState = document.getElementById('addOppourtunityPopup').style.display; 
+    var currentState = document.getElementById('addOpportunityPopup').style.display; 
 
     if(currentState === "none")
         {
-        document.getElementById('addOppourtunityPopup').style.display = "block";
+        fillOpportunityTypeOptions();
+        document.getElementById('addOpportunityPopup').style.display = "block";
         }
     else 
         {
-        document.getElementById('addOppourtunityPopup').style.display = "none"; 
+        document.getElementById('addOpportunityPopup').style.display = "none"; 
         }
 
     return;
@@ -146,10 +147,10 @@ function toggleOppourtuntiyBoxVisibility()
 // 
 // Will check inputs and add oppourtuntiy if valid, or provide errors if not
 //
-// currently does nothing, just closes  the oppourtunity box
+// currently does nothing, just closes  the Opportunity box
 //
 ////////////////////////////////////////////////////////////////////////
-function addOppourtunity()
+function addOpportunity()
     {
     //Collect information
     //      need to change the 
@@ -159,25 +160,25 @@ function addOppourtunity()
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will find the various types of an oppourtunity that are availible and add them
+// Will find the various types of an Opportunity that are availible and add them
 //
 ////////////////////////////////////////////////////////////////////////
-function fillOppourtunityTypeOptions(dropdownID)
+function fillOpportunityTypeOptions(dropdownID)
     {
-    //Get the oppourtunity Type options 
-    handlePostMethod(null, '/getOppourtunityTypes', response =>
+    //Get the Opportunity Type options 
+    handlePostMethod(null, '/getOpportunityTypes', response =>
         {
         if(response.success)
             {
             //Get reference to div to add  types to it 
             var dropdownDiv = document.getElementById(dropdownID);
             
-            for(var i = 0; i < response.oppourtunityTypes.length; i++)
+            for(var i = 0; i < response.OpportunityTypes.length; i++)
                 {
                 var dropdownOption = document.createElement('a');
                 dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
                 dropdownOption.classList = "dropdown-option";
-                dropdownOption.innerHTML = response.oppourtunityTypes[i];
+                dropdownOption.innerHTML = response.OpportunityTypes[i];
                 dropdownDiv.appendChild(dropdownOption);
 
                 //create dom function call 
@@ -196,10 +197,10 @@ function fillOppourtunityTypeOptions(dropdownID)
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will find the various types of an oppourtunity that are availible and add them
+// Will find the various types of an Opportunity that are availible and add them
 //
 ////////////////////////////////////////////////////////////////////////
-function fillOppourtunityViewableByOptions(dropdownID) 
+function fillOpportunityViewableByOptions(dropdownID) 
     {
     //Get the teams Type options 
     handlePostMethod(null, '/getTeamsForViewable', response =>
@@ -239,16 +240,16 @@ function fillOppourtunityViewableByOptions(dropdownID)
 function deleteOpportunity(elementID)
     {
     //Get the elementID
-    var oppourtunityID = elementID.slice(7);    //Will remove 'delete_'
+    var OpportunityID = elementID.slice(7);    //Will remove 'delete_'
 
     if(confirm("Are you sure you want to delete this entry?"))
         {
-        //Delete the selected oppourtunity
-        handlePostMethod({oppourtunityID: oppourtunityID}, '/deleteOppourtunity', response =>
+        //Delete the selected Opportunity
+        handlePostMethod({OpportunityID: OpportunityID}, '/deleteOpportunity', response =>
             {
             if(response.success)
                 {
-                alert('Oppourtunity Successfully Deleted');
+                alert('Opportunity Successfully Deleted');
                 }
             else 
                 {
@@ -272,33 +273,33 @@ function deleteOpportunity(elementID)
 function viewOpportunity(elementID){
 
     //Get the elementID
-    var oppourtunityID = elementID.slice(5);      //Will remove 'view_'
+    var OpportunityID = elementID.slice(5);      //Will remove 'view_'
 
     //TODO: 
     //      We should have a loader to show so that they know we are loading
     //      https://www.w3schools.com/howto/howto_css_loader.asp
     //      would need this everytime we call for a post request where the user waits for us
 
-    //Get the oppourtunity data using getOpportunityData()
-    handlePostMethod({oppourtunityID: oppourtunityID}, '/getOpportunityData', response =>
+    //Get the Opportunity data using getOpportunityData()
+    handlePostMethod({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
         {
         if(response.success)
             {
             //Fill in the data for the view screen -- our request will only return 1 element in the array
-            document.getElementById('viewOpp_title').innerHTML = response.oppData[0].title;
-            document.getElementById('viewOpp_startTime').innerHTML = response.oppData[0].startTime;
-            document.getElementById('viewOpp_endTime').innerHTML = response.oppData[0].endTime;
+            document.getElementById('viewOpportunity-title').innerHTML = response.oppData[0].title;
+            document.getElementById('viewOpportunity-startTime').innerHTML = response.oppData[0].date + " - " + response.oppData[0].startTime;
+            document.getElementById('viewOpportunity-endTime').innerHTML = response.oppData[0].date + " - " + response.oppData[0].endTime;
 
-            document.getElementById('viewOpp_type').innerHTML = response.oppData[0].type;
-            document.getElementById('viewOpp_volLimit').innerHTML = response.oppData[0].volunteerLimt;
-            document.getElementById('viewOpp_viewableBy').innerHTML = (response.oppData[0].viewableBy == -1) ? "All Teams" : "Fix This";
+            document.getElementById('viewOpportunity-type').innerHTML = response.oppData[0].type;
+            document.getElementById('viewOpportunity-volLimit').innerHTML = response.oppData[0].volunteerLimt;
+            document.getElementById('viewOpportunity-viewableBy').innerHTML = (response.oppData[0].viewableBy == -1) ? "All Teams" : "Fix This";
             
-            document.getElementById('viewOpp_coordinatorName').innerHTML = response.oppData[0].coordinatorInfo.name;
-            document.getElementById('viewOpp_coordinatorEmail').innerHTML = response.oppData[0].coordinatorInfo.email;
-            document.getElementById('viewOpp_coordinatorPhone').innerHTML = response.oppData[0].coordinatorInfo.phone;
+            document.getElementById('viewOpportunity-coordinatorName').innerHTML = response.oppData[0].coordinatorInfo.name;
+            document.getElementById('viewOpportunity-coordinatorEmail').innerHTML = response.oppData[0].coordinatorInfo.email;
+            document.getElementById('viewOpportunity-coordinatorPhone').innerHTML = response.oppData[0].coordinatorInfo.phone;
 
             //Get table id
-            var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOppourtunityTable');
+            var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOpportunityTable');
             var rowNum = 1;
 
             //Add volunteers to the table
@@ -312,6 +313,7 @@ function viewOpportunity(elementID){
                 var email = row.insertCell(1);
                 var team = row.insertCell(2);
                 var hours = row.insertCell(3);
+                var view = row.insertCell(4);
         
                 
                 //Fill in row elements
@@ -319,18 +321,17 @@ function viewOpportunity(elementID){
                 email.innerHTML = response.oppData[0].volunteers[volNum].email;
                 team.innerHTML = response.oppData[0].volunteers[volNum].team;
                 hours.innerHTML = response.oppData[0].volunteers[volNum].hours;
+                view.innerHTML = "<i id=\"view_" + response.oppData[0].volunteers[volNum].volDataID + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteerForOpportunity(this.id)\"></i>";
                 }
 
 
             //Show the content to the user
             document.getElementById("opportunitiesMainPage").style.display = "none";
-            document.getElementById("viewVolunteersForOpportunityHeader").style.display = "block";
-            document.getElementById("viewVolunteersForOppourtunityTableDiv").style.display = "block";
-            document.getElementById("returnToOppListButt").style.display = "block";
+            document.getElementById("viewOpportunityPage").style.display = "block";
             }
         else 
             {
-            console.log("Could not successfully load oppourtunity data. Error Code: " + response.errorCode);
+            console.log("Could not successfully load Opportunity data. Error Code: " + response.errorCode);
 
             printUserErrorMessage(response.errorCode);
             }
@@ -343,16 +344,27 @@ function viewOpportunity(elementID){
 
 ////////////////////////////////////////////////////////////////////////
 // 
+// Will show the popup menu displaying volunteer data information for the specific oppourtunity 
+//
+////////////////////////////////////////////////////////////////////////
+function viewVolunteerForOpportunity(elementID)
+    {
+    var VolunteerDataID = elementID.slice(5);       //will remove 'view_'
+
+    //Need to access database containing the volunteering data specified by this id
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
 // Return from viewing an opportunity
 //
 ////////////////////////////////////////////////////////////////////////
 function retToOpportunityMainPage()
     {
     //Change page state back to main page
-    document.getElementById('viewVolunteersForOpportunityHeader').style.display = "none";
-    document.getElementById('viewVolunteersForOppourtunityTableDiv').style.display = "none";
-    document.getElementById('returnToOppListButt').style.display = "none";
-    document.getElementById('opportunitiesMainPage').style.display = "block";
+    document.getElementById("viewOpportunityPage").style.display = "none";
+    document.getElementById("opportunitiesMainPage").style.display = "block";
     }
 
 

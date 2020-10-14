@@ -20,11 +20,11 @@ function initDropdowns(pageID)
     {
     case 'Oppourtunties':
       {
-      document.getElementById('addOppourtunityType').onclick = function(){toggleDropdownMenu(this.id)};
-      fillOppourtunityTypeOptions('addOppourtunityTypeOptions');
+      document.getElementById('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
+      fillOpportunityTypeOptions('addOpportunityTypeOptions');
 
-      document.getElementById('addOppourtunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-      fillOppourtunityViewableByOptions('addOppourtunityViewableByOptions');
+      document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
+      fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
       break;
       } 
     case 'Teams':
