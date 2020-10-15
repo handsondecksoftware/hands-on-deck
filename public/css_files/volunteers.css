@@ -23,6 +23,19 @@
   padding-bottom: 25px;
 }
 
+.volunteer-successAlert {
+  padding-top: 5px;
+  text-align: center;
+  color: white;
+  background-color: #1a6600;
+  margin: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  height: 42px;
+  border-radius: 5px;
+  font-weight: 700;
+}
 
 #viewVolunteerPage{
   display: none;
