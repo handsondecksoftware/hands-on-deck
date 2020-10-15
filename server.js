@@ -107,7 +107,7 @@ app.get('/home', auth.authcheck, function(request, response){
 });
 
 app.get('/volunteers', auth.authcheck, function(request, response){
-  response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
+  response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, message: ""});
 });
 
 app.get('/opportunities', auth.authcheck, function(request, response){
@@ -230,7 +230,14 @@ app.post('/editVolunteer', auth.authcheck, async (request, response) =>
 
 app.post('/addVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.volunteerData));
+    console.log(request.body)
+    var results = await volunteer.addVolunteer(request.user[0].volunteer_id, request.body);
+    console.log(results)
+    if(results.success)
+      var result = "Volunteer added successfully";
+    else
+      var result = "Error, volunteer not added";
+    response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, message: result});
     });
 
 

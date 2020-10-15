@@ -194,7 +194,6 @@ exports.addVolunteer = async (clientID, volunteerData) =>
     try 
         {
         console.log('addVolunteer() called by: ' + clientID);
-
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
         //Add volunteerData
@@ -215,7 +214,7 @@ exports.addVolunteer = async (clientID, volunteerData) =>
         */
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
+        database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + volunteerData.email + "', '" + 1 + "')");
         response.errorCode = error.NOERROR;
         response.success = true;
         }
