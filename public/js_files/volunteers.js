@@ -167,10 +167,10 @@ function showOpportunityDetails(e){
         if (isRow(parent)) {
             //TODO: Get the below data from the database
             // Get Name, Team, and Role of Volunteer from the clicked row
-            var oppName = parent.cells.item(0).innerHTML;
-            var oppDate = parent.cells.item(3).innerHTML;
-            var oppTime = parent.cells.item(4).innerHTML; 
+            var oppTitle = parent.cells.item(0).innerHTML;
 
+            document.getElementById("opportunityTitle").innerHTML = oppTitle;
+            
             // View the popup with these details
             toggleViewOppDetails();
 
