@@ -85,13 +85,11 @@ app.get('*', async function (req, res, next) { // universal access variable, kee
     console.log("THE USER IS currently " + req.isAuthenticated());
 
     res.locals.user = req.user || null;
-    var pwd = await bcrypt.hash("jayden", 5);
-    console.log(pwd);
-    if (res.locals.user != null) 
-        {
+    if (res.locals.user != null) {
         console.log("the user is");
         console.log(res.locals.user);
-        }
+    }
+
         
     next();
 })
@@ -120,9 +118,8 @@ app.get('/teams', auth.authcheck, function(request, response){
   response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true});
 });
 
-app.get('/signIn', function(request, response){
-  console.log('Logout Request Recieved');
-  response.render('pages/signIn', { 'message': ''});
+app.get('/signIn', function(request, response) {
+  response.render('pages/signIn', { 'message': (request.message || '')});
 });
 
 app.get('/logout', auth.authcheck, function (req, res) {
@@ -142,7 +139,6 @@ app.get('/logout', auth.authcheck, function (req, res) {
 /////////GENERAL REQUESTS///////////////////////////////////////////////
 app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
     {
-    
     response.send(await general.getInstitutionStats(request.user[0].volunteer_id));
     });
 
@@ -194,6 +190,23 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     response.send(await opportunity.getTeamsForViewable(request.user[0].volunteer_id));
     });
 
+
+
+/////////VOLUNTEERING DATA REQUESTS/////////////////////////////////////////////
+app.post('/getVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.getVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+app.post('/addVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.addVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    });
+
+app.post('/editVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.editVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    });
 
 
 /////////VOLUNTEER REQUESTS/////////////////////////////////////////////
@@ -261,26 +274,29 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
 
 
 /////////AUTHENTICATION REQUESTS////////////////////////////////////////
-app.post('/signIn', passport.authenticate('local'), async function (request, response) {
-    // post method was specified in signIn.ejs form
-    console.log("The user is being authenticated: " + request.isAuthenticated());
-    console.log("The user is currently written below");
-    console.log(request.session.passport.user);
+app.post('/signIn', function(request, response, next) {
+    passport.authenticate('local', function(err, user, info) {
+    if (err) { 
+        return next(err); 
+    }
 
-    if (request.body.remember) {
-        request.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+    if (!user) { 
+        //return response.redirect('/signIn');
+        return response.render('pages/signIn', { 'message': info.message}); 
     }
     else {
-        request.session.cookie.expires = false; // Cookie expires at end of session
-    }
+        request.logIn(user, function(err) {
+            if (err) { 
+                return next(err); 
+            }
 
-
-    //If user is logged in, send them to homepage
-    if(request.isAuthenticated()) {
-        //Send user to homepage
-        response.redirect('home');
+            return response.redirect('home');
+        });
     }
-});
+    
+    })(request, response, next);
+  });
+
 ////////////////////////////////////////////////////////////////////////
 // END OF POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
@@ -301,43 +317,42 @@ app.post('/signIn', passport.authenticate('local'), async function (request, res
 ////////////////////////////////////////////////////////////////////////
 passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
 
-  loginAttempt();
-  async function loginAttempt() {
-
-      try {
-		console.log("CURRENT USERNAME IS " + username);
-		database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (result, err) {
+    loginAttempt();
+    async function loginAttempt() {
   
-			if (err) {
-              console.log('Error Occured: ');
-              console.log(err);
-              return done(err);
-			}
-
-			if (result.rows[0] == null) {
-			  console.log("Oops. Incorrect login details.");
-			  return done(null, false, { message: 'No user found' });
-			}
-			else {
-
-                bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
-                	if (err) throw err;
-					else if (isMatch) {
-					  console.log("Passwords matched!");
-					  return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
-					}
-					else {
-					  console.log("Oops. Incorrect login details.");
-					  return done(null, false);
-                  	}
-              	});
-          	};
-        })
-       }
-      catch (e) { throw (e); }
-  };
-}
-))
+        try {
+          console.log("CURRENT USERNAME IS " + username);
+          database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (result, err) {
+    
+              if (err) {
+                console.log('Error Occured: ');
+                console.log(err);
+                return done(err);
+              }
+  
+              if (result.rows[0] == null) {
+                console.log("Oops. Incorrect login details.");
+                return done(null, false, { message: 'Incorrect Username' });
+              }
+              else {
+  
+                  bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
+                      if (err) throw err;
+                      else if (isMatch) {
+                        console.log("Passwords matched!");
+                        return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
+                      }
+                      else {
+                        console.log("Oops. Incorrect login details.");
+                        return done(null, false, { message: 'Incorrect Password' });
+                        }
+                    });
+                };
+          })
+         }
+        catch (e) { throw (e); }
+    };
+}));
 
 
 ////////////////////////////////////////////////////////////////////////
