@@ -181,6 +181,7 @@
       </div>
   
       <!-- Pop up box for adding volunteers -->
+      <form action="addVolunteer" method="post">
       <div id="addVolunteerPopup" class="popup-greyOut" style="display:none">
         <div class="popup-box">
             <div class="popup-title" >
@@ -194,16 +195,16 @@
                     </div>
                     <div class="row_16p">
                       <div class="col_50p subTitle2">
-                        <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName">
+                        <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName" name="firstName" required>
                       </div>
                       <div class="col_50p subTitle2">
-                        <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName">
+                        <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName" name="lastName" required>
                       </div>
                     </div>
                     <div class="row_16p">
                       <div class="col_30p subTitle2"> Email:</div>
                       <div class="col_70p subTitle2">
-                        <input class="textInput" type="text" placeholder="Email" id="volunteerInfo-email">
+                        <input class="textInput" type="text" placeholder="Email" id="volunteerInfo-email" required>
                       </div>
                     </div>
                     <div class="row_16p"></div>
@@ -217,29 +218,30 @@
                     </div>
                     <div class="row_16p">
                         <div class="col_100p subTitle2">
-                          <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-team">
+                          <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-team" required>
                         </div>
                     </div>
                     <div class="row_16p">
                         <div class="col_30p subTitle2"> Role:</div>
                         <div class="col_70p subTitle2">
-                          <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-role">
+                          <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-role" >
                         </div>
                     </div>
                     <div class="row_16p"></div>
                     <div class="row_16p">
-                        <button class="button" type="submit"> Choose File</button>
+                        <button class="button" type="button"> Choose File</button>
                     </div>
                     <div class="row_16p"></div>
                 </div>
             </div>
 
             <div class="popup-buttons">
-                <div class="popup-buttons-cancel"><button class="button" id="cancelVolunteerOppourtunityChoice">Cancel</button></div>
-                <div class="popup-buttons-add"><button class="button" id="saveVolunteerOppourtunityChoice">Save</button></div>
+                <div class="popup-buttons-cancel"><button type="button" class="button" id="cancelVolunteerOppourtunityChoice">Cancel</button></div>
+                <div class="popup-buttons-add"><button type="submit" class="button" id="saveVolunteerOppourtunityChoice">Save</button></div>
             </div>
         </div>
       </div>
+    </form>
 
       <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
       <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">

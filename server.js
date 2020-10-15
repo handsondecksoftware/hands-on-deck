@@ -230,6 +230,7 @@ app.post('/editVolunteer', auth.authcheck, async (request, response) =>
 
 app.post('/addVolunteer', auth.authcheck, async (request, response) =>
     {
+    console.log(request.body);
     response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.volunteerData));
     });
 
@@ -296,7 +297,6 @@ app.post('/signIn', function(request, response, next) {
     
     })(request, response, next);
   });
-
 ////////////////////////////////////////////////////////////////////////
 // END OF POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
@@ -337,8 +337,8 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
               else {
   
                   bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
-                      if (err) throw err;
-                      else if (isMatch) {
+                    if (err) throw err;
+                    else if (isMatch) {
                         console.log("Passwords matched!");
                         return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
                       }
