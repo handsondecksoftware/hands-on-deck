@@ -58,8 +58,8 @@ function initSlider(pageName)
       } 
     case 'Volunteers':
       {
-      //document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
-      //document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
+      document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
 
       break;
       } 
@@ -106,7 +106,7 @@ function changeSliderLabel(sliderID)
     case 'includeLeaderboards':
     case 'teamInfoIncludeLeaderboards':
     case 'oppValidated':
-    case 'oppOccured':
+    case 'oppOccurred':
       {
       sliderOptions = ['Yes', 'No'];
       break;

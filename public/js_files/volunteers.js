@@ -22,6 +22,8 @@ function init()
   document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
   document.getElementById('addVolunteerButton').onclick = function(){toggleVolOppourtunityBoxVisibility()};
   document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
+  document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
+  document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
 
   initSlider('Volunteers');
 
@@ -38,15 +40,15 @@ function init()
 function toggleVolOppourtunityBoxVisibility()
 {
     //Open the add oppourtuntiy popup box
-    var currentState = document.getElementById('volunteerOppourtunityPopup').style.display; 
+    var currentState = document.getElementById('addVolunteerPopup').style.display; 
 
     if(currentState === "none")
     {
-        document.getElementById('volunteerOppourtunityPopup').style.display = "block"; 
+        document.getElementById('addVolunteerPopup').style.display = "block"; 
     }
     else 
     {
-        document.getElementById('volunteerOppourtunityPopup').style.display = "none"; 
+        document.getElementById('addVolunteerPopup').style.display = "none"; 
     }
 
   return;
@@ -143,4 +145,73 @@ function deleteVolunteer(e){
         }
     }
     return false;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Populates a specific opportunity's details from a Volunteer's list of 
+// attended opportunities
+//
+////////////////////////////////////////////////////////////////////////
+function showOpportunityDetails(e){
+    e = e || event;
+    var eventEl = e.srcElement || e.target, 
+    parent = eventEl.parentNode,
+    isRow = function(el) {
+                return el.tagName.match(/tr/i);
+            };
+
+    // Move up the DOM until tr is reached
+    while (parent = parent.parentNode) {
+        if (isRow(parent)) {
+            //TODO: Get the below data from the database
+            // Get Name, Team, and Role of Volunteer from the clicked row
+            var oppName = parent.cells.item(0).innerHTML;
+            var oppDate = parent.cells.item(3).innerHTML;
+            var oppTime = parent.cells.item(4).innerHTML; 
+
+            // View the popup with these details
+            toggleViewOppDetails();
+
+           return true;
+        }
+    }
+    return false;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Will display or hide opportunity details that a volunteer attended
+//
+////////////////////////////////////////////////////////////////////////
+function toggleViewOppDetails(){
+    // Switch visibility on viewing opportunity details
+    var currentState = document.getElementById('viewOppourtunityDetailsPopup').style.display; 
+
+    if(currentState == "none")
+    {
+        document.getElementById('viewOppourtunityDetailsPopup').style.display = "block"; 
+    }
+    else 
+    {
+        document.getElementById('viewOppourtunityDetailsPopup').style.display = "none"; 
+    }
+
+    return;
+}
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Will save the opportunity details that a volunteer attended
+//
+////////////////////////////////////////////////////////////////////////
+function saveOppDetails(){
+    // TODO: Save opportunity details to database
+    
+    // Now toggle visibility of pop up box
+    toggleViewOppDetails();
+    return;
 }

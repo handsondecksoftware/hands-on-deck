@@ -215,6 +215,18 @@
   margin-left: 20%; /* 210px*/
 }
 
+.popup-box2 {
+    border-radius: 10px;
+    background-color: white;
+    width: 700px;
+    height: 400px;
+    border: 2px solid black;
+    display: block; 
+    padding: 10px;
+    margin-top: 100px;
+    margin-left: 20%; /* 210px*/
+  }
+
 .popup-greyOut {
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
