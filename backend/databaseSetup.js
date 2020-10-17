@@ -18,7 +18,6 @@ const pool = new Pool(
     }
   });
 
-//exports.db = client;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -28,26 +27,34 @@ const pool = new Pool(
 ////////////////////////////////////////////////////////////////////////
 exports.queryDB = async (queryString, callbackFunction) => {
   
-  pool.connect().then(client => 
-    {
-    return client.query(queryString).then((res, err) => 
-        {
-        client.release()
-        callbackFunction(res, err);
-        })
-      .catch(err => 
-        {
-        client.release();
-        
-        console.log('An Unknown Error Occured');
+    var queryError = false; 
 
-        callbackFunction(err, null);
-        });
-    });
+    var client = await pool.connect();
 
+    try {
+        result = await client.query(queryString).catch(e => {
+            console.log('A Database Error Occured');
+            console.log(e);
+    
+            callbackFunction(null, e);
+            queryError = true;
+            }); 
+    
+        if(!queryError) {
+            console.log('test');
+            callbackFunction(result, false);
+        }
+    }
+    catch (err){
+       
+        console.log('An Error Occured');
+        console.log(err);
 
-  return 
-}
+        callbackFunction(null, err);
+    }
+
+    return; 
+    }
 
 
 

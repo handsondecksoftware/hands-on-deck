@@ -9,6 +9,7 @@
 const database = require('./databaseSetup');
 const general = require('./general');
 const error = require('./errorCodes');
+const bcrypt = require('bcryptjs');
 
 
 
@@ -189,11 +190,17 @@ exports.editVolunteer = async (clientID, volunteerData) =>
 ////////////////////////////////////////////////////////////
 exports.addVolunteer = async (clientID, volunteerData) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorCode: error.UNKNOWN_ERROR};
 
     try 
         {
         console.log('addVolunteer() called by: ' + clientID);
+
+
+        //Validate inputs here
+
+        //If input is false
+        // use -- INVALID_INPUT_ERROR
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
         //Add volunteerData
@@ -212,11 +219,28 @@ exports.addVolunteer = async (clientID, volunteerData) =>
             volunteeringData []: <JSON> 
             };
         */
-              
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + volunteerData.email + "', '" + 1 + "')");
-        response.errorCode = error.NOERROR;
-        response.success = true;
+
+        //Generate user password
+        var userPassword = general.generatePassword();
+
+        //Hash password to store in db
+        var hashedPassword = await bcrypt.hash(userPassword, 10).catch(e => {
+            console.log("An Error Occured in hasing the password")
+          });
+
+        await database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, password, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + hashedPassword + "', '" + volunteerData.email + "', '" + volunteerData.type + "')", 
+                        (res, e) => {
+            if(e) {
+                response.errorCode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+            }
+            else {
+                //Send the user an email with their account info 
+                response.errorCode = error.NOERROR;
+                response.success = true;
+            }
+        });
         }
     catch (err)
         {
@@ -228,7 +252,7 @@ exports.addVolunteer = async (clientID, volunteerData) =>
 
     //Log completion of function
     console.log('Result of addVolunteer() is: ' + response.success);
-    
+
     return response;
     }
 

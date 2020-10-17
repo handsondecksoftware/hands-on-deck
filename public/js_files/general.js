@@ -15,6 +15,7 @@ const DATABASE_ACCESS_ERROR = 1;
 const SERVER_ERROR = 2;
 const PERMISSION_ERROR = 3;
 
+const INVALID_INPUT_ERROR = 10; 
 
 const UNKNOWN_ERROR = 99; 
 
@@ -37,6 +38,12 @@ function printUserErrorMessage(errorCode)
         case PERMISSION_ERROR:
             {
             alert("You do not have the proper permissions");
+            break;
+            }
+        case INVALID_INPUT_ERROR:
+            {
+            alert("One of your inputs was in an invalid format");
+            break;
             }
         case UNKNOWN_ERROR:
         default:
@@ -82,33 +89,75 @@ function newArrayFrom1toN(n)
 //
 //////////////////////////////////////////////////////////////////////// 
 function handlePostMethod(dataInJSON, postName, callbackFunction)
-  {
-  //Specify default values 
-  var headerName = 'Content-Type';
-  var headerValue = 'application/json';
-
-  //Convert JSON to string
-  var data;
-  if(dataInJSON == null)
     {
-    data = null;
-    }
-  else 
-    {
-    data = JSON.stringify(dataInJSON);
+    //Specify default values 
+    var headerName = 'Content-Type';
+    var headerValue = 'application/json';
+
+    //Convert JSON to string
+    var data;
+    if(dataInJSON == null)
+        {
+        data = null;
+        }
+    else 
+        {
+        data = JSON.stringify(dataInJSON);
+        }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", postName, true);
+    xhr.setRequestHeader(headerName, headerValue);
+    xhr.onreadystatechange = function()
+        {
+        if(xhr.readyState == XMLHttpRequest.DONE) 
+            {
+            callbackFunction(JSON.parse(xhr.responseText));
+            }
+        }
+
+    xhr.send(data);
+
+    return;
     }
 
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", postName, true);
-  xhr.setRequestHeader(headerName, headerValue);
-  xhr.onreadystatechange = function()
-    {
-    if(xhr.readyState == XMLHttpRequest.DONE) 
-      {
-      callbackFunction(JSON.parse(xhr.responseText));
-      }
-    }
-  xhr.send(data);
 
-  return;
-  }
+////////////////////////////////////////////////////////////////////////
+// 
+// Will create and send a post request then return the data in JSON format
+//
+// dataInJSON --  must be in JSON format with all relevant information 
+//                for function call
+//
+// postName -- will be the identifier that will specify which express 
+//              app handler will recieved the function call
+//
+// callbackFunction -- will be a function which will handle the response 
+//                      from the post request 
+//
+//////////////////////////////////////////////////////////////////////// 
+function handleFormRequest(formID, postName, callbackFunction)
+    {
+    var form;
+    try 
+        {
+        form = document.getElementById(formID);
+        }
+    catch (error)
+        {
+        throw error;
+        }
+   
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", postName, true); 
+    xhr.onload = function(event) 
+        { 	
+        callbackFunction(event.target.response);
+        };
+    
+    var formData = new FormData(form);
+    xhr.send(formData);
+
+
+    return;
+    }

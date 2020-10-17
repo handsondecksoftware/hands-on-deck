@@ -87,3 +87,22 @@ exports.getInstitutionStats = volunteerID =>
   
   return response;
   }
+
+
+////////////////////////////////////////////////////////////
+//
+// Will generate an 8 digit password for the user
+//
+////////////////////////////////////////////////////////////
+exports.generatePassword = () => {
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()";
+    var string_length = 8;
+    var randomstring = '';
+
+    for (var i = 0; i < string_length; i++) {
+        var rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars[rnum];
+    }
+
+    return randomstring;
+}

@@ -25,9 +25,11 @@
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
+    <script src="../js_files/general.js"></script>
     <script src="../js_files/volunteers.js"></script>
     <script src="../js_files/slider.js"></script>
     <script src="../js_files/logout.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- Page Title -->
     <title>Hands On Deck - Volunteers</title>
@@ -38,9 +40,9 @@
 
     <!--Add navigation bar-->
     <%- include ("../partials/nav.ejs") %>
-    <% if (message) { %>
-              <div class="volunteer-successAlert"><%= message %></div>
-          <% } %>
+
+    <!-- GOOD message div <div class="volunteer-successAlert">MESSAGE</div> -->
+
 
     <div class="pageContainer"> 
     
@@ -183,8 +185,30 @@
         
       </div>
   
-      <!-- Pop up box for adding volunteers -->
-      <form action="addVolunteer" method="post">
+      <!-- Pop up box for adding volunteers 
+      <script>
+        $('#saveVolunteerOppourtunityChoice').click( (e) => {
+            console.log("Sending Post");
+            e.preventDefault();
+            alert('stop');
+            $.ajax({
+                url: '/addVolunteer',
+                type: 'POST',
+                datatype: "json",
+                data: $("#addVolunteerForm").serialize(),
+                contentType: "application/json",
+                cache: false,
+                success: function(response) {
+                    alert('Got response');
+                    console.log(response);
+                }               
+            });
+        });
+      </script>
+      -->
+      
+
+      <!-- <form id="addVolunteerForm">  action="addVolunteer" method="POST" -->
         <div id="addVolunteerPopup" class="popup-greyOut" style="display:none">
           <div class="popup-box">
               <div class="popup-title" >
@@ -207,7 +231,7 @@
                       <div class="row_16p">
                         <div class="col_30p subTitle2"> Email:</div>
                         <div class="col_70p subTitle2">
-                          <input class="textInput" type="text" placeholder="Email" name="email" id="volunteerInfo-email" required>
+                          <input class="textInput" type="email" placeholder="Email" name="email" id="volunteerInfo-email" required>
                         </div>
                       </div>
                       <div class="row_16p"></div>
@@ -244,7 +268,6 @@
               </div>
           </div>
         </div>
-      </form>
 
       <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
       <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">
@@ -321,12 +344,6 @@
 
     </div>
 
-    <!-- Load React. -->
-    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
-    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-
-    <!-- Add React js scripts here -->
   </body>
   
 </html>

@@ -82,6 +82,42 @@ function toggleViewVolVisibility()
 
 ////////////////////////////////////////////////////////////////////////
 //
+// Will submit and handle the response to the post request
+//
+////////////////////////////////////////////////////////////////////////
+function saveVolunteerOppourtunity()
+    {
+    //Collect Form Values
+    var data = {
+        firstName: document.getElementById('volunteerInfo-firstName').value,
+        lastName: document.getElementById('volunteerInfo-lastName').value,
+        team: document.getElementById('volunteerInfo-team').value,
+        email: document.getElementById('volunteerInfo-email').value,
+        type: document.getElementById('volunteerInfo-role').value,
+    };
+
+    handlePostMethod(data, "/addVolunteer", response => 
+        {
+        if(response.success)
+            {
+            alert("You successfully added the volunteer");
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorCode);
+            }
+        
+        console.log(response);
+        })
+    .catch(error)
+        {
+        alert("Error submitting request. Please try again");
+        };
+
+    }
+
+////////////////////////////////////////////////////////////////////////
+//
 // Populates a specific volunteer's name and team from the full Volunteers
 // list to the individual's volunteering page
 //

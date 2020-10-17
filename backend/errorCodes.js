@@ -15,5 +15,8 @@ module.exports =
     PERMISSION_ERROR:           3,
 
 
+    INVALID_INPUT_ERROR:        10, 
+
+
     UNKNOWN_ERROR:              99, 
 } 
