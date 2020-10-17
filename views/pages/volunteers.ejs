@@ -184,89 +184,65 @@
         <button class="button col_16p" style="width: 30%;" id="returnToVolList"> Return to Volunteers</button>
         
       </div>
-  
-      <!-- Pop up box for adding volunteers 
-      <script>
-        $('#saveVolunteerOppourtunityChoice').click( (e) => {
-            console.log("Sending Post");
-            e.preventDefault();
-            alert('stop');
-            $.ajax({
-                url: '/addVolunteer',
-                type: 'POST',
-                datatype: "json",
-                data: $("#addVolunteerForm").serialize(),
-                contentType: "application/json",
-                cache: false,
-                success: function(response) {
-                    alert('Got response');
-                    console.log(response);
-                }               
-            });
-        });
-      </script>
-      -->
-      
 
-      <!-- <form id="addVolunteerForm">  action="addVolunteer" method="POST" -->
         <div id="addVolunteerPopup" class="popup-greyOut" style="display:none">
-          <div class="popup-box">
-              <div class="popup-title" >
-                  <h1 id="oppourtunityTitle">Volunteer Information</h1>
-              </div>
-              <div class="popup-content">
-                  
-                  <div class="col_50p row_100p">
-                      <div class="row_16p">
-                          <div class="col_100p subTitle2"> Name:</div>
-                      </div>
-                      <div class="row_16p">
+            <div class="popup-box">
+                <div class="popup-title" >
+                    <h1 id="oppourtunityTitle">Volunteer Information</h1>
+                </div>
+                <div class="popup-content">
+                    
+                    <div class="col_50p row_100p">
+                        <div class="row_16p">
+                            <div class="col_100p subTitle2"> Name:</div>
+                        </div>
+                        <div class="row_16p">
                         <div class="col_50p subTitle2">
-                          <input class="textInput" type="text" placeholder="First" name="firstName" id="volunteerInfo-firstName" required>
+                            <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName" required>
                         </div>
                         <div class="col_50p subTitle2">
-                          <input class="textInput" type="text" placeholder="Last" name="lastName" id="volunteerInfo-lastName" required>
+                            <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName" required>
                         </div>
-                      </div>
-                      <div class="row_16p">
+                        </div>
+                        <div class="row_16p">
                         <div class="col_30p subTitle2"> Email:</div>
                         <div class="col_70p subTitle2">
-                          <input class="textInput" type="email" placeholder="Email" name="email" id="volunteerInfo-email" required>
+                            <input class="textInput" type="email" placeholder="Email" id="volunteerInfo-email" required>
                         </div>
-                      </div>
-                      <div class="row_16p"></div>
-                      <div class="row_16p subTitle2"> or Upload Roster(.csv):</div>
-                      <div class="row_16p"></div>
-                  </div>
+                        </div>
+                        <div class="row_16p"></div>
+                        <div class="row_16p subTitle2"> or Upload Roster(.csv):</div>
+                        <div class="row_16p"></div>
+                    </div>
 
-                  <div class="col_50p row_100p">
-                      <div class="row_16p">
-                          <div class="col_100p subTitle2"> Team:</div>
-                      </div>
-                      <div class="row_16p">
-                          <div class="col_100p subTitle2">
-                            <input class="textInput" type="text" placeholder="Team" name="teamName" id="volunteerInfo-team" required>
-                          </div>
-                      </div>
-                      <div class="row_16p">
-                          <div class="col_30p subTitle2"> Role:</div>
-                          <div class="col_70p subTitle2">
-                            <input class="textInput" type="text" placeholder="Role"  name="type" id="volunteerInfo-role" required>
-                          </div>
-                      </div>
-                      <div class="row_16p"></div>
-                      <div class="row_16p">
-                          <button class="button" type="button"> Choose File</button>
-                      </div>
-                      <div class="row_16p"></div>
-                  </div>
-              </div>
+                    <div class="col_50p row_100p">
+                        <div class="row_16p">
+                            <div class="col_100p subTitle2"> Team:</div>
+                        </div>
+                        <div class="row_16p">
+                            <div class="col_100p subTitle2">
+                            <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-teamName" required>
+                            </div>
+                        </div>
+                        <div class="row_16p">
+                            <div class="col_30p subTitle2"> Role:</div>
+                            <div class="col_70p subTitle2">
+                            <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-type" required>
+                            </div>
+                        </div>
+                        <div class="row_16p"></div>
+                        <div class="row_16p">
+                            <button class="button" type="button"> Choose File</button>
+                        </div>
+                        <div class="row_16p"></div>
+                    </div>
+                </div>
 
-              <div class="popup-buttons">
-                  <div class="popup-buttons-cancel"><button class="button" type="button" id="cancelVolunteerOppourtunityChoice">Cancel</button></div>
-                  <div class="popup-buttons-add"><button class="button" type="submit" id="saveVolunteerOppourtunityChoice">Save</button></div>
-              </div>
-          </div>
+                <div class="popup-buttons">
+                    <div class="popup-buttons-cancel"><button class="button" type="button" id="cancelAddVolunteer">Cancel</button></div>
+                    <div class="popup-buttons-add"><button class="button" type="submit" id="saveAddVolunteer">Save</button></div>
+                </div>
+            </div>
         </div>
 
       <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->

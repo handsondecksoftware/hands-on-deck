@@ -18,9 +18,9 @@ function init()
   {
   //Setup open and close of popup box
   // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
-  document.getElementById('cancelVolunteerOppourtunityChoice').onclick = function(){toggleVolOppourtunityBoxVisibility()};
-  document.getElementById('saveVolunteerOppourtunityChoice').onclick = function(){saveVolunteerOppourtunity()};
-  document.getElementById('addVolunteerButton').onclick = function(){toggleVolOppourtunityBoxVisibility()};
+  document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
+  document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
+  document.getElementById('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
   document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
   document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
   document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
@@ -37,7 +37,7 @@ function init()
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleVolOppourtunityBoxVisibility()
+function toggleAddVolunteerBoxVisibility()
 {
     //Open the add oppourtuntiy popup box
     var currentState = document.getElementById('addVolunteerPopup').style.display; 
@@ -85,29 +85,33 @@ function toggleViewVolVisibility()
 // Will submit and handle the response to the post request
 //
 ////////////////////////////////////////////////////////////////////////
-function saveVolunteerOppourtunity()
+function addVolunteer()
     {
     //Collect Form Values
-    var data = {
+    var volunteerData = {
         firstName: document.getElementById('volunteerInfo-firstName').value,
         lastName: document.getElementById('volunteerInfo-lastName').value,
-        team: document.getElementById('volunteerInfo-team').value,
+        teamName: document.getElementById('volunteerInfo-teamName').value,
         email: document.getElementById('volunteerInfo-email').value,
-        type: document.getElementById('volunteerInfo-role').value,
+        type: document.getElementById('volunteerInfo-type').value,
+        id: null, 
+        teamName: null, 
+        teamID: null, 
+        volHours:null, 
+        volunteeringData: null,
     };
 
-    handlePostMethod(data, "/addVolunteer", response => 
+    handlePostMethod(volunteerData, "/addVolunteer", response => 
         {
         if(response.success)
             {
             alert("You successfully added the volunteer");
+            toggleAddVolunteerBoxVisibility();
             }
         else 
             {
             printUserErrorMessage(response.errorCode);
             }
-        
-        console.log(response);
         })
     .catch(error)
         {

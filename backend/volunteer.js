@@ -188,12 +188,11 @@ exports.editVolunteer = async (clientID, volunteerData) =>
 // @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
-exports.addVolunteer = async (clientID, volunteerData) => 
-    {
+exports.addVolunteer = async (clientID, volunteerData) => {
     var response = {success: false, errorCode: error.UNKNOWN_ERROR};
+    var errorOccurred = false;
 
-    try 
-        {
+    try {
         console.log('addVolunteer() called by: ' + clientID);
 
 
@@ -226,35 +225,37 @@ exports.addVolunteer = async (clientID, volunteerData) =>
 
         //Hash password to store in db
         var hashedPassword = await bcrypt.hash(userPassword, 10).catch(e => {
-            console.log("An Error Occured in hasing the password")
-          });
-
-        await database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, password, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + hashedPassword + "', '" + volunteerData.email + "', '" + volunteerData.type + "')", 
-                        (res, e) => {
-            if(e) {
-                response.errorCode = error.DATABASE_ACCESS_ERROR;
-                response.success = false;
-            }
-            else {
-                //Send the user an email with their account info 
-                response.errorCode = error.NOERROR;
-                response.success = true;
-            }
+            console.log("An Error Occured in hasing the password");
+            errorOccurred = true; 
         });
+
+        if(!errorOccurred) {
+            await database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, password, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + hashedPassword + "', '" + volunteerData.email + "', '" + volunteerData.type + "')", 
+                                (res, e) => {
+                if(e) {
+                    response.errorCode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                }
+                else {
+                    //Send the user an email with their account info 
+                    response.errorCode = error.NOERROR;
+                    response.success = true;
+                }
+            });
         }
-    catch (err)
-        {
+    }
+    catch (err) {
         console.log("Error Occurred: " + err.message);
 
         response.errorCode = error.SERVER_ERROR;
         response.success = false;
-        }
+    }
 
     //Log completion of function
     console.log('Result of addVolunteer() is: ' + response.success);
 
     return response;
-    }
+}
 
 
 ////////////////////////////////////////////////////////////
