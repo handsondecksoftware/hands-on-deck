@@ -106,27 +106,29 @@
             <div style="height:125px; margin-left:10%;">
                 <div class="row_60p">
                 <div class="col_50p">
-                    <div class="col_33p subTitle2">Team Name:</div>
+                    <div class="col_33p subTitle2"  style="padding-top: 2%;">Team Name:</div>
                     <div class="col_66p">
                     <div class="blackDisplayField" id="teamInfo-name"></div>
                     </div>
                 </div>
                 <div class="col_50p">
-                    <div class="col_30p subTitle2">Sex:</div>
+                    <div class="col_30p subTitle2" style="padding-top: 2%;">Sex:</div>
                     <div class="col_50p">
-                    <div class="blackDisplayField" id="teamInfoSexLabel">Male</div>
-                    </div>
+                        <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
+                        <div class="sliderContainer sliderWidth">
+                            <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
+                        </div>
                     <div class="col_20p"><!--For Spacing--></div>
                 </div>
                 </div>
                 <div class="row_40p">
-                <div class="col_30p subTitle2">   Include In Leaderboards:</div>
+                    <div class="col_30p subTitle2">   Include In Leaderboards:</div>
                     <div class="col_40p">
-                    <div class="sliderLabel textColor-black" id="teamInfoIncludeLeaderboardsLabel">Yes</div>
-                    <div class="sliderContainer sliderWidth">
-                        <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoIncludeLeaderboards">
-                    </div>
-                    </div>
+                        <div class="sliderLabel textColor-black" id="teamInfoIncludeLeaderboardsLabel">Yes</div>
+                        <div class="sliderContainer sliderWidth">
+                            <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoIncludeLeaderboards">
+                        </div>
+                        </div>
                     <div class="col_30p"><!--For Spacing--></div>
                 </div>
             </div>
