@@ -31,6 +31,8 @@ function init()
     document.getElementById('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
     document.getElementById('addOpportunityChoice').onclick = function(){addOpportunity()};
     document.getElementById('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
+    document.getElementById('closeVolunteerInvolvement').onclick = function(){toggleViewInvolvementBoxVisibility()};
+    document.getElementById('saveVolunteerInvolvement').onclick = function(){saveVolunteerInvolvement()};
 
     initSlider('Oppourtunties');
     initDropdowns('Oppourtunties');
@@ -43,13 +45,61 @@ function init()
 
 ////////////////////////////////////////////////////////////////////////
 // 
+// Will eiter display or hide the add oppourtuntiy box depending on the current state
+//
+////////////////////////////////////////////////////////////////////////
+function toggleOppourtuntiyBoxVisibility()
+    {
+    //Change the oppourtuntiy popup box display
+    var currentState = document.getElementById('addOpportunityPopup').style.display; 
+
+    if(currentState === "none")
+        {
+        fillOpportunityTypeOptions();
+        document.getElementById('addOpportunityPopup').style.display = "block";
+        }
+    else 
+        {
+        document.getElementById('addOpportunityPopup').style.display = "none"; 
+        }
+
+    return;
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will eiter display or hide the add oppourtuntiy box depending on the current state
+//
+////////////////////////////////////////////////////////////////////////
+function toggleViewInvolvementBoxVisibility()
+    {
+    //Change the oppourtuntiy popup box display
+    var currentState = document.getElementById('viewVolunteerInvolvementPopup').style.display; 
+
+    if(currentState === "none")
+        {
+        fillOpportunityTypeOptions();
+        document.getElementById('viewVolunteerInvolvementPopup').style.display = "block";
+        }
+    else 
+        {
+        document.getElementById('viewVolunteerInvolvementPopup').style.display = "none"; 
+        }
+
+    return;
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
 // Will fill the oppourtunities table
 //
 ////////////////////////////////////////////////////////////////////////
 function fillOpportunityTable()
     {
-    var data = {OpportunityID: -1};
-    handlePostMethod(data, '/getOpportunityData', response =>
+    //Call method to load oppourtunities -- value of -1 will get all oppourtunities for my instituition
+    handlePostMethod({OpportunityID: -1}, '/getOpportunityData', response =>
         {
         if(response.success)
             {
@@ -116,30 +166,6 @@ function fillOpportunityTable()
             remove.innerHTML = "";
             }
         });
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will eiter display or hide the add oppourtuntiy box depending on the current state
-//
-////////////////////////////////////////////////////////////////////////
-function toggleOppourtuntiyBoxVisibility()
-    {
-    //Change the oppourtuntiy popup box display
-    var currentState = document.getElementById('addOpportunityPopup').style.display; 
-
-    if(currentState === "none")
-        {
-        fillOpportunityTypeOptions();
-        document.getElementById('addOpportunityPopup').style.display = "block";
-        }
-    else 
-        {
-        document.getElementById('addOpportunityPopup').style.display = "none"; 
-        }
-
-    return;
     }
 
 
@@ -253,7 +279,7 @@ function deleteOpportunity(elementID)
                 }
             else 
                 {
-                console.log("Could not successfully load teams availible. Error Code: " + response.errorCode);
+                console.log("Could not successfully delete the oppourtunity. Error Code: " + response.errorCode);
 
                 printUserErrorMessage(response.errorCode);
                 }
@@ -280,7 +306,7 @@ function viewOpportunity(elementID){
     //      https://www.w3schools.com/howto/howto_css_loader.asp
     //      would need this everytime we call for a post request where the user waits for us
 
-    //Get the Opportunity data using getOpportunityData()
+    //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
     handlePostMethod({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
         {
         if(response.success)
@@ -351,7 +377,40 @@ function viewVolunteerForOpportunity(elementID)
     {
     var VolunteerDataID = elementID.slice(5);       //will remove 'view_'
 
-    //Need to access database containing the volunteering data specified by this id
+    //Show the popup window
+    toggleViewInvolvementBoxVisibility();
+
+    //Get the volunteer data ID -- passed as an array of 1 element
+    /*
+    handlePostMethod({dataID: [VolunteerDataID]}, '/getVolunteeringData', response => 
+        {
+        if(response.success)
+            {
+            
+            }
+        else 
+            {
+            //Notify user of error
+            }
+            
+        });
+    */
+
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will save the volunteer information that was updated by the user
+//
+////////////////////////////////////////////////////////////////////////
+function saveVolunteerInvolvement()
+    {
+    //Get the involvement ID
+
+    //Collect the volunteer involvement ID
+
+    //Make post request and communicate the result
     }
 
 

@@ -136,7 +136,7 @@
               <div class="popup-title" >
                   <h1>Add Opportunity</h1>
               </div>
-              <div class="popup-content">
+              <div class="popup-content" style="height:350px">
                   
                 <div class="col_50p row_100p">
                   <div class="row_25p">
@@ -219,6 +219,66 @@
               </div>
           </div>
         </div>
+
+
+        <!-- Pop up box for viewing volunteer involvement in oppourtunity -->
+        <div id="viewVolunteerInvolvementPopup" class="popup-greyOut" style="display:none">
+            <div class="popup-box">
+                <div class="popup-title" >
+                    <h1 id="volunteerInvolvement-name">Volunteer Name</h1>
+                </div>
+                <div class="popup-content" style="height: 175px">
+                    
+                    <div class="col_50p row_100p">
+                        <div class="row_65p">
+                            <div class="row_30p text-center paddingRight10 subTitle2">Time</div>
+                            <div class="row_70p">
+                                <div class="row_100p col_50p paddingRight10">
+                                    <input class="textInput" type="text" placeholder="Start" id="viewInvolvement-startTime">
+                                </div>
+                                <div class="row_100p col_50p paddingLeft10">
+                                    <input class="textInput" type="text" placeholder="End" id="viewInvolvement-endTime">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row_35p">
+                            <div class="col_40p row_100p subTitle2 paddingRight25">Validated</div>
+                            <div class="col_60p row_100p">
+                                <div class="sliderContainer sliderWidth">
+                                    <input type="range" min="0" max="1" value="0" class="slider" id="viewInvolvement-validated">
+                                </div>
+                                <div class="sliderLabel marginLeft5" id="viewInvolvement-validatedLabel">No</div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col_50p row_100p">
+                        <div class="row_65p">
+                            <div class="row_30p text-center paddingRight10 subTitle2">Duration</div>
+                            <div class="row_70p">
+                                <input class="textInput" type="text" placeholder="Duration" id="viewInvolvement-duration">
+                            </div>
+                        </div>
+                        <div class="row_35p">
+                            <div class="col_40p row_100p subTitle2 paddingRight25">Occurred</div>
+                            <div class="col_60p row_100p">
+                                <!-- NOTE: this slider will not be editable by the admin user - only depends on date and time of event
+                                            will need to manually edit this value in the js data handling                               -->
+                                <div class="sliderContainer sliderWidth"> 
+                                    <input type="range" min="0" max="1" value="0" class="slider" id="viewInvolvement-occurred">
+                                </div>
+                                <div class="sliderLabel marginLeft5" id="viewInvolvement-occurredLabel">No</div>
+                            </div>
+                        </div>  
+                    </div>
+
+                </div>
+                <div class="popup-buttons">
+                    <div class="popup-buttons-cancel"><button class="button" id="closeVolunteerInvolvement">Close</button></div>
+                    <div class="popup-buttons-add"><button class="button" id="saveVolunteerInvolvement">Add</button></div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Pop up box for logging out -->
         <div id="logoutPopup" class="popup-greyOut" style="display:none">

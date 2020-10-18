@@ -203,69 +203,61 @@
 /*******************************************************************
 * Popop
 *******************************************************************/
-.popup-box {
-  border-radius: 10px;
-  background-color: white;
-  width: 700px;
-  height: 500px;
-  border: 2px solid black;
-  display: block; 
-  padding: 10px;
-  margin-top: 100px;
-  margin-left: 20%; /* 210px*/
+.popup-greyOut {
+    display: none; 
+    position: fixed; 
+    z-index: 15; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0);  /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.popup-box2 {
+.popup-box {
     border-radius: 10px;
     background-color: white;
-    width: 700px;
-    height: 400px;
+    /*height: 540px;  500px for content, 40 px for padding */
+    width: 80%;     /* Could be more or less, depending on screen size */
     border: 2px solid black;
+    border-radius: 5px;
     display: block; 
     padding: 10px;
-    margin-top: 100px;
-    margin-left: 20%; /* 210px*/
-  }
-
-.popup-greyOut {
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  z-index: 1; /* Sit on top */
-  position: fixed; /* Stay in place */
-  display: none;    /* Should be hidden by default */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 120%; /* Full height */
+    margin: 10% auto; /* 10% from the top and centered */
 }
 
 .popup-title {
-  height: 10%;
-  text-align: center;
-  color: #1f6400;
+    height: 40px;
+    text-align: center;
+    color: #1f6400;
 }
 
 .popup-content {
-  padding: 10px;
-  height: 75%;
+    padding: 10px;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .popup-buttons {
-height: 10%;
-padding-bottom: 10px;
+    height: 50px;
+    padding-bottom: 10px;
 }
 
+
 .popup-buttons-cancel {
-  float: left;
-  width: 25%;
-  margin-right: 50%;
+    float: left;
+    width: 25%;
+    margin-right: 50%;
 }
 
 .popup-buttons-add {
-  float: left;
-  text-align: center;
-  border-color: black;
-  width: 25%;
+    float: left;
+    text-align: center;
+    border-color: black;
+    width: 25%;
 }
 /*******************************************************************
 * End Of Popup

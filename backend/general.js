@@ -50,7 +50,7 @@ exports.getVolunteerInstitutionID = async volunteerID =>
 // Will get the volunteers instituion id
 //
 ////////////////////////////////////////////////////////////
-exports.getInstitutionStats = volunteerID => 
+exports.getInstitutionStats = async volunteerID => 
   {
   var response = {success: false, errorCode: -1, iStats: null};
 

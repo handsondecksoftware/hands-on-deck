@@ -174,12 +174,24 @@ h1{
   padding-right: 75px;
 }
 
+.paddingRight10{
+    padding-right: 10px;
+}
+
+.paddingRight12{
+    padding-right: 12px;
+}
+
+.paddingRight25{
+    padding-right: 25px;
+}
+
 .paddingRight50{
 padding-right: 50px;
 }
 
-.paddingRight12{
-padding-right: 12px;
+.paddingLeft10{
+    padding-left: 10px;
 }
 
 .paddingLeft12{

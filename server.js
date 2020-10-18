@@ -158,30 +158,30 @@ app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
 
 app.post('/addOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addopportunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.addOpportunity(request.user[0].volunteer_id, request.oppData));
     });
 
 
 app.post('/editOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.editopportunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.editOpportunity(request.user[0].volunteer_id, request.oppData));
     });
 
 app.post('/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.deleteopportunity(request.user[0].volunteer_id, request.opportunityID));
+    response.send(await opportunity.deleteOpportunity(request.user[0].volunteer_id, request.opportunityID));
     });
 
 
 app.post('/getOpportunityTypes', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getopportunityTypes(request.user[0].volunteer_id));
+    response.send(await opportunity.getOpportunityTypes(request.user[0].volunteer_id));
     });
 
 
 app.post('/addOpportunityType', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addopportunityType(request.user[0].volunteer_id, request.opportunityType));
+    response.send(await opportunity.addOpportunityType(request.user[0].volunteer_id, request.opportunityType));
     });
 
 

@@ -37,37 +37,42 @@
 //		
 ////////////////////////////////////////////////////////////
 function initSlider(pageName)
-  {
-  switch(pageName)
     {
-    case 'Oppourtunties':
-      {
-      document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('addOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
+    switch(pageName)
+        {
+        case 'Oppourtunties':
+            {
+            document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('addOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('viewInvolvement-validated').onchange = function(){changeSliderLabel(this.id)};
 
-      break;
-      } 
-    case 'Teams':
-      {
-      document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('teamInfoSex').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('teamInfoIncludeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+            break;
+            } 
+        case 'Teams':
+            {
+            document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('teamInfoSex').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('teamInfoIncludeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
 
-      break;
-      } 
-    case 'Volunteers':
-      {
-      document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
-      document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
+            break;
+            } 
+        case 'Volunteers':
+            {
+            document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
+            document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
 
-      break;
-      } 
-    default:
-      //do nothing
-      break;
+            break;
+            } 
+        default:
+            {
+            //do nothing
+            break;
+            }
+        }
+
+    return;
     }
-  }
 
 
 ////////////////////////////////////////////////////////////
@@ -76,48 +81,53 @@ function initSlider(pageName)
 //		
 ////////////////////////////////////////////////////////////
 function changeSliderLabel(sliderID)
-  {
-  //Get label ID
-  var labelID = sliderID + "Label";
-  var currentValue = document.getElementById(sliderID).value;
-
-  var sliderOptions;
-
-  //Get slider options
-  switch(sliderID)
     {
-    case 'oppTimeFrame':
-      {
-      sliderOptions = ['Past', 'Present', 'Future'];
-      break;
-      }
-    case 'addOpportunityVolunteerLimit':
-      {
-      sliderOptions = newArrayFrom1toN(14); 
-      sliderOptions.push('No Limit');
-      break;
-      }
-    case 'teamSex':
-    case 'teamInfoSex':
-      {
-      sliderOptions = ['Male', 'Female'];
-      break;
-      }
-    case 'includeLeaderboards':
-    case 'teamInfoIncludeLeaderboards':
-    case 'oppValidated':
-    case 'oppOccurred':
-      {
-      sliderOptions = ['Yes', 'No'];
-      break;
-      }
-    default:
-      //Do nothing
-      break;
+    //Get label ID
+    var labelID = sliderID + "Label";
+    var currentValue = document.getElementById(sliderID).value;
+
+    var sliderOptions;
+
+    //Get slider options
+    switch(sliderID)
+        {
+        case 'oppTimeFrame':
+            {
+            sliderOptions = ['Past', 'Present', 'Future'];
+            break;
+            }
+        case 'addOpportunityVolunteerLimit':
+            {
+            sliderOptions = newArrayFrom1toN(14); 
+            sliderOptions.push('No Limit');
+            break;
+            }
+        case 'teamSex':
+        case 'teamInfoSex':
+            {
+            sliderOptions = ['Male', 'Female'];
+            break;
+            }
+        case 'includeLeaderboards':
+        case 'teamInfoIncludeLeaderboards':
+        case 'oppValidated':
+        case 'oppOccurred':
+            {
+            sliderOptions = ['Yes', 'No'];
+            break;
+            }
+        case 'viewInvolvement-validated':
+            {
+            sliderOptions = ['No', 'Yes'];
+            break; 
+            }
+        default:
+            //Do nothing
+            break;
+        }
+
+    //Change slider label value
+    document.getElementById(labelID).innerHTML = sliderOptions[currentValue];
+
+    return;
     }
-
-  //Change slider label value
-  document.getElementById(labelID).innerHTML = sliderOptions[currentValue];
-
-  return;
-  }

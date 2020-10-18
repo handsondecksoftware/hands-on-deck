@@ -190,51 +190,51 @@
                 <div class="popup-title" >
                     <h1 id="oppourtunityTitle">Volunteer Information</h1>
                 </div>
-                <div class="popup-content">
+                <div class="popup-content" style="height:350px">
                     
                     <div class="col_50p row_100p">
-                        <div class="row_16p">
-                            <div class="col_100p subTitle2"> Name:</div>
+                        <div class="row_10p">
+                            <div class="col_100p text-center subTitle2"> Name:</div>
                         </div>
-                        <div class="row_16p">
-                        <div class="col_50p subTitle2">
-                            <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName" required>
+                        <div class="row_25p">
+                            <div class="col_50p subTitle2">
+                                <input class="textInput" type="text" placeholder="First" id="volunteerInfo-firstName" required>
+                            </div>
+                            <div class="col_50p subTitle2">
+                                <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName" required>
+                            </div>
                         </div>
-                        <div class="col_50p subTitle2">
-                            <input class="textInput" type="text" placeholder="Last" id="volunteerInfo-lastName" required>
+                        <div class="row_25p">
+                            <div class="col_30p subTitle2"> Email:</div>
+                            <div class="col_70p subTitle2">
+                                <input class="textInput" type="email" placeholder="Email" id="volunteerInfo-email" required>
+                            </div>
                         </div>
-                        </div>
-                        <div class="row_16p">
-                        <div class="col_30p subTitle2"> Email:</div>
-                        <div class="col_70p subTitle2">
-                            <input class="textInput" type="email" placeholder="Email" id="volunteerInfo-email" required>
-                        </div>
-                        </div>
-                        <div class="row_16p"></div>
-                        <div class="row_16p subTitle2"> or Upload Roster(.csv):</div>
-                        <div class="row_16p"></div>
+                        <div class="row_10p"></div>
+                        <div class="row_20p marginTop10 subTitle2"> or Upload Roster(.csv):</div>
+                        <div class="row_10p"></div>
                     </div>
 
                     <div class="col_50p row_100p">
-                        <div class="row_16p">
-                            <div class="col_100p subTitle2"> Team:</div>
+                        <div class="row_10p">
+                            <div class="col_100p text-center subTitle2"> Team:</div>
                         </div>
-                        <div class="row_16p">
+                        <div class="row_25p">
                             <div class="col_100p subTitle2">
                             <input class="textInput" type="text" placeholder="Team" id="volunteerInfo-teamName" required>
                             </div>
                         </div>
-                        <div class="row_16p">
+                        <div class="row_25p">
                             <div class="col_30p subTitle2"> Role:</div>
                             <div class="col_70p subTitle2">
-                            <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-type" required>
+                                <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-type" required>
                             </div>
                         </div>
-                        <div class="row_16p"></div>
-                        <div class="row_16p">
+                        <div class="row_10p"></div>
+                        <div class="row_20p">
                             <button class="button" type="button"> Choose File</button>
                         </div>
-                        <div class="row_16p"></div>
+                        <div class="row_10p"></div>
                     </div>
                 </div>
 
@@ -245,68 +245,69 @@
             </div>
         </div>
 
-      <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
-      <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">
-        <div class="popup-box2">
-            <div class="popup-title" >
-                <h1 id="opportunityTitle">Opportunity Title</h1>
-            </div>
-            <div class="popup-content" style="height: 70%;">
-
-                <div class="col_50p row_100p">
-                    <div class="row_20p">
-                        <div class="col_50p subTitle2"> Date:</div>
-                        <div class="col_50p subTitle2"> Time:</div>
-                    </div>
-                    <div class="row_33p">
-                      <div class="col_50p subTitle2">
-                        <input class="textInput" type="text" placeholder="Date" id="oppDate">
-                      </div>
-                      <div class="col_50p subTitle2">
-                        <input class="textInput" type="text" placeholder="Time" id="oppTime">
-                      </div>
-                    </div>
-                    <div class="row_33p">
-                      <div class="col_35p subTitle2"> Validated:</div>
-                      <div class="col_65p subTitle2">
-                        <div class="sliderLabel" id="oppValidatedLabel">Yes</div>
-                        <div class="sliderContainer sliderWidth">
-                            <input type="range" min="0" max="1" value="0" class="slider" id="oppValidated">
-                        </div>
-                      </div>
-                    </div>
+        <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
+        <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">
+            <div class="popup-box">
+                <div class="popup-title">
+                    <h1 id="opportunityTitle">Opportunity Title</h1>
                 </div>
+                <div class="popup-content" style="height:175px">
 
-                <div class="col_50p row_100p">
-                    <div class="row_20p">
-                        <div class="col_100p subTitle2"> Duration:</div>
-                    </div>
-                    <div class="row_33p">
-                        <div class="col_100p subTitle2">
-                          <input class="textInput" type="text" placeholder="Duration" id="volunteerInfo-team">
+                    <div class="col_50p row_100p">
+                        <div class="row_20p">
+                            <div class="col_50p subTitle2"> Date:</div>
+                            <div class="col_50p subTitle2"> Time:</div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_50p subTitle2">
+                            <input class="textInput" type="text" placeholder="Date" id="oppDate">
+                            </div>
+                            <div class="col_50p subTitle2">
+                            <input class="textInput" type="text" placeholder="Time" id="oppTime">
+                            </div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_35p subTitle2"> Validated:</div>
+                            <div class="col_65p subTitle2">
+                            <div class="sliderLabel" id="oppValidatedLabel">Yes</div>
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="1" value="0" class="slider" id="oppValidated">
+                            </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row_33p">
-                        <div class="col_35p subTitle2"> Occurred:</div>
-                        <div class="col_65p">
-                            <div class="sliderLabel" id="oppOccurredLabel">Yes</div>
-                            <div class="sliderContainer sliderWidth">
-                                <input type="range" min="0" max="1" value="0" class="slider" id="oppOccurred">
+
+                    <div class="col_50p row_100p">
+                        <div class="row_20p">
+                            <div class="col_100p subTitle2"> Duration:</div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_100p subTitle2">
+                                <input class="textInput" type="text" placeholder="Duration" id="volunteerInfo-team">
+                            </div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_35p subTitle2"> Occurred:</div>
+                            <div class="col_65p">
+                                <div class="sliderLabel" id="oppOccurredLabel">Yes</div>
+                                <div class="sliderContainer sliderWidth">
+                                    <input type="range" min="0" max="1" value="0" class="slider" id="oppOccurred">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="popup-buttons">
-                <div class="popup-buttons-cancel"><button class="button" id="cancelOppourtunityView">Cancel</button></div>
-                <div class="popup-buttons-add"><button class="button" id="saveOppourtunityView">Save</button></div>
+
+                <div class="popup-buttons">
+                    <div class="popup-buttons-cancel"><button class="button" id="cancelOppourtunityView">Cancel</button></div>
+                    <div class="popup-buttons-add"><button class="button" id="saveOppourtunityView">Save</button></div>
+                </div>
             </div>
         </div>
-      </div>
 
-      <!-- Pop up box for logging out -->
-      <div id="logoutPopup" class="popup-greyOut" style="display:none">
+        <!-- Pop up box for logging out -->
+        <div id="logoutPopup" class="popup-greyOut" style="display:none">
         <div class="logout-popup">
             <div class="logout-content subTitle">
                 Are you sure you want to logout?
@@ -316,7 +317,7 @@
                 <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
             </div>
         </div>
-      </div>
+        </div>
 
     </div>
 
