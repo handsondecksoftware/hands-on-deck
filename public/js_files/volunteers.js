@@ -101,7 +101,7 @@ function addVolunteer()
         volunteeringData: null,
     };
 
-    handlePostMethod(volunteerData, "/addVolunteer", response => 
+    handlePostMethod({volunteerData: volunteerData}, "/addVolunteer", response => 
         {
         if(response.success)
             {

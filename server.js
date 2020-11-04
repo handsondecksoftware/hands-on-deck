@@ -146,30 +146,30 @@ app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
 /////////opportunity REQUESTS//////////////////////////////////////////
 app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityData(request.user[0].volunteer_id, request.opportunityID));
+    response.send(await opportunity.getOpportunityData(request.user[0].volunteer_id, request.body.opportunityID));
     });
 
 
 app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityInfo(request.user[0].volunteer_id, request.opportunityID));
+    response.send(await opportunity.getOpportunityInfo(request.user[0].volunteer_id, request.body.opportunityID));
     });
 
 
 app.post('/addOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addOpportunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.addOpportunity(request.user[0].volunteer_id, request.body.oppData));
     });
 
 
 app.post('/editOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.editOpportunity(request.user[0].volunteer_id, request.oppData));
+    response.send(await opportunity.editOpportunity(request.user[0].volunteer_id, request.body.oppData));
     });
 
 app.post('/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.deleteOpportunity(request.user[0].volunteer_id, request.opportunityID));
+    response.send(await opportunity.deleteOpportunity(request.user[0].volunteer_id, request.body.opportunityID));
     });
 
 
@@ -181,7 +181,7 @@ app.post('/getOpportunityTypes', auth.authcheck, async (request, response) =>
 
 app.post('/addOpportunityType', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addOpportunityType(request.user[0].volunteer_id, request.opportunityType));
+    response.send(await opportunity.addOpportunityType(request.user[0].volunteer_id, request.body.opportunityType));
     });
 
 
@@ -195,48 +195,48 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
 /////////VOLUNTEERING DATA REQUESTS/////////////////////////////////////////////
 app.post('/getVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.getVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteerData.getVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
     });
 
 app.post('/addVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.addVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteerData.addVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
     });
 
 app.post('/editVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.editVolunteeringData(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteerData.editVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
     });
 
 
 /////////VOLUNTEER REQUESTS/////////////////////////////////////////////
 app.post('/getVolunteerData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.getVolunteerData(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteer.getVolunteerData(request.user[0].volunteer_id, request.body.volunteerID));
     });
 
 
 app.post('/getVolunteerInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.volunteerID));
+    response.send(await volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.body.volunteerID));
     });
 
 
 app.post('/editVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.editVolunteer(request.user[0].volunteer_id, request.volunteerData));
+    response.send(await volunteer.editVolunteer(request.user[0].volunteer_id, request.body.volunteerData));
     });
 
 
 app.post('/addVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.body));
+    response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.body.volunteerData));
     });
 
 
 app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.updateUserInfo(request.user[0].volunteer_id, request.userInfo));
+    response.send(await volunteer.updateUserInfo(request.user[0].volunteer_id, request.body.userInfo));
     });
 
 
@@ -244,13 +244,13 @@ app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
 /////////TEAM REQUESTS//////////////////////////////////////////////////
 app.post('/getTeamData', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.getTeamData(request.user[0].volunteer_id, request.teamID));
+    response.send(await team.getTeamData(request.user[0].volunteer_id, request.body.teamID));
     });
 
 
 app.post('/getTeamInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.teamID));
+    response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.body.teamID));
     });
 
 
@@ -262,7 +262,7 @@ app.post('/editTeam', auth.authcheck, async (request, response) =>
 
 app.post('/addTeam', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.addTeam(request.user[0].volunteer_id, request.teamData));
+    response.send(await team.addTeam(request.user[0].volunteer_id, request.body.teamData));
     });
 
 

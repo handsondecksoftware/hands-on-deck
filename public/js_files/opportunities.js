@@ -12,7 +12,8 @@
 // Global Varaibles
 //
 //////////////////////////////////////////////////////////////////////// 
-//None
+var addOppourtunityType_gv = -1;
+var addOppourtunityViewableBy_gv = -1;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -99,13 +100,10 @@ function toggleViewInvolvementBoxVisibility()
 function fillOpportunityTable()
     {
     //Call method to load oppourtunities -- value of -1 will get all oppourtunities for my instituition
-    handlePostMethod({OpportunityID: -1}, '/getOpportunityData', response =>
+    handlePostMethod({OpportunityID: -1}, '/getOpportunityInfo', response =>
         {
         if(response.success)
             {
-            //Set global variable to hold data from Opportunity
-            oppourtuntiyData_gv = response.oppData;
-
             //Get reference to table 
             var oppourtuntityRoundTable = document.getElementById('oppourtuntiesTable');
             var rowNum = 1;
@@ -178,9 +176,51 @@ function fillOpportunityTable()
 ////////////////////////////////////////////////////////////////////////
 function addOpportunity()
     {
-    //Collect information
-    //      need to change the 
-    toggleOppourtuntiyBoxVisibility();
+    //Set the coordinator info 
+    var cordInfo = {name: document.getElementById('addOpportunity-coordinatorName'), 
+                    email: document.getElementById('addOpportunity-coordinatorEmail'), 
+                    phone: document.getElementById('addOpportunity-coordinatorPhoneNumber')};
+
+
+    //Collect Form Values
+    var oppData = {
+        title: document.getElementById('addOpportunity-title').value, 
+        date: document.getElementById('addOpportunity-title').value,
+        startTime: document.getElementById('addOpportunity-startTime').value, 
+        endTime: document.getElementById('addOpportunity-endTime').value, 
+        location: "Not Set",                        //***Why isnt this in our UI*** 
+        id: null,                                   //Assigned by the backend
+        occurred: false,                            //Likely false since we just created the event -- needs to be checked
+        type: addOppourtunityType_gv,               //This needs to be set when the option is selected
+        viewableBy: addOppourtunityViewableBy_gv,   //This needs to be set when the option is selected
+        description: "Not set",                     //***Why isnt this in our UI***
+        sequenceNum: 1, 
+        coordinatorInfo: cordInfo,
+        volunteerLimit: document.getElementById('addOpportunityVolunteerLimit').value,
+        volunteers: null,                           //They have not been set yet
+    };
+    
+
+    handlePostMethod({oppData: oppData}, "/addVolunteer", response => 
+        {
+        if(response.success)
+            {
+            alert("You successfully added the volunteer");
+            
+            //Close the Oppourtunity Box
+            toggleOppourtuntiyBoxVisibility();
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorCode);
+            }
+        })
+    .catch(error)
+        {
+        alert("Error submitting request. Please try again");
+        };
+
+    return;
     }
 
 

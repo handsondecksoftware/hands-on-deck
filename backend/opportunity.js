@@ -144,6 +144,26 @@ exports.addOpportunity = async (volunteerID, oppData) =>
 
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
+    /*
+    Data in opp data is in form: 
+    {
+    title: <string>, 
+    date: <string>, -- MMM DD YYYY (Mar 15 2020)
+    startTime: <time>, 
+    endTime: <time>, 
+    location: <string>, 
+    id: <int>,
+    occurred: <bool>, 
+    type: <string>, 
+    viewableBy: [] <string>,		//This will be -1 if it  is viewable by all teams
+    description: <string>, 
+    sequenceNum: <int>, 
+    coordinatorInfo: {name: <string>, email: <string>, phone: <string>},
+    volunteerLimit: <int>
+    volunteers: []   {name: <string>, email: <string>, team: <string>, hours: <number>}
+    }
+    */
+    
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
     response.errorCode = error.NOERROR;
