@@ -48,8 +48,8 @@
             <button class="button" id="addOpportunityButton">Add Opportunity</button>
             </div>
 
-            <div class="searchOpportunity paddingTop5 search">
-                <input class="textInput" placeholder="Search" id="searchopportunities">
+            <div class="searchOpportunity paddingTop5">
+                <input class="textInput" placeholder="Search" id="searchOpportunities">
             </div>
 
             <div class="sortOpportunity">
@@ -75,43 +75,113 @@
             </div>
         </div>
 
-
         <!-- View Oppourtunity Page -- Shown when user clicks to view a specific oppourtunity-->
-        <div id="viewOpportunityPage" class="row_100p" style="display:none">
-            <div id="viewVolunteersForOpportunityHeader" class="row_30p">
-                <div class="row_10p">
-                    <div class="col_33p subTitle2 text-center">Title</div>
-                    <div class="col_33p subTitle2 text-center">Start</div>
-                    <div class="col_33p subTitle2 text-center">End</div>
+        <div id="viewOpportunityPage" style="display:none">
+            <div class="paddingBottom25" style="height:70px"> 
+                <div class="col_50p row_100p paddingLeft25">
+                    <button id="returnToOppListButt" class="button width25">Return</button>
+                </div>
+                <div class="col_50p row_100p">
+                    <button id="editOpportunity" class="button width25">Edit</button>
+                </div>
+            </div>
+            
+            <div id="viewOpportunityInformation" style="height:500px">
+                <div class="row_20p">
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">Title</div>
+                        <div class="row_66p padding-8">
+                            <input class="textInput" type="text" placeholder="Opportunity Title" id="viewOpportunity-title" readonly>
+                        </div>
+                    </div>
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">Start</div>
+                        <div class="row_66p padding-8">
+                            <input class="textInput" type="time" placeholder="Start Time" id="viewOpportunity-startTime" readonly>
+                        </div>
+                    </div>
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">End</div>
+                        <div class="row_66p padding-8">
+                            <input class="textInput" type="time" placeholder="End Time" id="viewOpportunity-endTime" readonly>
+                        </div>
+                    </div>
                 </div>
                 <div class="row_20p">
-                    <div class="col_33p blackDisplayField text-center" id="viewOpportunity-title">Opportunity Title</div>
-                    <div class="col_33p blackDisplayField text-center" id="viewOpportunity-startTime">3:00pm 27/08/2020</div>
-                    <div class="col_30p blackDisplayField text-center" id="viewOpportunity-endTime">4:00pm 27/08/2020</div>
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">Type</div>
+                        <div class="row_66p padding-8">
+                            <div class="dropdown">
+                                <button id="viewOpportunityType" class="dropdown-button"><span id="dropdown-title-viewOpportunityType">Type</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityType"></i></button>
+                                <div id="viewOpportunityTypeOptions" class="dropdown-content">
+                                  <!--Will dynmaically add options here-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">Volunteer Limit</div>
+                        <div class="row_66p padding-8">
+                            <div class="dropdown">
+                                <button id="viewOpportunityVolLimit" class="dropdown-button"><span id="dropdown-title-viewOpportunityVolLimit">Volunteer Limit</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityVolLimit"></i></button>
+                                <div id="viewOpportunityVolLimitOptions" class="dropdown-content">
+                                  <!--Will dynmaically add options here-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col_33p">
+                        <div class="row_33p paddingLeft10 subTitle3">Viewable By:</div>
+                        <div class="row_66p padding-8">
+                            <div class="dropdown">
+                                <button id="viewOpportunityViewableBy" class="dropdown-button"><span id="dropdown-title-viewOpportunityViewableBy">Viewable By</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityViewableBy"></i></button>
+                                <div id="viewOpportunityViewableByOptions" class="dropdown-content">
+                                  <!--Will dynmaically add options here-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row_20p">
-                    <div class="col_10p subTitle2"> </div>
-                    <div class="col_10p subTitle2 paddingTop5">Type:</div>
-                    <div class="col_30p blackDisplayField paddingTop5" id="viewOpportunity-type">Student engagement</div>
-                    <div class="col_30p subTitle2 paddingTop5" style="text-align:right;">Volunteer Limit:</div>
-                    <div class="col_15p blackDisplayField" style="text-align:left; padding-bottom: 5p" id="viewOpportunity-volLimit">15</div>
+                <div class="row_60p">
+                    <div class="col_50p row_100p">
+                        <div class="row_30p">
+                            <div class="row_33p paddingLeft10 subTitle3">Location</div>
+                            <div class="row_66p padding-8">
+                                <input class="textInput" type="text" placeholder="Location" id="viewOpportunity-location" readonly>
+                            </div>
+                        </div>
+                        <div class="row_70p">
+                            <div class="row_15p paddingLeft10 subTitle3">Description</div>
+                            <div class="row_85p padding-8">
+                                <textarea class="textArea" rows="8" type="text" placeholder="Description" id="viewOpportunity-description" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col_50p row_100p">
+                        <div class="row_10p subTitle3_black">Coordinator Information:</div>
+                        <div class="row_30p">
+                            <div class="row_33p paddingLeft10 subTitle3">Name</div>
+                            <div class="row_66p padding-8">
+                                <input class="textInput" type="text" placeholder="Name" id="viewOpportunity-coordinatorName" readonly>
+                            </div>
+                        </div>
+                        <div class="row_30p">
+                            <div class="row_33p paddingLeft10 subTitle3">Email</div>
+                            <div class="row_66p padding-8">
+                                <input class="textInput" type="email" placeholder="Email" id="viewOpportunity-coordinatorEmail" readonly>
+                            </div>
+                        </div>
+                        <div class="row_30p">
+                            <div class="row_33p paddingLeft10 subTitle3">Phone Number</div>
+                            <div class="row_66p padding-8">
+                                <input class="textInput" type="tel" placeholder="Phone Number" id="viewOpportunity-coordinatorPhone" readonly>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="row_20p">
-                    <div class="col_12_5p subTitle2 paddingTop5">Viewable By:</div>
-                    <div class="col_33p blackDisplayField" id="viewOpportunity-viewableBy">Teams</div>
-                    <div class="col_25p subTitle2 paddingTop5">Coordinator Information:</div>
-                    <div class="col_25p blackDisplayField" id="viewOpportunity-coordinatorName">Name</div>
-                </div>
-                <div class="row_20p">
-                    <div class="col_15p subTitle2"></div>
-                    <div class="col_30p subTitle2"></div>
-                    <div class="col_25p blackDisplayField" id="viewOpportunity-coordinatorEmail">Email</div>
-                    <div class="col_25p blackDisplayField" id="viewOpportunity-coordinatorPhone">Phone #</div>
-                </div>
-                <div class="row_10p"></div>
             </div>
                 
-            <div id="viewVolunteersForOpportunityTableDiv" class="table"> 
+            <div id="viewVolunteersForOpportunityTableDiv" class="table paddingTop10"> 
                 <span class="table-title">Volunteers:</span>
                 <table id="viewVolunteersForOpportunityTable"> 
                     <tr>
@@ -124,10 +194,7 @@
                 </table>
             </div>
 
-            <button id="returnToOppListButt" class="button" style="width:20%"> Return to Opportunities</button>
         </div>
-
-        
 
 
         <!-- Pop up box for adding opportunities -->
@@ -136,80 +203,92 @@
               <div class="popup-title" >
                   <h1>Add Opportunity</h1>
               </div>
-              <div class="popup-content" style="height:350px">
+              <div class="popup-content" style="height:425px">
                   
                 <div class="col_50p row_100p">
-                  <div class="row_25p">
-                    <div class="col_25p subTitle2"> Title:</div>
-                    <div class="col_75p"> 
-                      <input class="textInput" type="text" placeholder="Title" id="addOpportunity-title">
-                    </div>
-                  </div>
-                  <div class="row_25p">
-                    <div class="col_25p subTitle2"> Date:</div>
-                    <div class="col_75p"> 
-                      <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOpportunity-date">
-                      <div id="addOpportunityDatePicker" class="hideDP" style="z-index:10"></div>
-                    </div>
-                  </div>
-                  <div class="row_25p">
-                    <div class="col_25p subTitle2"> Time:</div>
-                    <div class="col_37p">
-                      <input class="textInput" type="text" placeholder="Start Time" id="addOpportunity-startTime">
-                    </div>
-                    <div class="col_37p">
-                      <input class="textInput" type="text" placeholder="End Time" id="addOpportunity-endTime">
-                    </div>
-                  </div>
-                  <div class="row_25p">
-                    <div class="col_25p subTitle2"> Type:</div>
-                    <div class="col_75p"> 
-                      <div class="dropdown">
-                        <button id="addOpportunityType" class="dropdown-button"><span id="dropdown-title-addOpportunityType">  Select Type... </span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityType"></i></button>
-                        <div id="addOpportunityTypeOptions" class="dropdown-content">
-                          <!--Will dynmaically add options here-->
+                    <div class="row_17_5p">
+                        <div class="col_25p subTitle3"> Title:</div>
+                        <div class="col_75p"> 
+                            <input class="textInput" type="text" placeholder="Title" id="addOpportunity-title">
                         </div>
-                      </div>
                     </div>
-                  </div>
+                    <div class="row_17_5p">
+                        <div class="col_25p subTitle3"> Date:</div>
+                        <div class="col_75p"> 
+                            <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOpportunity-date">
+                            <div id="addOpportunityDatePicker" class="hideDP" style="z-index:10"></div>
+                        </div>
+                    </div>
+                    <div class="row_17_5p">
+                        <div class="col_25p subTitle3"> Time:</div>
+                        <div class="col_37p">
+                            <input class="textInput" type="text" placeholder="Start Time" id="addOpportunity-startTime">
+                        </div>
+                        <div class="col_37p">
+                            <input class="textInput" type="text" placeholder="End Time" id="addOpportunity-endTime">
+                        </div>
+                    </div>
+                    <div class="row_17_5p">
+                        <div class="col_25p subTitle3"> Date:</div>
+                        <div class="col_75p"> 
+                            <input class="textInput" type="text" placeholder="Location" id="addOpportunity-location">
+                        </div>
+                    </div>
+                    <div class="row_30p">
+                        <div class="col_25p subTitle3"> Description:</div>
+                        <div class="col_75p"> 
+                            <textarea class="textArea" rows="5" type="text" placeholder="Description" id="addOpportunity-description"></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col_50p row_100p">
-                  <div class="row_25p">
-                    <div class="col_33p subTitle2"> Viewable By:</div>
-                    <div class="col_66p"> 
-                      <div class="dropdown">
-                        <button id="addOpportunityViewableBy" class="dropdown-button"><span id="dropdown-title-addOpportunityViewableBy">  All Teams</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityViewableBy"></i></button>
-                        <div id="addOpportunityViewableByOptions" class="dropdown-content">
-                          <!--Will dynmaically add options here-->
-                          <a id="addOpportunityViewableByOptions_option_0" class="dropdown-option">All Teams</a>
+                    <div class="row_17_5p">
+                        <div class="col_33p subTitle3"> Viewable By:</div>
+                        <div class="col_66p"> 
+                            <div class="dropdown">
+                                <button id="addOpportunityViewableBy" class="dropdown-button"><span id="dropdown-title-addOpportunityViewableBy">  All Teams</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityViewableBy"></i></button>
+                                <div id="addOpportunityViewableByOptions" class="dropdown-content">
+                                    <!--Will dynmaically add options here-->
+                                    <a id="addOpportunityViewableByOptions_option_0" class="dropdown-option">All Teams</a>
+                                </div>
+                            </div>
                         </div>
-                      </div>
                     </div>
-                  </div>
-                  <div class="row_25p">
-                    <div class="col_33p subTitle2"> Volunteer Limit:</div>
-                    <div class="col_66p"> 
-                      <div class="sliderContainer sliderWidth">
-                        <input type="range" min="0" max="15" value="15" class="slider" id="addOpportunityVolunteerLimit">
-                      </div>
-                      <div class="sliderLabel marginLeft5" id="addOpportunityVolunteerLimitLabel">No Limt</div>
+                    <div class="row_17_5p">
+                        <div class="col_33p subTitle3"> Volunteer Limit:</div>
+                        <div class="col_66p"> 
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="15" value="15" class="slider" id="addOpportunityVolunteerLimit">
+                            </div>
+                            <div class="sliderLabel marginLeft5" id="addOpportunityVolunteerLimitLabel">No Limt</div>
+                        </div>
                     </div>
-                  </div>
-                  <div class="row_50p">
-                    <div class="row_20p subTitle2"> Coordinator Information</div>
-                    <div class="row_40p"> 
-                      <div class="col_50p"> 
-                        <input class="textInput" type="text" placeholder="Name" id="addOpportunity-coordinatorName">
-                      </div>
-                      <div class="col_50p"> 
-                        <input class="textInput" type="text" placeholder="Email" id="addOpportunity-coordinatorEmail">
-                      </div>
+                    <div class="row_17_5p">
+                        <div class="col_25p subTitle3"> Type:</div>
+                        <div class="col_75p"> 
+                            <div class="dropdown">
+                                <button id="addOpportunityType" class="dropdown-button"><span id="dropdown-title-addOpportunityType">  Select Type... </span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityType"></i></button>
+                                <div id="addOpportunityTypeOptions" class="dropdown-content">
+                                    <!--Will dynmaically add options here-->
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row_40p"> 
-                      <input class="textInput" type="text" placeholder="Phone Number" id="addOpportunity-coordinatorPhoneNumber">
+                    <div class="row_52_5p">
+                        <div class="row_20p subTitle3"> Coordinator Information</div>
+                        <div class="row_40p"> 
+                            <div class="col_50p"> 
+                                <input class="textInput" type="text" placeholder="Name" id="addOpportunity-coordinatorName">
+                            </div>
+                            <div class="col_50p"> 
+                                <input class="textInput" type="text" placeholder="Email" id="addOpportunity-coordinatorEmail">
+                            </div>
+                        </div>
+                        <div class="row_40p"> 
+                            <input class="textInput" type="text" placeholder="Phone Number" id="addOpportunity-coordinatorPhoneNumber">
+                        </div>
                     </div>
-                  </div>
                 </div>
 
               </div>
@@ -231,7 +310,7 @@
                     
                     <div class="col_50p row_100p">
                         <div class="row_65p">
-                            <div class="row_30p text-center paddingRight10 subTitle2">Time</div>
+                            <div class="row_30p text-center paddingRight10 subTitle3">Time</div>
                             <div class="row_70p">
                                 <div class="row_100p col_50p paddingRight10">
                                     <input class="textInput" type="text" placeholder="Start" id="viewInvolvement-startTime">
@@ -242,7 +321,7 @@
                             </div>
                         </div>
                         <div class="row_35p">
-                            <div class="col_40p row_100p subTitle2 paddingRight25">Validated</div>
+                            <div class="col_40p row_100p subTitle3 paddingRight25">Validated</div>
                             <div class="col_60p row_100p">
                                 <div class="sliderContainer sliderWidth">
                                     <input type="range" min="0" max="1" value="0" class="slider" id="viewInvolvement-validated">
@@ -253,13 +332,13 @@
                     </div>
                     <div class="col_50p row_100p">
                         <div class="row_65p">
-                            <div class="row_30p text-center paddingRight10 subTitle2">Duration</div>
+                            <div class="row_30p text-center paddingRight10 subTitle3">Duration</div>
                             <div class="row_70p">
                                 <input class="textInput" type="text" placeholder="Duration" id="viewInvolvement-duration">
                             </div>
                         </div>
                         <div class="row_35p">
-                            <div class="col_40p row_100p subTitle2 paddingRight25">Occurred</div>
+                            <div class="col_40p row_100p subTitle3 paddingRight25">Occurred</div>
                             <div class="col_60p row_100p">
                                 <!-- NOTE: this slider will not be editable by the admin user - only depends on date and time of event
                                             will need to manually edit this value in the js data handling                               -->
@@ -283,7 +362,7 @@
         <!-- Pop up box for logging out -->
         <div id="logoutPopup" class="popup-greyOut" style="display:none">
         <div class="logout-popup">
-            <div class="logout-content subTitle">
+            <div class="logout-content subTitle2">
                 Are you sure you want to logout?
             </div>
             <div class="logout-buttons">

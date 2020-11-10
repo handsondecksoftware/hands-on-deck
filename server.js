@@ -143,7 +143,7 @@ app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
     });
 
 
-/////////opportunity REQUESTS//////////////////////////////////////////
+/////////OPPORTUNITY REQUESTS//////////////////////////////////////////
 app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
     {
     response.send(await opportunity.getOpportunityData(request.user[0].volunteer_id, request.body.opportunityID));

@@ -109,7 +109,7 @@ function fillOpportunityTable()
             var rowNum = 1;
 
             //Fill in table elements
-            for(var oppNum = 0; oppNum < response.oppData.length; oppNum++)
+            for(var oppNum = 0; oppNum < response.oppInfo.length; oppNum++)
                 {
                 //Create new row
                 var row = oppourtuntityRoundTable.insertRow(rowNum++);
@@ -124,14 +124,14 @@ function fillOpportunityTable()
                 var remove = row.insertCell(6);
                 
                 //Fill in row elements
-                title.innerHTML = response.oppData[oppNum].title;
-                type.innerHTML = response.oppData[oppNum].type;
-                numVolunteers.innerHTML = response.oppData[oppNum].numVolunteers;
-                date.innerHTML = response.oppData[oppNum].date;
-                startTime.innerHTML = response.oppData[oppNum].startTime;
+                title.innerHTML = response.oppInfo[oppNum].title;
+                type.innerHTML = response.oppInfo[oppNum].type;
+                numVolunteers.innerHTML = response.oppInfo[oppNum].numVolunteers;
+                date.innerHTML = response.oppInfo[oppNum].date;
+                startTime.innerHTML = response.oppInfo[oppNum].startTime;
 
-                view.innerHTML = "<i id=\"view_" + response.oppData[oppNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewOpportunity(this.id)\"></i>";
-                remove.innerHTML = "<i id=\"delete_" + response.oppData[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id)\"></i>";
+                view.innerHTML = "<i id=\"view_" + response.oppInfo[oppNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewOpportunity(this.id)\"></i>";
+                remove.innerHTML = "<i id=\"delete_" + response.oppInfo[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id)\"></i>";
                 }
             }
         else 
@@ -188,12 +188,12 @@ function addOpportunity()
         date: document.getElementById('addOpportunity-title').value,
         startTime: document.getElementById('addOpportunity-startTime').value, 
         endTime: document.getElementById('addOpportunity-endTime').value, 
-        location: "Not Set",                        //***Why isnt this in our UI*** 
+        location: document.getElementById('addOpportunity-location').value, 
         id: null,                                   //Assigned by the backend
         occurred: false,                            //Likely false since we just created the event -- needs to be checked
         type: addOppourtunityType_gv,               //This needs to be set when the option is selected
         viewableBy: addOppourtunityViewableBy_gv,   //This needs to be set when the option is selected
-        description: "Not set",                     //***Why isnt this in our UI***
+        description: document.getElementById('addOpportunity-description').value, 
         sequenceNum: 1, 
         coordinatorInfo: cordInfo,
         volunteerLimit: document.getElementById('addOpportunityVolunteerLimit').value,
@@ -352,17 +352,20 @@ function viewOpportunity(elementID){
         if(response.success)
             {
             //Fill in the data for the view screen -- our request will only return 1 element in the array
-            document.getElementById('viewOpportunity-title').innerHTML = response.oppData[0].title;
-            document.getElementById('viewOpportunity-startTime').innerHTML = response.oppData[0].date + " - " + response.oppData[0].startTime;
-            document.getElementById('viewOpportunity-endTime').innerHTML = response.oppData[0].date + " - " + response.oppData[0].endTime;
+            document.getElementById('viewOpportunity-title').value = response.oppData[0].title;
+            document.getElementById('viewOpportunity-startTime').value = response.oppData[0].date + " - " + response.oppData[0].startTime;
+            document.getElementById('viewOpportunity-endTime').value = response.oppData[0].date + " - " + response.oppData[0].endTime;
 
-            document.getElementById('viewOpportunity-type').innerHTML = response.oppData[0].type;
-            document.getElementById('viewOpportunity-volLimit').innerHTML = response.oppData[0].volunteerLimt;
-            document.getElementById('viewOpportunity-viewableBy').innerHTML = (response.oppData[0].viewableBy == -1) ? "All Teams" : "Fix This";
-            
-            document.getElementById('viewOpportunity-coordinatorName').innerHTML = response.oppData[0].coordinatorInfo.name;
-            document.getElementById('viewOpportunity-coordinatorEmail').innerHTML = response.oppData[0].coordinatorInfo.email;
-            document.getElementById('viewOpportunity-coordinatorPhone').innerHTML = response.oppData[0].coordinatorInfo.phone;
+            document.getElementById('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
+            document.getElementById('dropdown-title-viewOpportunityVolLimit').innerHTML = response.oppData[0].volunteerLimt;
+            document.getElementById('dropdown-title-viewOpportunityViewableBy').innerHTML = (response.oppData[0].viewableBy == -1) ? "All Teams" : "Fix This";
+
+            document.getElementById('viewOpportunity-location').value = response.oppData[0].location;
+            document.getElementById('viewOpportunity-description').value = response.oppData[0].description;
+
+            document.getElementById('viewOpportunity-coordinatorName').value = response.oppData[0].coordinatorInfo.name;
+            document.getElementById('viewOpportunity-coordinatorEmail').value = response.oppData[0].coordinatorInfo.email;
+            document.getElementById('viewOpportunity-coordinatorPhone').value = response.oppData[0].coordinatorInfo.phone;
 
             //Get table id
             var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOpportunityTable');

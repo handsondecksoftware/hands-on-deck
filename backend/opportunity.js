@@ -43,7 +43,7 @@ exports.getOpportunityData = async (volunteerID, opportunityID) =>
         occured: false, 
         type: "SAAC Meeting", 
         viewableBy: -1, 
-        description: "This is a text event that is the next SAAC meeting which we will use to test post method", 
+        description: "This is a test event that is the next SAAC meeting which we will use to test post method", 
         sequenceNum: 1, 
         coordinatorInfo: cordinatorInfo,
         volunteerLimt: 10,

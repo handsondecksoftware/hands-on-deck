@@ -31,6 +31,7 @@ h1{
   display: inline-block;
   padding: 10px;
   margin-top: 25px;
+  width: 100%;
   height: 100%;
 }
 
@@ -53,6 +54,15 @@ h1{
 }
 
 .subTitle2{
+    color: #1a6600;
+    text-align: left;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    font-size: 2vw;
+    font-weight: normal;
+  }
+
+.subTitle3{
   color: #1a6600;
   text-align: left;
   padding-left: 10px;
@@ -60,6 +70,15 @@ h1{
   font-size: 20px;
   font-weight: bold;
 }
+
+.subTitle3_black{
+    color: black;
+    text-align: left;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
+  }
 
 .resultText{
   color: #000000;
@@ -98,6 +117,12 @@ h1{
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
   background-color: rgba(255, 255, 255, 0.5); 
+}
+
+hr {
+    margin: 2px;
+    color: black;
+    border: 1px solid black;
 }
 
 /*********************Logout styling for popup menu***********************/
@@ -245,6 +270,10 @@ padding-top: 50px !important;
 .paddingBottom10{
 padding-bottom: 10px !important;
 }
+
+.paddingBottom25{
+    padding-bottom: 25px !important;
+    }
 
 .paddingBottom400{
   padding-bottom:400px !important;
@@ -568,6 +597,10 @@ margin-left: 250px !important;
 .row_50p{
   height: 50%;
 }
+
+.row_52_5p{
+    height: 52.5%;
+  }
 
 .row_55p{
   height: 55%;
