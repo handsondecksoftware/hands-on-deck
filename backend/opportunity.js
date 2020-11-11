@@ -166,9 +166,25 @@ exports.addOpportunity = async (volunteerID, oppData) =>
     
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
-    response.success = true;
+    //response.errorCode = error.NOERROR;
+    console.log("entering db call insert")
+    var errorOccurred = false;
+    if(!errorOccurred) {
+      await database.queryDB("INSERT INTO opportunity (opp_id, title, date, starttime, endtime, type, description, location) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + oppData.title + "', '" + oppData.date + "', '" + oppData.startTime + "','" + oppData.endTime + "', '" + oppData.type + "', '" + oppData.description + "', '" + oppData.location + "')", 
+        (res, e) => {
+          if(e) {
+            console.log("error occured")
+              response.errorCode = error.DATABASE_ACCESS_ERROR;
+              response.success = false;
+          }
+          else {
+              //Send the user an email with their account info 
+              response.errorCode = error.NOERROR;
+              response.success = true;
+          }
+      });
     }
+  }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);

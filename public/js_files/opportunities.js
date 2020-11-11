@@ -185,7 +185,7 @@ function addOpportunity()
     //Collect Form Values
     var oppData = {
         title: document.getElementById('addOpportunity-title').value, 
-        date: document.getElementById('addOpportunity-title').value,
+        date: document.getElementById('addOpportunity-date').value,
         startTime: document.getElementById('addOpportunity-startTime').value, 
         endTime: document.getElementById('addOpportunity-endTime').value, 
         location: document.getElementById('addOpportunity-location').value, 
@@ -199,13 +199,13 @@ function addOpportunity()
         volunteerLimit: document.getElementById('addOpportunityVolunteerLimit').value,
         volunteers: null,                           //They have not been set yet
     };
-    
+    console.log(oppData);
 
-    handlePostMethod({oppData: oppData}, "/addVolunteer", response => 
+    handlePostMethod({oppData: oppData}, "/addOpportunity", response => 
         {
         if(response.success)
             {
-            alert("You successfully added the volunteer");
+            alert("You successfully added the opportunity");
             
             //Close the Oppourtunity Box
             toggleOppourtuntiyBoxVisibility();
