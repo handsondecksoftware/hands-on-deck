@@ -105,21 +105,22 @@
 
             <div style="height:125px; margin-left:10%;">
                 <div class="row_60p">
-                <div class="col_50p">
-                    <div class="col_33p subTitle3"  style="padding-top: 2%;">Team Name:</div>
-                    <div class="col_66p">
-                    <div class="blackDisplayField" id="teamInfo-name"></div>
-                    </div>
-                </div>
-                <div class="col_50p">
-                    <div class="col_30p subTitle3" style="padding-top: 2%;">Sex:</div>
                     <div class="col_50p">
-                        <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
-                        <div class="sliderContainer sliderWidth">
-                            <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
+                        <div class="col_33p subTitle3"  style="padding-top: 2%;">Team Name:</div>
+                        <div class="col_66p">
+                            <div class="blackDisplayField" id="teamInfo-name"></div>
                         </div>
-                    <div class="col_20p"><!--For Spacing--></div>
-                </div>
+                    </div>
+                    <div class="col_50p">
+                        <div class="col_30p subTitle3" style="padding-top: 2%;">Sex:</div>
+                        <div class="col_50p">
+                            <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
+                            </div>
+                        </div>
+                        <div class="col_20p"><!--For Spacing--></div>
+                    </div>
                 </div>
                 <div class="row_40p">
                     <div class="col_30p subTitle3">   Include In Leaderboards:</div>
@@ -136,7 +137,7 @@
             <!-- Will display all of the members for the specific team selected -->
             <div class="table"> 
                 <span class="table-title">Team Members:</span>
-                <table id="teamsTable"> 
+                <table id="teamMembersTable"> 
                 <tr class="table-top">
                     <th class="width25">Name</th>
                     <th class="width25">Email</th>
@@ -245,8 +246,8 @@
                                 <div class="col_25p text-center subTitle3">Team:</div>
                                 <div class="col_75p">
                                     <div class="dropdown">
-                                        <button class="dropdown-button"><span id="viewVolunteer-team">  Team</span><i class="fa fa-angle-right" id="dropdown-arrow-addOppourtunityType"></i></button>
-                                        <div id="addOppourtunityTypeOptions" class="dropdown-content">
+                                        <button class="dropdown-button"><span id="viewVolunteer-team">  Team</span><i class="fa fa-angle-right" id="dropdown-arrow-viewVolunteerTeam"></i></button>
+                                        <div id="viewVolunteerTeamButton" class="dropdown-content">
                                             <!--Will not add any options since we are only using this as a place to show what value is-->
                                         </div>
                                     </div>
@@ -257,8 +258,8 @@
                             <div class="col_25p text-center subTitle3">  Role:</div>
                             <div class="col_75p"> 
                                 <div class="dropdown">
-                                    <button class="dropdown-button"><span id="viewVolunteer-role">  Role</span><i class="fa fa-angle-right" id="dropdown-arrow-addOppourtunityType"></i></button>
-                                    <div id="addOppourtunityTypeOptions" class="dropdown-content">
+                                    <button class="dropdown-button"><span id="viewVolunteer-role">  Role</span><i class="fa fa-angle-right" id="dropdown-arrow-viewVolunteerRole"></i></button>
+                                    <div id="viewVolunteerRoleButton" class="dropdown-content">
                                         <!--Will not add any options since we are only using this as a place to show what value is-->
                                     </div>
                                 </div>
