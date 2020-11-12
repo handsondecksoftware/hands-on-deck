@@ -64,6 +64,30 @@ function createDatePicker(inputId, datePickerID, dpNum)       //dpNum will allow
   document.getElementById(inputId).onfocus = function(){showDatepicker(datePickerID)};
   }
 
+  
+//////////////////////////////////////////////////////////////////
+//
+// Will delete a previously created datepicker
+//
+//////////////////////////////////////////////////////////////////
+function deleteDatePicker(inputId, datePickerID, dpNum)  
+    {
+    try
+        {
+        //Remove datepicker elements
+        document.getElementById(datePickerID).innerHTML = "";
+
+        //Remove function call function to open datepicker
+        document.getElementById(inputId).onfocus = function(){return};
+        }
+    catch (error) 
+        {
+        console.log("Error Deleting Datepicker -- " + error.message);
+        }
+    
+    return;
+    }
+
 
 //////////////////////////////////////////////////////////////////
 //

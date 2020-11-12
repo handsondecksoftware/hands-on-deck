@@ -97,13 +97,101 @@
                     <div class="col_33p">
                         <div class="row_33p paddingLeft10 subTitle3">Start</div>
                         <div class="row_66p padding-8">
-                            <input class="textInput" type="time" placeholder="Start Time" id="viewOpportunity-startTime" readonly>
+                            <div class="col_33p">
+                                <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="viewOpportunity-startDate" readonly>
+                                <div id="viewOpportunityStartDatePicker" class="hideObj" style="z-index:10"></div>
+                            </div>
+                            <div class="col_66p marginTop5">
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityStartTimeHrs" class="dropdown-button"><span id="dropdown-title-viewOpportunityStartTimeHrs">12</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityStartTimeHrs"></i></button>
+                                        <div id="viewOpportunityStartTimeHrsOptions" class="dropdown-content">
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_1" class="dropdown-option">1</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_2" class="dropdown-option">2</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_3" class="dropdown-option">3</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_4" class="dropdown-option">4</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_5" class="dropdown-option">5</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_6" class="dropdown-option">6</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_7" class="dropdown-option">7</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_8" class="dropdown-option">8</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_9" class="dropdown-option">9</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_10" class="dropdown-option">10</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_11" class="dropdown-option">11</a>
+                                            <a id="viewOpportunityStartTimeHrsOptions_option_12" class="dropdown-option">12</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityStartTimeMin" class="dropdown-button"><span id="dropdown-title-viewOpportunityStartTimeMin">00</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityStartTimeMin"></i></button>
+                                        <div id="viewOpportunityStartTimeMinOptions" class="dropdown-content">
+                                            <a id="viewOpportunityStartTimeMinOptions_option_1" class="dropdown-option">00</a>
+                                            <a id="viewOpportunityStartTimeMinOptions_option_2" class="dropdown-option">15</a>
+                                            <a id="viewOpportunityStartTimeMinOptions_option_3" class="dropdown-option">30</a>
+                                            <a id="viewOpportunityStartTimeMinOptions_option_4" class="dropdown-option">45</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityStartTimeAmPm" class="dropdown-button"><span id="dropdown-title-viewOpportunityStartTimeAmPm">am</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityStartTimeAmPm"></i></button>
+                                        <div id="viewOpportunityStartTimeAmPmOptions" class="dropdown-content">
+                                            <a id="viewOpportunityStartTimeAmPmOptions_option_1" class="dropdown-option">am</a>
+                                            <a id="viewOpportunityStartTimeAmPmOptions_option_2" class="dropdown-option">pm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col_33p">
                         <div class="row_33p paddingLeft10 subTitle3">End</div>
                         <div class="row_66p padding-8">
-                            <input class="textInput" type="time" placeholder="End Time" id="viewOpportunity-endTime" readonly>
+                            <div class="col_33p">
+                                <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="viewOpportunity-endDate" readonly>
+                                <div id="viewOpportunityEndDatePicker" class="hideObj" style="z-index:10"></div>
+                            </div>
+                            <div class="col_66p marginTop5">
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityEndTimeHrs" class="dropdown-button"><span id="dropdown-title-viewOpportunityEndTimeHrs">12</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityEndTimeHrs"></i></button>
+                                        <div id="viewOpportunityEndTimeHrsOptions" class="dropdown-content">
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_1" class="dropdown-option">1</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_2" class="dropdown-option">2</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_3" class="dropdown-option">3</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_4" class="dropdown-option">4</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_5" class="dropdown-option">5</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_6" class="dropdown-option">6</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_7" class="dropdown-option">7</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_8" class="dropdown-option">8</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_9" class="dropdown-option">9</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_10" class="dropdown-option">10</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_11" class="dropdown-option">11</a>
+                                            <a id="viewOpportunityEndTimeHrsOptions_option_12" class="dropdown-option">12</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityEndTimeMin" class="dropdown-button"><span id="dropdown-title-viewOpportunityEndTimeMin">00</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityEndTimeMin"></i></button>
+                                        <div id="viewOpportunityEndTimeMinOptions" class="dropdown-content">
+                                            <a id="viewOpportunityEndTimeMinOptions_option_1" class="dropdown-option">00</a>
+                                            <a id="viewOpportunityEndTimeMinOptions_option_2" class="dropdown-option">15</a>
+                                            <a id="viewOpportunityEndTimeMinOptions_option_3" class="dropdown-option">30</a>
+                                            <a id="viewOpportunityEndTimeMinOptions_option_4" class="dropdown-option">45</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="viewOpportunityEndTimeAmPm" class="dropdown-button"><span id="dropdown-title-viewOpportunityEndTimeAmPm">am</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityEndTimeAmPm"></i></button>
+                                        <div id="viewOpportunityEndTimeAmPmOptions" class="dropdown-content">
+                                            <a id="viewOpportunityEndTimeAmPmOptions_option_1" class="dropdown-option">am</a>
+                                            <a id="viewOpportunityEndTimeAmPmOptions_option_2" class="dropdown-option">pm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,12 +210,10 @@
                     <div class="col_33p">
                         <div class="row_33p paddingLeft10 subTitle3">Volunteer Limit</div>
                         <div class="row_66p padding-8">
-                            <div class="dropdown">
-                                <button id="viewOpportunityVolLimit" class="dropdown-button"><span id="dropdown-title-viewOpportunityVolLimit">Volunteer Limit</span><i class="fa fa-angle-right" id="dropdown-arrow-viewOpportunityVolLimit"></i></button>
-                                <div id="viewOpportunityVolLimitOptions" class="dropdown-content">
-                                  <!--Will dynmaically add options here-->
-                                </div>
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="15" value="15" class="slider" id="viewOpportunityVolunteerLimit">
                             </div>
+                            <div class="sliderLabel marginLeft5" id="viewOpportunityVolunteerLimitLabel">No Limt</div>
                         </div>
                     </div>
                     <div class="col_33p">
@@ -153,7 +239,7 @@
                         <div class="row_70p">
                             <div class="row_15p paddingLeft10 subTitle3">Description</div>
                             <div class="row_85p padding-8">
-                                <textarea class="textArea" rows="8" type="text" placeholder="Description" id="viewOpportunity-description" readonly></textarea>
+                                <textarea class="textArea" rows="9" type="text" placeholder="Description" id="viewOpportunity-description" readonly></textarea>
                             </div>
                         </div>
                     </div>
@@ -198,12 +284,12 @@
 
 
         <!-- Pop up box for adding opportunities -->
-        <div id="addOpportunityPopup" class="popup-greyOut" style="display:none">
+        <div id="addOpportunityPopup" class="popup-greyOut" style="display:none;">
           <div class="popup-box">
               <div class="popup-title" >
                   <h1>Add Opportunity</h1>
               </div>
-              <div class="popup-content" style="height:425px">
+              <div class="popup-content" style="height:550px !important; overflow-y: hidden;">
                   
                 <div class="col_50p row_100p">
                     <div class="row_17_5p">
@@ -213,23 +299,109 @@
                         </div>
                     </div>
                     <div class="row_17_5p">
-                        <div class="col_25p subTitle3"> Date:</div>
-                        <div class="col_75p"> 
-                            <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOpportunity-date">
-                            <div id="addOpportunityDatePicker" class="hideObj" style="z-index:10"></div>
+                        <div class="col_25p subTitle3"> Start:</div>
+                        <div class="col_25p"> 
+                            <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOpportunity-startDate" readonly>
+                            <div id="addOpportunityStartDatePicker" class="hideObj" style="z-index:10"></div>
+                        </div>
+                        <div class="col_50p marginTop5">
+                            <div class="col_85p">       <!-- Used to match spacing with text inputs-->
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityStartTimeHrs" class="dropdown-button"><span id="dropdown-title-addOpportunityStartTimeHrs">12</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityStartTimeHrs"></i></button>
+                                        <div id="addOpportunityStartTimeHrsOptions" class="dropdown-content">
+                                            <a id="addOpportunityStartTimeHrsOptions_option_1" class="dropdown-option">1</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_2" class="dropdown-option">2</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_3" class="dropdown-option">3</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_4" class="dropdown-option">4</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_5" class="dropdown-option">5</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_6" class="dropdown-option">6</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_7" class="dropdown-option">7</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_8" class="dropdown-option">8</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_9" class="dropdown-option">9</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_10" class="dropdown-option">10</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_11" class="dropdown-option">11</a>
+                                            <a id="addOpportunityStartTimeHrsOptions_option_12" class="dropdown-option">12</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityStartTimeMin" class="dropdown-button"><span id="dropdown-title-addOpportunityStartTimeMin">00</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityStartTimeMin"></i></button>
+                                        <div id="addOpportunityStartTimeMinOptions" class="dropdown-content">
+                                            <a id="addOpportunityStartTimeMinOptions_option_1" class="dropdown-option">00</a>
+                                            <a id="addOpportunityStartTimeMinOptions_option_2" class="dropdown-option">15</a>
+                                            <a id="addOpportunityStartTimeMinOptions_option_3" class="dropdown-option">30</a>
+                                            <a id="addOpportunityStartTimeMinOptions_option_4" class="dropdown-option">45</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityStartTimeAmPm" class="dropdown-button"><span id="dropdown-title-addOpportunityStartTimeAmPm">am</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityStartTimeAmPm"></i></button>
+                                        <div id="addOpportunityStartTimeAmPmOptions" class="dropdown-content">
+                                            <a id="addOpportunityStartTimeAmPmOptions_option_1" class="dropdown-option">am</a>
+                                            <a id="addOpportunityStartTimeAmPmOptions_option_2" class="dropdown-option">pm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
                         </div>
                     </div>
                     <div class="row_17_5p">
-                        <div class="col_25p subTitle3"> Time:</div>
-                        <div class="col_37p">
-                            <input class="textInput" type="text" placeholder="Start Time" id="addOpportunity-startTime">
+                        <div class="col_25p subTitle3"> End:</div>
+                        <div class="col_25p row_100p">
+                            <input class="textInput" type="text" placeholder="YYYY-MM-DD" id="addOpportunity-endDate" readonly>
+                            <div id="addOpportunityEndDatePicker" class="hideObj" style="z-index:10"></div>
                         </div>
-                        <div class="col_37p">
-                            <input class="textInput" type="text" placeholder="End Time" id="addOpportunity-endTime">
+                        <div class="col_50p marginTop5">
+                            <div class="col_85p">       <!-- Used to match spacing with text inputs-->
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityEndTimeHrs" class="dropdown-button"><span id="dropdown-title-addOpportunityEndTimeHrs">12</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityEndTimeHrs"></i></button>
+                                        <div id="addOpportunityEndTimeHrsOptions" class="dropdown-content">
+                                            <a id="addOpportunityEndTimeHrsOptions_option_1" class="dropdown-option">1</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_2" class="dropdown-option">2</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_3" class="dropdown-option">3</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_4" class="dropdown-option">4</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_5" class="dropdown-option">5</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_6" class="dropdown-option">6</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_7" class="dropdown-option">7</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_8" class="dropdown-option">8</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_9" class="dropdown-option">9</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_10" class="dropdown-option">10</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_11" class="dropdown-option">11</a>
+                                            <a id="addOpportunityEndTimeHrsOptions_option_12" class="dropdown-option">12</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityEndTimeMin" class="dropdown-button"><span id="dropdown-title-addOpportunityEndTimeMin">00</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityEndTimeMin"></i></button>
+                                        <div id="addOpportunityEndTimeMinOptions" class="dropdown-content">
+                                            <a id="addOpportunityEndTimeMinOptions_option_1" class="dropdown-option">00</a>
+                                            <a id="addOpportunityEndTimeMinOptions_option_2" class="dropdown-option">15</a>
+                                            <a id="addOpportunityEndTimeMinOptions_option_3" class="dropdown-option">30</a>
+                                            <a id="addOpportunityEndTimeMinOptions_option_4" class="dropdown-option">45</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col_33p row_100p">
+                                    <div class="dropdown" style="width:95% !important">
+                                        <button id="addOpportunityEndTimeAmPm" class="dropdown-button"><span id="dropdown-title-addOpportunityEndTimeAmPm">am</span><i class="fa fa-angle-right" id="dropdown-arrow-addOpportunityEndTimeAmPm"></i></button>
+                                        <div id="addOpportunityEndTimeAmPmOptions" class="dropdown-content">
+                                            <a id="addOpportunityEndTimeAmPmOptions_option_1" class="dropdown-option">am</a>
+                                            <a id="addOpportunityEndTimeAmPmOptions_option_2" class="dropdown-option">pm</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row_17_5p">
-                        <div class="col_25p subTitle3"> Date:</div>
+                        <div class="col_25p subTitle3"> Location:</div>
                         <div class="col_75p"> 
                             <input class="textInput" type="text" placeholder="Location" id="addOpportunity-location">
                         </div>

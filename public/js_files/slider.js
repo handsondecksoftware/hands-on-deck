@@ -40,7 +40,7 @@ function initSlider(pageName)
     {
     switch(pageName)
         {
-        case 'Oppourtunties':
+        case 'Opportunties':
             {
             document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
             document.getElementById('addOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
@@ -97,6 +97,7 @@ function changeSliderLabel(sliderID)
             break;
             }
         case 'addOpportunityVolunteerLimit':
+        case 'viewOpportunityVolunteerLimit':
             {
             sliderOptions = newArrayFrom1toN(14); 
             sliderOptions.push('No Limit');

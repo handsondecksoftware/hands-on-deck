@@ -135,7 +135,7 @@ function getCurrentDateISO()
     {
     var currentDateInMs = new Date().getTime();
     var timezoneOffsetInMs = new Date().getTimezoneOffset() * MS_IN_MIN;
-    return new Date(currentDateInMs - timezoneOffsetInMs).toISOString().slice(0,-1);          //Remove the Z timezone since we adjusted for that in ISO string
+    return new Date(currentDateInMs - timezoneOffsetInMs).toISOString().slice(0,-1);        //Remove timezone indictor. We adjust for timezone ourselves
     }
 
 
@@ -164,14 +164,14 @@ function convertDateToISO(dayOfYearISO, hours, minutes)
 //  Accepts all parameters except seconds and milliseconds
 //
 //////////////////////////////////////////////////////////////////
-function convertDateToISO(year, month, day, hours, minutes)
+function convertDateToISO2(year, month, day, hours, minutes)
     {
     var timezoneOffsetInHours = new Date().getTimezoneOffset() * HOUR_IN_MIN;
     //january starts at month 0
     return new Date(year, month - 1, day, hours - timezoneOffsetInHours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sss
     }
 
-
+    
 //////////////////////////////////////////////////////////////////
 //
 // get human readable date DOW MMM DD YYYY
@@ -181,6 +181,18 @@ function getCurrentDayOfYear()
     {
     //january starts at month 0
     return new Date().toString().slice(0, 15);      //Convert to format DOW MMM DD YYYY
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get human readable date in format DOW MMM DD YYYY from ISO date
+//
+//////////////////////////////////////////////////////////////////
+function getUTCFormatFromISOString(ISOdate)
+    {
+    //january starts at month 0
+    return ISOdate.slice(0, 10);      //Convert to format YYYY-MM-DD
     }
 
 

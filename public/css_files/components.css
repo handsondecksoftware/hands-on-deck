@@ -77,11 +77,16 @@
   position: relative;
   background-color: #f1f1f1;
   width: 100%;
-  padding: 4px 16px;
+  padding: 4px 5%;
+  border-radius: 4px;
   font-size: 16px;
   border: none;
   cursor: pointer;
   z-index: 5;
+}
+
+.dropdown:hover, .dropdown-button:hover, .dropdown-title:hover{
+    background-color: #e0d781;
 }
 
 .dropdown-disabled{
@@ -92,15 +97,14 @@
   width: 100%;
   float: left;
   margin-left: 10px;
-  margin-top: 2px;
   transition: transform .3s;
+  border-radius: 4px;
   z-index: 5;
 }
 
 .fa-angle-right{
   float: right;
-  margin-right: 5px;
-  margin-top: 2px;
+  margin-right: 5%;
   transition: transform .3s;
 }
 
@@ -111,7 +115,7 @@
 .dropdown-content {
   position: relative;
   transition: all 0.4s ease-out; 
-  max-height: 20em;
+  max-height: 10em;
   overflow-y: auto;
   background-color: #dfdbdb;
   border-radius: 4px;
@@ -120,13 +124,13 @@
 }
 
 .dropdown-option{
-  display:block;
-  padding: 2px;
-  margin: 5px;
-  height: 25px;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  z-index: 10;
+    display:block;
+    padding: 2px;
+    margin: 5px;
+    height: 25px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    z-index: 10;
 }
 
 .dropdown-option:hover{
@@ -409,6 +413,7 @@ td:first-child, th:first-child {
   background-color: black;
   color: white;
   font-weight: medium;
+  font-size: 13px;
   height: 40px;  /* Can be over written by second class */
   border-radius: 5px;
   padding-left: 10px;
@@ -421,36 +426,11 @@ td:first-child, th:first-child {
     background-color: black;
     color: white;
     font-weight: medium;
-    font-size: 15px;
+    font-size: 13px;
     border-radius: 5px;
     padding-left: 10px;
     border: 1px solid black;
   }
-
-/* NOT USED
-.search input[type=text]:focus {
-  padding: 6px;
-  margin-top: 8px;
-  margin-right: 16px;
-}
-
-.blackDisplayField {
-    background-color: black;
-    color: white;
-    text-align: left;
-    margin-right: 5px;
-    margin-left: 5px;
-    margin-bottom: 2px;
-    margin-top: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 8px;
-}
-*/
 
 /*******************************************************************
 * End Of Text Input

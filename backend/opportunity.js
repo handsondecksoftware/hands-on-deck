@@ -34,14 +34,13 @@ exports.getOpportunityData = async (volunteerID, opportunityID) =>
     var currentVolunteers = [{name: "Jayden Cole", email: "jcole@sfu.ca", team: "M - Swim", hours: 2.5, volDataID: 1}];
     var oppElement = 
         {
-        title: "Testing Opp", 
-        date: "Oct 7 2020", 
-        startTime: "19:30", 
-        endTime: "20:30", 
+        title: "SAAC Meeting", 
+        startDatetime: "2020-11-11T19:30:00.000", 
+        endDatetime: "2020-11-11T20:30:00.000",
         location: "Zoom", 
         id: 1, 
         occured: false, 
-        type: "SAAC Meeting", 
+        type: "Meetings", 
         viewableBy: -1, 
         description: "This is a test event that is the next SAAC meeting which we will use to test post method", 
         sequenceNum: 1, 
@@ -95,10 +94,8 @@ exports.getOpportunityInfo = async (volunteerID, opportunityID) =>
     var oppElement = 
         {
         title: "Testing Opp", 
-        date: "Oct 7 2020", 
-        startTime: "19:30", 
-        endTime: "20:30", 
-        type: "SAAC Meeting", 
+        startDatetime: "2020-11-11T19:30:00.000", 
+        type: "Meetings", 
         numVolunteers: 1 
         };
     
@@ -219,7 +216,7 @@ exports.editOpportunity = async (volunteerID, oppData) =>
     console.log('editOpportunity() called by: ' + volunteerID);
 
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-    
+    console.log(oppData);
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
     response.errorCode = error.NOERROR;
@@ -230,7 +227,6 @@ exports.editOpportunity = async (volunteerID, oppData) =>
     console.log("Error Occurred: " + err.message);
 
     response.errorCode = error.SERVER_ERROR;
-    response.oppInfo = null;
     response.success = false;
     }
 
@@ -301,7 +297,7 @@ exports.getOpportunityTypes = async volunteerID =>
 
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     //Set default values for now
-    response.opportunityTypes = ["SAAC Meetings", "Special Olympics", "Game Day Events", "Social Events"];
+    response.opportunityTypes = ["Meetings", "Special Olympics", "Game Day Events", "Social Events"];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
     response.errorCode = error.NOERROR;

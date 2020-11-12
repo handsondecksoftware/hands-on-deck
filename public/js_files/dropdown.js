@@ -18,15 +18,25 @@ function initDropdowns(pageID)
   {
   switch(pageID)
     {
-    case 'Oppourtunties':
-      {
-      document.getElementById('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
-      fillOpportunityTypeOptions('addOpportunityTypeOptions');
+    case 'Opportunties':
+        {
+        document.getElementById('addOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+        document.getElementById('addOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+        document.getElementById('addOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+        addTimeDropdownOptions("add", "Start");
 
-      document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-      fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
-      break;
-      } 
+        document.getElementById('addOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+        document.getElementById('addOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+        document.getElementById('addOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+        addTimeDropdownOptions("add", "End");
+
+        document.getElementById('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
+        fillOpportunityTypeOptions('addOpportunityTypeOptions');
+
+        document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
+        fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
+        break;
+        } 
     case 'Teams':
       {
         
