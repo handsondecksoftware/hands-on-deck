@@ -19,6 +19,9 @@ const INVALID_INPUT_ERROR = 10;
 
 const UNKNOWN_ERROR = 99; 
 
+//Time Constants
+const MS_IN_MIN = 60000;
+
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -120,3 +123,59 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
 
     return;
     }
+
+
+
+//////////////////////////////////////////////////////////////////
+//
+// Get the current date in YYYY-MM-DDThh:mm:ss.sssZ format for current timezone
+//
+//////////////////////////////////////////////////////////////////
+function getCurrentDateISO()
+    {
+    //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    return new Date(Date.now() - new Date().getTimezoneOffset()*MS_IN_MIN).toISOString();                      
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// Convert date to ISO format
+//  Accepts day of year, hours and minutes. Don't need seconds or ms
+//
+//////////////////////////////////////////////////////////////////
+function convertDateToISO(dayOfYearISO, hours, minutes)
+    {
+    var year = dayOfYearISO.slice(0,4);
+    var month = dayOfYearISO.slice(5,7);
+    var day = dayOfYearISO.slice(8,10);
+
+    //january starts at month 0
+    return new Date(year, month - 1, day, hours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// Convert date to ISO format
+//  Accepts all parameters except seconds and milliseconds
+//
+//////////////////////////////////////////////////////////////////
+function convertDateToISO(year, month, day, hours, minutes)
+    {
+    //january starts at month 0
+    return new Date(year, month - 1, day, hours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get human readable date
+//
+//////////////////////////////////////////////////////////////////
+function getCurrentDateString()
+    {
+    //january starts at month 0
+    return new Date().toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    }
+

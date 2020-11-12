@@ -1,13 +1,11 @@
-////////////////////////////////////////////////////////////////////////
-// myDatepicker.js -- datepicker behaviour for popup of datepicker on screen
-//                  
+//////////////////////////////////////////////////////////////////
+// myDatepicker.js -- datepicker scripts to create and operate datepicker
 //
-// Ryan Stolys, 13/05/20
-//    - File Created
-//    - Intial behaviour 
-//    - Development completed
+// Ryan Stolys - Aug 13, 2020 
+//  - File created, basic functionality added
 //
-////////////////////////////////////////////////////////////////////////
+// Copyright © Ryan Stolys - All Rights Resevered
+//////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////
 //
@@ -22,10 +20,13 @@ const months_short = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 
 //////////////////////////////////////////////////////////////////
 //
+// Dependencies -- need to have font-awesome 6 in html file where datepicker is used
+//                  (https://fontawesome.com)
+//
 // How to use:
 //
 //    Create a basic div where you want the datepicker to be located
-//         <div id="<datePickerID>" class="hideDP"></div>        //hideDP will allow datepicker to been shown and hidden
+//         <div id="<datePickerID>" class="hideObj"></div>     //hideObj will keep it initially hidden
 //    Call function to create datepicker -- createDatePicker(<inputID>, <datePickerID>, <dpNum>);
 //        the dpNum is required to allow mutiple independent datepickers on the same page, max of 9 per page
 //
@@ -48,7 +49,7 @@ function createDatePicker(inputId, datePickerID, dpNum)       //dpNum will allow
   const topLevelDiv = document.createElement('div');
   topLevelDiv.className = "datepickerFrame";
   topLevelDiv.id = topLevelID;
-  topLevelDiv.style = "z-index:10; display:inline-block; text-align:center";
+  topLevelDiv.style = "z-index:15; text-align:center; display:inline-block;";
   
   document.getElementById(datePickerID).appendChild(topLevelDiv); 
 
@@ -74,28 +75,28 @@ function createMonthDiv(topLevelParentID, datePickerID, dpNum)
   //Create top level div
   var topLevelMonthDivId = "topLevelMonthDiv_" + dpNum;
   const monthOfYear = document.createElement('div');
-  monthOfYear.className = "row_10p";
+  monthOfYear.style = "height:10%";
   monthOfYear.id = topLevelMonthDivId;
 
   //Create left arrow column
   const leftArrow = document.createElement('div');
-  leftArrow.className = "col s2";
-  leftArrow.innerHTML = "<span class=\"monthArrow\"><i class=\"fa fa-arrow-left\" id=\"DPA_Left_" + dpNum + "\"></i></span>"
+  leftArrow.style = "float:left; width:16.6666%";
+  leftArrow.innerHTML = "<span class=\"monthArrow\"><i class=\"fas fa-arrow-left\" id=\"DPA_Left_" + dpNum + "\"></i></span>"
 
   //Create month and year title
   const monthYearTitle = document.createElement('div');
-  monthYearTitle.className = "col s6";
+  monthYearTitle.style = "float:left; width:50%";
   monthYearTitle.innerHTML = "<span id=\"dp_month_" + dpNum + "\">May</span> <span id=\"dp_year_" + dpNum + "\"> 2020</span>"
   
   //Create right arrow column
   const rightArrow = document.createElement('div');
-  rightArrow.className = "col s2";
-  rightArrow.innerHTML = "<span class=\"monthArrow\"><i class=\"fa fa-arrow-right\" id=\"DPA_Right_" + dpNum + "\"></i></span>"
+  rightArrow.style = "float:left; width:16.6666%";
+  rightArrow.innerHTML = "<span class=\"monthArrow\"><i class=\"fas fa-arrow-right\" id=\"DPA_Right_" + dpNum + "\"></i></span>"
 
   //Create X to close column
   const closeItem = document.createElement('div');
-  closeItem.className = "col s2";
-  closeItem.innerHTML = "<span class=\"monthArrow\" style=\"color:rgb(168,6,6)\"><i class=\"fa fa-times\" id=\"DP_Close_" + dpNum + "\"></i></span>"
+  closeItem.style = "float:left; width:16.6666%";
+  closeItem.innerHTML = "<span class=\"monthArrow\" style=\"color:rgb(168,6,6)\"><i class=\"fas fa-times\" id=\"DP_Close_" + dpNum + "\"></i></span>"
 
   //Append elements for display
   document.getElementById(topLevelParentID).appendChild(monthOfYear); 
@@ -121,7 +122,8 @@ function createDaysOfWeekDiv(topLevelParentID, dpNum)
   //Create top level div
   var topLevelDOWDivId = "topLevelDowDiv_" + dpNum;
   const daysOfWeekTopLevel = document.createElement('div');
-  daysOfWeekTopLevel.className = "row_15p daysOfWeek marginTop5";
+  daysOfWeekTopLevel.style = "height:15%; margin-top: 5px"
+  daysOfWeekTopLevel.className = "daysOfWeek";
   daysOfWeekTopLevel.id = topLevelDOWDivId;
 
   //Add top level div to parent
@@ -132,7 +134,7 @@ function createDaysOfWeekDiv(topLevelParentID, dpNum)
     {
     //Create Day of week
     const dayOfWeek = document.createElement('div');
-    dayOfWeek.className = "col dow";
+    dayOfWeek.className = "col_dow";
     dayOfWeek.innerHTML = weekdays_short[i];
 
     //Add day to top level div
@@ -151,7 +153,8 @@ function createDaysOfMonth(topLevelParentID, inputId, dpID, dpNum)
   //Create top level div
   var topLevelDOMDivId = "topLevelDomDiv_" + dpNum;
   const daysOfMonthTopLevel = document.createElement('div');
-  daysOfMonthTopLevel.className = "row_70p daysOfMonth marginTop3";
+  daysOfMonthTopLevel.style = "height:70%; margin-top:3px";
+  daysOfMonthTopLevel.className = "daysOfMonth";
   daysOfMonthTopLevel.id = topLevelDOMDivId;
 
   //Add top level div to parent
@@ -174,7 +177,7 @@ function createDaysOfMonthContent(upperLevelParentID, inputId, dpID, dpNum)
     //Create div to contain weeks in it
     var DOMsecondLevelId = "secondLevelDomDiv_" + week + "_" + dpNum;
     const daysOfMonthSecondLevel = document.createElement('div');
-    daysOfMonthSecondLevel.className = "row_16p";
+    daysOfMonthSecondLevel.style = "height:16.5%";
     daysOfMonthSecondLevel.id = DOMsecondLevelId;
 
     //Add div to datepicker
@@ -189,8 +192,8 @@ function createDaysOfMonthContent(upperLevelParentID, inputId, dpID, dpNum)
       //Create day number div element 
       var DOMdivId = dayId + "_div";
       const dayOfMonth = document.createElement('div');
-      dayOfMonth.className = "col dow";
-      dayOfMonth.innerHTML = "<span class=\"hideText\" id=\"" + dayId + "\">&nbsp;</span>";      //We don't include any days so that only the desired days of month show
+      dayOfMonth.className = "col_dow";
+      dayOfMonth.innerHTML = "<span class=\"hideText\" id=\"" + dayId + "\">0</span>";      //We don't include any days so that only the desired days of month show
       dayOfMonth.id = DOMdivId;
 
       //Add div to month page
@@ -325,7 +328,7 @@ function clearCalendarDaysOfMonth(dpNum)
     {
     dayId += i; 
 
-    document.getElementById(dayId).innerHTML = "&nbsp;"; 
+    document.getElementById(dayId).innerHTML = 0; 
     document.getElementById(dayId).classList.add("hideText");
 
     dayId = dayId + divId_add; 
@@ -378,7 +381,7 @@ function selectDate(dayId, inputId, dpID, dpNum)
     monthIndex++;
     }
   
-  if(monthOfDate < 9)
+  if(monthIndex < 9)
     monthOfDate = "0" + (monthIndex + 1);
   else 
     monthOfDate = (monthIndex + 1);
@@ -400,7 +403,7 @@ function selectDate(dayId, inputId, dpID, dpNum)
 //////////////////////////////////////////////////////////////////
 function showDatepicker(DPid)
   {
-  document.getElementById(DPid).classList.remove('hideDP');
+  document.getElementById(DPid).classList.remove('hideObj');
   }
 
 //////////////////////////////////////////////////////////////////
@@ -410,170 +413,5 @@ function showDatepicker(DPid)
 //////////////////////////////////////////////////////////////////
 function hideDatepicker(DPid)
   {
-  document.getElementById(DPid).classList.add('hideDP');
+  document.getElementById(DPid).classList.add('hideObj');
   }
-
-
-
-//////////////////////////////////////////////////////////////////
-//
-// The html code below is what the js creates in the file as desired
-//
-//////////////////////////////////////////////////////////////////
-/*
-  <-- Month Bar --
-  <div class="row_10p">
-    <div class="col s2">
-      <span class="monthArrow"><i class="fa fa-arrow-left" id="DPA_Left"></i></span>
-    </div>
-    <div class="col s8">
-      <span id="month">May</span> <span id="Year"> 2020</span>
-    </div>
-    
-    <div class="col s2">
-      <span class="monthArrow"><i class="fa fa-arrow-right" id="DPA_Right"></i></span>
-    </div>
-  </div>
-
-  <-- Days of Week --
-  <div class="row_15p daysOfWeek marginTop5">
-    <div class="col dow">
-      Sun
-    </div>
-    <div class="col dow">
-      Mon
-    </div>
-    <div class="col dow">
-      Tues
-    </div>
-    <div class="col dow">
-      Wed
-    </div>
-    <div class="col dow">
-      Thur
-    </div>
-    <div class="col dow">
-      Fri
-    </div>
-    <div class="col dow">
-      Sat
-    </div>
-  </div>
-  <div class="row_70p daysOfMonth marginTop3">
-    <div class="row_20p">
-      <div class="col dow dom">
-        <span id="dp_day1">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day2">2</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day3">3</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day4">4</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day5">5</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day6">6</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day7">7</span>
-      </div>
-    </div>
-    <div class="row_20p">
-      <div class="col dow dom">
-        <span id="dp_day8">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day9">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day10">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day11">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day12">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day13">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day14">1</span>
-      </div>
-    </div>
-    <div class="row_20p">
-      <div class="col dow dom">
-        <span id="dp_day15">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day16">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day17">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day18">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day19">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day20">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day21">1</span>
-      </div>
-    </div>
-    <div class="row_20p">
-      <div class="col dow dom">
-        <span id="dp_day22">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day23">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day24">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day25">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day26">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day27">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day28">1</span>
-      </div>
-    </div>
-    <div class="row_20p">
-      <div class="col dow dom">
-        <span id="dp_day29">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day30">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day31">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day32">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day33">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day34">1</span>
-      </div>
-      <div class="col dow dom">
-        <span id="dp_day35">1</span>
-      </div>
-    </div>
-  </div>
-  */
