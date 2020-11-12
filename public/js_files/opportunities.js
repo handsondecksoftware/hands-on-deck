@@ -239,12 +239,12 @@ function fillOpportunityTypeOptions(dropdownID)
             //Get reference to div to add  types to it 
             var dropdownDiv = document.getElementById(dropdownID);
             
-            for(var i = 0; i < response.OpportunityTypes.length; i++)
+            for(var i = 0; i < response.opportunityTypes.length; i++)
                 {
                 var dropdownOption = document.createElement('a');
                 dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
                 dropdownOption.classList = "dropdown-option";
-                dropdownOption.innerHTML = response.OpportunityTypes[i];
+                dropdownOption.innerHTML = response.opportunityTypes[i];
                 dropdownDiv.appendChild(dropdownOption);
 
                 //create dom function call 

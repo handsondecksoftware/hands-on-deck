@@ -154,6 +154,11 @@ hr {
   color: black !important;
 }
 
+.hideText{
+    color:rgba(255, 255, 255, 0) !important;
+    opacity: 0 !important;
+}
+
 
 /*********************Text Alignment***********************/
 .text-center{
@@ -562,9 +567,9 @@ margin-left: 250px !important;
   height: 15%;
 }
 
-.row_16p{
-  height: 16.6667%;
-}
+.row_16_5p{
+    height: 16.5%;
+  }
 
 .row_17_5p{
   height: 17.5%;
