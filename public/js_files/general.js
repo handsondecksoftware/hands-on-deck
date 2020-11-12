@@ -21,6 +21,7 @@ const UNKNOWN_ERROR = 99;
 
 //Time Constants
 const MS_IN_MIN = 60000;
+const HOUR_IN_MIN = 1/60;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -125,16 +126,16 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     }
 
 
-
 //////////////////////////////////////////////////////////////////
 //
-// Get the current date in YYYY-MM-DDThh:mm:ss.sssZ format for current timezone
+// Get the current date in YYYY-MM-DDThh:mm:ss.sss format for current timezone
 //
 //////////////////////////////////////////////////////////////////
 function getCurrentDateISO()
     {
-    //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
-    return new Date(Date.now() - new Date().getTimezoneOffset()*MS_IN_MIN).toISOString();                      
+    var currentDateInMs = new Date().getTime();
+    var timezoneOffsetInMs = new Date().getTimezoneOffset() * MS_IN_MIN;
+    return new Date(currentDateInMs - timezoneOffsetInMs).toISOString().slice(0,-1);          //Remove the Z timezone since we adjusted for that in ISO string
     }
 
 
@@ -150,8 +151,10 @@ function convertDateToISO(dayOfYearISO, hours, minutes)
     var month = dayOfYearISO.slice(5,7);
     var day = dayOfYearISO.slice(8,10);
 
+    var timezoneOffsetInHours = new Date().getTimezoneOffset() * HOUR_IN_MIN;
+
     //january starts at month 0
-    return new Date(year, month - 1, day, hours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    return new Date(year, month - 1, day, hours - timezoneOffsetInHours, minutes, 0, 0).toISOString().slice(0, -1);      //Convert to format YYYY-MM-DDThh:mm:ss.sss
     }
 
 
@@ -163,19 +166,68 @@ function convertDateToISO(dayOfYearISO, hours, minutes)
 //////////////////////////////////////////////////////////////////
 function convertDateToISO(year, month, day, hours, minutes)
     {
+    var timezoneOffsetInHours = new Date().getTimezoneOffset() * HOUR_IN_MIN;
     //january starts at month 0
-    return new Date(year, month - 1, day, hours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    return new Date(year, month - 1, day, hours - timezoneOffsetInHours, minutes, 0, 0).toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sss
     }
 
 
 //////////////////////////////////////////////////////////////////
 //
-// get human readable date
+// get human readable date DOW MMM DD YYYY
 //
 //////////////////////////////////////////////////////////////////
-function getCurrentDateString()
+function getCurrentDayOfYear()
     {
     //january starts at month 0
-    return new Date().toISOString();      //Convert to format YYYY-MM-DDThh:mm:ss.sssZ
+    return new Date().toString().slice(0, 15);      //Convert to format DOW MMM DD YYYY
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get human readable date in format DOW MMM DD YYYY from ISO date
+//
+//////////////////////////////////////////////////////////////////
+function getDayOfYearFromISOString(ISOdate)
+    {
+    //january starts at month 0
+    return new Date(ISOdate).toString().slice(0, 15);      //Convert to format DOW MMM DD YYYY
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get human readable time in format hh:mm from ISO date
+//
+//////////////////////////////////////////////////////////////////
+function getTimeFromISOString(ISOdate)
+    {
+    //january starts at month 0
+    return new Date(ISOdate).toString().slice(16, 21);      //Convert to format hh:mm
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get hours from ISO date
+//
+//////////////////////////////////////////////////////////////////
+function getHoursFromISOString(ISOdate)
+    {
+    //january starts at month 0
+    return parseInt(new Date(ISOdate).toString().slice(16, 18));      //Convert to format hh:mm
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get minutes from ISO date
+//
+//////////////////////////////////////////////////////////////////
+function getMinutesFromISOString(ISOdate)
+    {
+    //january starts at month 0
+    return parseInt(new Date(ISOdate).toString().slice(19, 21));      //Convert to format hh:mm
     }
 
