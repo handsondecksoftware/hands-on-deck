@@ -66,7 +66,31 @@ function toggleTeamBoxVisibility()
 ////////////////////////////////////////////////////////////////////////
 function addTeam()
   {
-  toggleTeamBoxVisibility();
+    //Collect Form Values
+    var teamData = {
+        name: document.getElementById('addTeam-name').value,
+        leaderboards: document.getElementById('includeLeaderboards').value,
+        sex: document.getElementById('teamSex').value,
+    };
+    console.log(teamData)
+
+    handlePostMethod({teamData: teamData}, "/addTeam", response => 
+        {
+          console.log(response)
+        if(response.success)
+            {
+            alert("You successfully added the team");
+            toggleTeamBoxVisibility();
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorCode);
+            }
+        })
+    .catch(error)
+        {
+        alert("Error submitting request. Please try again");
+        };
   }
 
 

@@ -203,8 +203,18 @@ exports.addTeam = async (volunteerID, teamData) =>
         */    
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
-        response.success = true;
+        await database.queryDB("INSERT INTO team (team_id, name, institution_id, leaderboard, sex) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + teamData.name + "', '" + 1 + "', '" + teamData.leaderboards + "', '" + teamData.sex + "')", 
+                                (res, e) => {
+                if(e) {
+                    response.errorCode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                }
+                else {
+                    //Send the user an email with their account info 
+                    response.errorCode = error.NOERROR;
+                    response.success = true;
+                }
+            });
         }
     catch (err)
         {
