@@ -33,8 +33,8 @@ function initDropdowns(pageID)
         document.getElementById('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
         fillOpportunityTypeOptions('addOpportunityTypeOptions');
 
-        document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-        fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
+        //document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
+        //fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
         break;
         } 
     case 'Teams':

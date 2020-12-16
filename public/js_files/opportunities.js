@@ -12,9 +12,11 @@
 // Global Varaibles
 //
 
+
 //////////////////////////////////////////////////////////////////////// 
 var addOppourtunityType_gv = -1;
-var addOppourtunityViewableBy_gv = -1;
+var opportunityViewableBy_gv = [];
+var viewableByOptions_gv;
 
 var currentViewedOpportunity_gv;
 
@@ -39,6 +41,11 @@ function init()
     document.getElementById('saveVolunteerInvolvement').onclick = function(){saveVolunteerInvolvement()};
     document.getElementById('editOpportunity').onclick = function(){editOpportunity()};
 
+    document.getElementById('addOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()}
+    document.getElementById('cancelViewableBy').onclick = function(){toggleViewableByBoxVisibility()};
+    document.getElementById('SelectViewableBy').onclick = function(){setViewableBy()};
+
+
     initSlider('Opportunties');
     initDropdowns('Opportunties');
 
@@ -61,7 +68,8 @@ function toggleOppourtuntiyBoxVisibility()
 
     if(currentState === "none")
         {
-        fillOpportunityTypeOptions();
+        fillOpportunityTypeOptions('addOpportunityTypeOptions');
+        fillOpportunityViewableByOptions();
         document.getElementById('addOpportunityPopup').style.display = "block";
         }
     else 
@@ -85,7 +93,6 @@ function toggleViewInvolvementBoxVisibility()
 
     if(currentState === "none")
         {
-        fillOpportunityTypeOptions();
         document.getElementById('viewVolunteerInvolvementPopup').style.display = "block";
         }
     else 
@@ -94,6 +101,29 @@ function toggleViewInvolvementBoxVisibility()
         }
 
     return;
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will eiter display or hide the viewableBy selection box depending on the current state
+//
+////////////////////////////////////////////////////////////////////////
+function toggleViewableByBoxVisibility()
+    {
+    //Change the oppourtuntiy popup box display
+    var currentState = document.getElementById('viewableByPopup').style.display; 
+
+    if(currentState === "none")
+        {
+        fillOpportunityViewableByOptions();
+        document.getElementById('viewableByPopup').style.display = "block";
+        }
+    else 
+        {
+        document.getElementById('viewableByPopup').style.display = "none";
+        }
+
     }
 
 
@@ -120,6 +150,77 @@ function addTimeDropdownOptions(addOrView, startORend)
     document.getElementById(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_2").onclick = function(){selectDropdownOption(this.id);}
         
     }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will set the global variable for the viewable by options
+//
+////////////////////////////////////////////////////////////////////////
+function setViewableBy() 
+    {
+    var numSelected = 0; 
+    opportunityViewableBy_gv = [];
+
+    //Check if all teams are selected
+    if(document.getElementById('viewableTeam_0').checked)
+        {
+        opportunityViewableBy_gv.push(0);
+
+        //Set label to show all teams
+        document.getElementById('viewOpportunity-viewableByLabel').innerHTML = "All Teams"; 
+        document.getElementById('addOpportunity-viewableByLabel').innerHTML = "All Teams"; 
+        }
+    else 
+        {
+        //Add volunteers to the table
+        for(var option = 0; option < viewableByOptions_gv.length; option++)
+            {
+            //Check if the CheckBox is checked
+            if(document.getElementById('viewableTeam_' + viewableByOptions_gv[option].id).checked)
+                {
+                opportunityViewableBy_gv.push(viewableByOptions_gv[option].id);
+
+                //Set label to show
+                document.getElementById('viewOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name; 
+                document.getElementById('addOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name;
+
+                numSelected++;
+                }
+            }
+
+        if(numSelected > 1) 
+            {
+            document.getElementById('viewOpportunity-viewableByLabel').innerHTML = "Multiple"; 
+            document.getElementById('addOpportunity-viewableByLabel').innerHTML = "Multiple";  
+            }
+        }
+
+    toggleViewableByBoxVisibility();
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will check if the team can view the opportunity
+//
+////////////////////////////////////////////////////////////////////////
+function teamCanView(teamID) 
+    {
+    var rv = false;
+
+    for(var i = 0; i < opportunityViewableBy_gv.length; i++) 
+        {
+        if(opportunityViewableBy_gv[i] == teamID) 
+            {
+            rv = true;
+            break;
+            }
+        }
+
+    return rv;
+    }
+
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -231,7 +332,7 @@ function addOpportunity()
         id: null,                                   //Assigned by the backend
         occurred: false,                            //Likely false since we just created the event -- needs to be checked
         type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-        viewableBy: addOppourtunityViewableBy_gv,   //This needs to be set when the option is selected
+        viewableBy: opportunityViewableBy_gv,   //This needs to be set when the option is selected
         description: document.getElementById('addOpportunity-description').value, 
         sequenceNum: 1, 
         coordinatorInfo: cordInfo,
@@ -301,8 +402,9 @@ function editOpportunity()
         document.getElementById('viewOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
         fillOpportunityTypeOptions('viewOpportunityTypeOptions');
 
-        document.getElementById('viewOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-        fillOpportunityTypeOptions('viewOpportunityViewableByOptions');
+        document.getElementById('viewOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()};
+        document.getElementById('viewOpportunity-viewableBy').disabled = false;
+        fillOpportunityViewableByOptions();
 
         changeSliderLabel('viewOpportunityVolunteerLimit');       //Call function to update label to match
         document.getElementById('viewOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
@@ -352,7 +454,7 @@ function saveEditOpportunity()
         id: currentViewedOpportunity_gv.id,                 
         occurred: currentViewedOpportunity_gv.occurred,                            //Likely false since we just created the event -- needs to be checked
         type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-        viewableBy: addOppourtunityViewableBy_gv,   //This needs to be set when the option is selected
+        viewableBy: opportunityViewableBy_gv,   //This needs to be set when the option is selected
         description: document.getElementById('viewOpportunity-description').value, 
         sequenceNum: currentViewedOpportunity_gv.sequenceNum, 
         coordinatorInfo: cordInfo,
@@ -388,8 +490,7 @@ function saveEditOpportunity()
             document.getElementById('viewOpportunityType').onclick = function(){return};
             document.getElementById('viewOpportunityTypeOptions').innerHTML = "";
 
-            document.getElementById('viewOpportunityViewableBy').onclick = function(){return};
-            document.getElementById('viewOpportunityViewableByOptions').innerHTML = "";
+            document.getElementById('viewOpportunity-viewableBy').onclick = function(){return};
 
             document.getElementById('viewOpportunityVolunteerLimit').onchange = function(){return};
 
@@ -412,6 +513,7 @@ function saveEditOpportunity()
         })
     .catch(error)
         {
+        console.log(error.message);
         alert("Error saving opportunity. Please try again");
         };
     
@@ -430,7 +532,7 @@ function fillOpportunityTypeOptions(dropdownID)
     handlePostMethod(null, '/getOpportunityTypes', response =>
         {
         if(response.success)
-            {
+            { 
             //Get reference to div to add  types to it 
             var dropdownDiv = document.getElementById(dropdownID);
             
@@ -461,27 +563,50 @@ function fillOpportunityTypeOptions(dropdownID)
 // Will find the various types of an Opportunity that are availible and add them
 //
 ////////////////////////////////////////////////////////////////////////
-function fillOpportunityViewableByOptions(dropdownID) 
+function fillOpportunityViewableByOptions() 
     {
     //Get the teams Type options 
     handlePostMethod(null, '/getTeamsForViewable', response =>
         {
         if(response.success)
             {
-            //Get reference to div to add  types to it 
-            var dropdownDiv = document.getElementById(dropdownID);
-            
-            for(var i = 0; i < response.teams.length; i++)
-                {
-                var dropdownOption = document.createElement('a');
-                dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
-                dropdownOption.classList = "dropdown-option";
-                dropdownOption.innerHTML = response.teams[i];
-                dropdownDiv.appendChild(dropdownOption);
+            //Get table id
+            var viewableByTable = document.getElementById("viewableByTable");
 
-                //create dom function call 
-                document.getElementById(dropdownID + '_option_' + i).onclick = function(){selectDropdownOption(this.id)};
+            //Remove the current elements if any 
+            for(var i = viewableByTable.rows.length - 1 ; i > 1; i--)
+                {
+                viewableByTable.deleteRow(i);
                 }
+
+            //set the current row number 
+            var rowNum = 2;
+
+            //Add volunteers to the table
+            for(var option = 0; option < response.teams.length; option++)
+                {
+                //Create new row
+                var row = viewableByTable.insertRow(rowNum++);
+
+                //Create row elements 
+                var selectBox = row.insertCell(0);
+                var teamName = row.insertCell(1);
+        
+                //Fill in row elements
+                if(opportunityViewableBy_gv.length > 0)
+                    {
+                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teams[option].id +"\"" + (teamCanView(response.teams[option].id) ? "checked" : "") + ">";
+                    }
+                else 
+                    {
+                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teams[option].id +"\">";
+                    }
+                
+                teamName.innerHTML = response.teams[option].name;
+                }
+
+            //Set the global varaible of the values 
+            viewableByOptions_gv = response.teams;
             }
         else 
             {
@@ -569,7 +694,8 @@ function viewOpportunity(elementID){
             document.getElementById('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
             document.getElementById('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
             changeSliderLabel('viewOpportunityVolunteerLimit');
-            document.getElementById('dropdown-title-viewOpportunityViewableBy').innerHTML = (response.oppData[0].viewableBy == -1) ? "All Teams" : "Fix This";
+            document.getElementById('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
+            opportunityViewableBy_gv = response.oppData[0].viewableBy;
 
             document.getElementById('viewOpportunity-location').value = response.oppData[0].location;
             document.getElementById('viewOpportunity-description').value = response.oppData[0].description;

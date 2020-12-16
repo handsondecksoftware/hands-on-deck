@@ -41,7 +41,7 @@ exports.getOpportunityData = async (volunteerID, opportunityID) =>
         id: 1, 
         occured: false, 
         type: "Meetings", 
-        viewableBy: -1, 
+        viewableBy: [{name: 'All Teams', id: 0}], 
         description: "This is a test event that is the next SAAC meeting which we will use to test post method", 
         sequenceNum: 1, 
         coordinatorInfo: cordinatorInfo,
@@ -152,7 +152,7 @@ exports.addOpportunity = async (volunteerID, oppData) =>
     id: <int>,
     occurred: <bool>, 
     type: <string>, 
-    viewableBy: [] <string>,		//This will be -1 if it  is viewable by all teams
+    viewableBy: [] <int>,		//This will be 0 if it  is viewable by all teams
     description: <string>, 
     sequenceNum: <int>, 
     coordinatorInfo: {name: <string>, email: <string>, phone: <string>},
@@ -380,7 +380,7 @@ exports.getTeamsForViewable = async volunteerID =>
     var instituionIdOfVolunteer = await general.getVolunteerInstitutionID(volunteerID);
 
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-    response.teams = ["M - Golf", "W - Golf", "M - Swim", "W - Swim"];
+    response.teams = [{name: "M - Golf", id: 1}, {name: "W - Golf", id: 3}, {name: "M - Swim", id: 2}, {name: "W - Swim", id: 4}];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
     response.errorCode = error.NOERROR;

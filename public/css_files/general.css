@@ -125,6 +125,13 @@ hr {
     border: 1px solid black;
 }
 
+.generalLabel{
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a6600;
+}
+
 /*********************Logout styling for popup menu***********************/
 .logout-popup{
   border-radius: 10px;
