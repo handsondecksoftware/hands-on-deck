@@ -132,6 +132,10 @@ hr {
     color: #1a6600;
 }
 
+.blackBorder{
+    border: 1px solid black;
+}
+
 /*********************Logout styling for popup menu***********************/
 .logout-popup{
   border-radius: 10px;
