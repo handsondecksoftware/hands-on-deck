@@ -16,86 +16,86 @@ const error = require('./errorCodes');
 //
 ////////////////////////////////////////////////////////////
 exports.getVolunteerInstitutionID = async volunteerID => 
-  {
-  var returnVal = -1;
+    {
+    var returnVal = -1;
 
-  //Determine what institution the volunteer is from 
-  if(typeof volunteerID === "number")
-    {
-    database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (res, err) =>
-      {
-      if (err)
+    //Determine what institution the volunteer is from 
+    if(typeof volunteerID === "number")
         {
-        returnVal = -1; //Indicate an error, don't want to crash the system
-        console.log("Error fetching the institution_id of volunteer: " + volunteerID + "\nError: " + err);
+        database.queryDB('SELECT institution_id FROM volunteer WHERE volunteer_id =' + volunteerID + ';', (res, err) =>
+            {
+            if (err)
+                {
+                returnVal = -1; //Indicate an error, don't want to crash the system
+                console.log("Error fetching the institution_id of volunteer: " + volunteerID + "\nError: " + err);
+                }
+            else 
+                {
+                returnVal = res.rows[0].institution_id;
+                console.log("getVolunteerInstitutionID set return value to: " + returnVal);    
+                }
+            
+            return returnVal; 
+            });
         }
-      else 
+    else 
         {
-        returnVal = res.rows[0].institution_id;
-        console.log("getVolunteerInstitutionID set return value to: " + returnVal);    
+        return returnVal; 
         }
-      
-      return returnVal; 
-      });
     }
-  else 
-    {
-    return returnVal; 
-    }
-  }
 
 
 ////////////////////////////////////////////////////////////
 //
-// Will get the volunteers instituion id
+// Will get the volunteers instituion id 
 //
 ////////////////////////////////////////////////////////////
 exports.getInstitutionStats = async volunteerID => 
-  {
-  var response = {success: false, errorCode: -1, iStats: null};
-
-  try 
     {
-    console.log('getInstitutionStats() called by: ' + volunteerID);
+    var response = {success: false, errorCode: -1, iStats: null};
 
-    ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-    //Set some default values to use for now
-    response.iStats = 
-      {
-      institution: "Simon Fraser University", 
-      activeVolunteers: 45, 
-      inactiveVolunteers: 354, 
-      volunteerHoursGoal: 750, 
-      currentVolunteerHours: 79,
-      }
-    ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-    
-    response.errorCode = error.NOERROR;
-    response.success = true;
+    try 
+        {
+        console.log('getInstitutionStats() called by: ' + volunteerID);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Set some default values to use for now
+        response.iStats = 
+            {
+            institution: "Simon Fraser University", 
+            activeVolunteers: 45, 
+            inactiveVolunteers: 354, 
+            volunteerHoursGoal: 750, 
+            currentVolunteerHours: 79,
+            }
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+
+        response.errorCode = error.NOERROR;
+        response.success = true;
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.errorCode = error.SERVER_ERROR;
+        response.iStats = null;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getInstitutionStats() is: ' + response.success);
+
+    return response;
     }
-  catch (err)
-    {
-    console.log("Error Occurred: " + err.message);
-
-    response.errorCode = error.SERVER_ERROR;
-    response.iStats = null;
-    response.success = false;
-    }
-
-  //Log completion of function
-  console.log('Result of getInstitutionStats() is: ' + response.success);
-  
-  return response;
-  }
 
 
 ////////////////////////////////////////////////////////////
 //
-// Will generate an 8 digit password for the user
+// Will generate a random 8 digit password for the user
 //
 ////////////////////////////////////////////////////////////
 exports.generatePassword = () => {
-    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()";
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*(){}[]?><~";
     var string_length = 8;
     var randomstring = '';
 
