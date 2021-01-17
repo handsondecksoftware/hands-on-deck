@@ -96,7 +96,17 @@ exports.getOpportunityInfo = async (volunteerID, opportunityID) =>
         title: "Testing Opp", 
         startDatetime: "2020-11-11T19:30:00.000", 
         type: "Meetings", 
-        numVolunteers: 1 
+        numVolunteers: 1,
+        /*
+        id,
+        sequencenum,
+        title,
+        type,
+        starttime,
+        endtime,
+        numvolunteers,
+
+        */
         };
     
     response.oppInfo.push(oppElement);
@@ -140,26 +150,7 @@ exports.addOpportunity = async (volunteerID, oppData) =>
     console.log('addOpportunity() called by: ' + volunteerID);
 
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
-    
-    /*
-    Data in opp data is in form: 
-    {
-    title: <string>, 
-    date: <string>, -- MMM DD YYYY (Mar 15 2020)
-    startTime: <time>, 
-    endTime: <time>, 
-    location: <string>, 
-    id: <int>,
-    occurred: <bool>, 
-    type: <string>, 
-    viewableBy: [] <int>,		//This will be 0 if it  is viewable by all teams
-    description: <string>, 
-    sequenceNum: <int>, 
-    coordinatorInfo: {name: <string>, email: <string>, phone: <string>},
-    volunteerLimit: <int>
-    volunteers: []   {name: <string>, email: <string>, team: <string>, hours: <number>}
-    }
-    */
+
     
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
