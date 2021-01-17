@@ -274,7 +274,7 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
 
 /////////AUTHENTICATION REQUESTS////////////////////////////////////////
 app.post('/signIn', function(request, response, next) {
-    passport.authenticate('local', function(err, user, info) {
+    passport.authenticate('local', (err, user, info) => {
     if (err) { 
         return next(err); 
     }
@@ -284,34 +284,21 @@ app.post('/signIn', function(request, response, next) {
         return response.render('pages/signIn', { 'message': info.message}); 
     }
     else {
-        request.logIn(user, function(err) {
-            if (err) { 
-                return next(err); 
-            }
-
-            return response.redirect('home');
-        });
-    }
-    
-    })(request, response, next);
-  });
-
-app.post('/mobile_signIn', (request, response, next) => {
-    passport.authenticate('local', (err, user, info) => {
-    if (err) { 
-        return next(err); 
-    }
-
-    if (!user) { 
-        return response.send({success: false, session: null, message: info.message}); 
-    }
-    else {
         request.logIn(user, (err) => {
             if (err) { 
                 return next(err); 
             }
 
-            return response.send({success: true, session: user, message: "Successful Sign In"});
+            var isMobile = JSON.parse(request.body.isMobile);
+            if(isMobile)
+                {
+                return response.send({success: true, session: user, message: "Successful Sign In"});
+                }
+            else
+                {
+                return response.redirect('home');
+                }
+                
         });
     }
     

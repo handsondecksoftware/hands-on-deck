@@ -38,7 +38,6 @@ exports.authcheck_get = (req, res, next) =>
 ////////////////////////////////////////////////////////////
 exports.authcheck = (req, res, next) => 
     {
-    console.log(req.body);
     if (req.isAuthenticated()) 
         {
         return next();   // if the user is logged in, proceed to the next function, as needed
