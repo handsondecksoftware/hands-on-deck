@@ -66,7 +66,7 @@ app.use(cookieParser('secretString'));
 app.use(session({
     secret: 'bulky keyboard',
     resave: true,
-    cookie: { maxAge: 120000 },
+    cookie: { maxAge: 1000*60*60*24 },  //1 day session length
     saveUninitialized: true
 }))
 app.use(passport.initialize())
@@ -281,7 +281,6 @@ app.post('/signIn', function(request, response, next) {
     }
 
     if (!user) { 
-        //return response.redirect('/signIn');
         return response.render('pages/signIn', { 'message': info.message}); 
     }
     else {

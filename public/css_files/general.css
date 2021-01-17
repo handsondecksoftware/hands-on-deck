@@ -19,6 +19,10 @@ body, html {
   margin: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -161,8 +165,12 @@ hr {
 }
 
 /*********************Text Colours***********************/
-.textColor-black{
-  color: black !important;
+.text-black{
+    color: black !important;
+}
+
+.text-green{
+    color: #1a6600
 }
 
 .hideText{
@@ -170,6 +178,26 @@ hr {
     opacity: 0 !important;
 }
 
+/*********************Colours***********************/
+.green_h, .green{
+    background-color: #1a6600;
+    color: white;
+}
+
+.green_h:hover{
+    background-color: #144d01;
+    color: white;
+}
+
+.gold_h, .gold{
+    background-color: #F8D718;
+    color: black;
+}
+
+.gold_h:hover{
+    background-color: #e2c41b;
+    color: black;
+}
 
 /*********************Text Alignment***********************/
 .text-center{

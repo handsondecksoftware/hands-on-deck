@@ -11,66 +11,64 @@
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will initialize 
+// initialize page
 //
 //////////////////////////////////////////////////////////////////////// 
 function init()
-  {
-  setupWelcomePage();
-  
-  initLogout();
-  }
+    {
+    setupWelcomePage();
+
+    initLogout();
+    }
 
 
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will find the required data and fill the page with it 
+// Will collected instituion data and add to page
 //
 //////////////////////////////////////////////////////////////////////// 
 function setupWelcomePage()
-  {
-  //make call to get instiution stats
-  handlePostMethod(null, "/getInstitutionStats", response =>
     {
-    var institutionData;
-
-    if(response.success)
-      {
-      institutionData = response.iStats;
-      }
-    else 
-      {
-      console.log("Error retriving instituiton stats." + response.errorCode);
-
-      //Set some default values to use
-      institutionData = 
+    /*
+    handlePostMethod(null, "/getInstituionInfo", response =>
         {
-        institution: "Failed to load", 
-        activeVolunteers: 0, 
-        inactiveVolunteers: 1, 
-        volunteerHoursGoal: 1, 
-        currentVolunteerHours: 0,
-        }
-      }
+        var iInfo;
 
-    //Fill specific values for instituion
-    document.getElementById('institutionName').innerHTML = institutionData.institution;
-    document.getElementById('numActiveVolunteers').innerHTML = institutionData.activeVolunteers;
-    document.getElementById('numInactiveVolunteers').innerHTML = institutionData.inactiveVolunteers;
-    document.getElementById('volunteerHoursGoal').innerHTML = institutionData.volunteerHoursGoal;
-    document.getElementById('volunteerHoursTotal').innerHTML = institutionData.currentVolunteerHours;
+        if(response.success)
+            {
+            iInfo = response.iInfo;
+            }
+        else 
+            {
+            console.log("Error retriving instituiton information." + response.errorCode);
+
+            //Set some default values to use
+            iInfo = 
+                {
+                id: -1, 
+                name: "Could Not Load", 
+                location: "Could Not Load", 
+                numVolunteers: "Unkown",
+                totalHours: "Unkown",
+                }
+            }
+
+        getRef("instituionName").innerHTML = iInfo.name;
+        getRef("numVolunteers").innerHTML = iInfo.numVolunteers;
+        getRef("totalHours").innerHTML = iInfo.totalHours;
+        });
+    */
+
+    //Temp until backend function is implemented
+    getRef("instituionName").innerHTML = "SFU (HARD CODE)";
+    getRef("numVolunteers").innerHTML = "245 (HARD CODE)";
+    getRef("totalHours").innerHTML = "365 (HARD CODE)";
+    }
 
 
-    //Create pie chart displaying results to user
-    createVolunteersPieChart('#numberOfVolunteersPieChart', institutionData.activeVolunteers, institutionData.inactiveVolunteers);
-    createVolunteerHoursPieChart('#volunteerHoursPieChart', institutionData.currentVolunteerHours, institutionData.volunteerHoursGoal);
-    });
 
-  return;
-  }
-
-
+/*
 ////////////////////////////////////////////////////////////////////////
 //
 // Create pie chart with specified statistics in data
@@ -197,9 +195,5 @@ function createVolunteerHoursPieChart(elementID, dataElement1, dataElement2)
     .attr("stroke", "black")
     .style("stroke-width", "1px")
     .style("opacity", 0.7);
-
-  
-
-
-  return;
   }
+*/
