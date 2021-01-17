@@ -40,7 +40,7 @@ const volunteer = require('./backend/volunteer');
 const opportunity = require('./backend/opportunity');
 const team = require('./backend/team');
 const general = require('./backend/general');
-const auth = require('./backend/authentification');
+const auth = require('./backend/authentication');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ app.use(cookieParser('secretString'));
 app.use(session({
     secret: 'bulky keyboard',
     resave: true,
-    cookie: { maxAge: 120000 },
+    cookie: { maxAge: 1000*60*60*24 },
     saveUninitialized: true
 }))
 app.use(passport.initialize())
@@ -89,8 +89,7 @@ app.get('*', async function (req, res, next) { // universal access variable, kee
         console.log("the user is");
         console.log(res.locals.user);
     }
-
-        
+  
     next();
 })
 
@@ -102,19 +101,19 @@ app.get('/', function(request, response){
   	response.redirect('signIn');
 });
 
-app.get('/home', auth.authcheck, function(request, response){
-  response.render('pages/home', { home: true, opps: false, volunt: false, teams: false});
+app.get('/home', auth.authcheck_get, function(request, response){
+    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false});
 });
 
-app.get('/volunteers', auth.authcheck, function(request, response){
+app.get('/volunteers', auth.authcheck_get, function(request, response){
   response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
 });
 
-app.get('/opportunities', auth.authcheck, function(request, response){
+app.get('/opportunities', auth.authcheck_get, function(request, response){
   response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false});
 });
 
-app.get('/teams', auth.authcheck, function(request, response){
+app.get('/teams', auth.authcheck_get, function(request, response){
   response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true});
 });
 
@@ -122,7 +121,7 @@ app.get('/signIn', function(request, response) {
   response.render('pages/signIn', { 'message': (request.message || '')});
 });
 
-app.get('/logout', auth.authcheck, function (req, res) {
+app.get('/logout', auth.authcheck_get, function (req, res) {
     req.logout();             //Logout user using passport
     console.log("Upon logout user status is " + req.isAuthenticated());     //log new status of user
     res.redirect('/');        //Redirect to signIn page
@@ -296,6 +295,28 @@ app.post('/signIn', function(request, response, next) {
     
     })(request, response, next);
   });
+
+app.post('/mobile_signIn', (request, response, next) => {
+    passport.authenticate('local', (err, user, info) => {
+    if (err) { 
+        return next(err); 
+    }
+
+    if (!user) { 
+        return response.send({success: false, session: null, message: info.message}); 
+    }
+    else {
+        request.logIn(user, (err) => {
+            if (err) { 
+                return next(err); 
+            }
+
+            return response.send({success: true, session: user, message: "Successful Sign In"});
+        });
+    }
+    
+    })(request, response, next);
+  });
 ////////////////////////////////////////////////////////////////////////
 // END OF POST REQUESTS
 ////////////////////////////////////////////////////////////////////////
@@ -314,14 +335,14 @@ app.post('/signIn', function(request, response, next) {
 // idea for using session based login came from a medium article https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
 //
 ////////////////////////////////////////////////////////////////////////
-passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email, password, done) => {
 
     loginAttempt();
     async function loginAttempt() {
   
         try {
-          console.log("CURRENT USERNAME IS " + username);
-          database.queryDB('SELECT firstname, lastname, volunteer_id, email, password FROM volunteer WHERE firstname=\'' + username + '\';', function (result, err) {
+          console.log("CURRENT USERNAME IS " + email);
+          database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
     
               if (err) {
                 console.log('Error Occured: ');
@@ -331,7 +352,7 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
   
               if (result.rows[0] == null) {
                 console.log("Oops. Incorrect login details.");
-                return done(null, false, { message: 'Incorrect Username' });
+                return done(null, false, { message: 'Incorrect Email' });
               }
               else {
   
@@ -339,7 +360,7 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, usern
                     if (err) throw err;
                     else if (isMatch) {
                         console.log("Passwords matched!");
-                        return done(null, [{ firstname: result.rows[0].firstname, volunteer_id: result.rows[0].volunteer_id, email: result.rows[0].email }]);
+                        return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
                       }
                       else {
                         console.log("Oops. Incorrect login details.");

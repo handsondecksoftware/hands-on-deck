@@ -17,6 +17,8 @@ module.exports =
 
     INVALID_INPUT_ERROR:        10, 
 
+    NOT_AUTHENTICATED:          50, 
+
 
     UNKNOWN_ERROR:              99, 
 } 

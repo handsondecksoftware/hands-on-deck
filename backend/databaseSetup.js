@@ -37,15 +37,14 @@ exports.queryDB = async (queryString, callbackFunction) => {
             console.log(e);
     
             callbackFunction(null, e);
-            queryError = true;
+                queryError = true;
             }); 
     
-        if(!queryError) {
-            console.log('test');
-            callbackFunction(result, false);
+            if(!queryError) {
+                callbackFunction(result, false);
+            }
         }
-    }
-    catch (err){
+    catch (err) {
        
         console.log('An Error Occured');
         console.log(err);

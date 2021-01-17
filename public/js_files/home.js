@@ -35,6 +35,8 @@ function setupWelcomePage()
     {
     var institutionData;
 
+    console.log(response);
+
     if(response.success)
       {
       institutionData = response.iStats;

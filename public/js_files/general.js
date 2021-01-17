@@ -102,12 +102,14 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     var data;
     if(dataInJSON == null)
         {
-        data = null;
+        dataInJSON = {isMobile: true};
         }
     else 
         {
-        data = JSON.stringify(dataInJSON);
+        dataInJSON["isMobile"] = true;
         }
+    
+    data = JSON.stringify(dataInJSON);
 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", postName, true);
