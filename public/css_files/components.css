@@ -243,10 +243,10 @@
 }
 
 .topnav a.name {
-  width: 300px;
+  width: 225px;
   margin: 0;
   opacity:1.0;
-  padding-right: 70px;
+  padding-right: 10px;
 }
 
 .right{
