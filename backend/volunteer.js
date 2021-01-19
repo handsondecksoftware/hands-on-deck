@@ -4,6 +4,9 @@
 // Ryan Stolys, 14/09/20
 //    - File Created
 //
+// Jayden Cole, 18/01/21
+//    - File updated to new design document
+//
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
@@ -11,26 +14,23 @@ const general = require('./general');
 const error = require('./errorCodes');
 const bcrypt = require('bcryptjs');
 
-
-
-
 ////////////////////////////////////////////////////////////
 // Will get the volunteer data
 //
-// @param[in]  clientID         volunteerID of client making function call
+// @param[in]  user         volunteerID of client making function call
 // @param[in]  volunteerID      ID of volunteer client is looking for detail on
 //                                  value of -1 means all values are of interest
 //
 // @param[out] volunteerData    Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerData = async (clientID, volunteerID) => 
+exports.getVolunteerData = async (user, volunteerID) => 
     {
-    var response = {success: false, errorCode: -1, volunteerData: []};
+    var response = {success: false, errorcode: -1, volunteerData: []};
 
     try 
         {
-        console.log('getVolunteerData() called by: ' + clientID);
+        console.log('getVolunteerData() called by: ' + user);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Set some default values to use for now
@@ -51,14 +51,14 @@ exports.getVolunteerData = async (clientID, volunteerID) =>
         response.volunteerData.push(volunteerElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.volunteerData = null;
         response.success = false;
         }
@@ -73,20 +73,20 @@ exports.getVolunteerData = async (clientID, volunteerID) =>
 ////////////////////////////////////////////////////////////
 // Will get the volunteer info
 //
-// @param[in]  clientID         volunteerID of client making function call
+// @param[in]  user             volunteerID of client making function call
 // @param[in]  volunteerID      ID of volunteer client is looking for detail on
-//                                  value of -1 means all values are of interest
+//                              value of -1 means all values are of interest
 //
 // @param[out] volunteerInfo          Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
-exports.getVolunteerInfo = async (clientID, volunteerID) => 
+exports.getVolunteerInfo = async (user, volunteerID) => 
     {
-    var response = {success: false, errorCode: -1, volunteerInfo: []};
+    var response = {success: false, errorcode: -1, volunteerInfo: []};
 
     try 
         {
-        console.log('getVolunteerInfo() called by: ' + clientID);
+        console.log('getVolunteerInfo() called by: ' + user);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Set some default values to use for now
@@ -104,14 +104,14 @@ exports.getVolunteerInfo = async (clientID, volunteerID) =>
         response.volunteerInfo.push(volunteerElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.volunteerInfo = null;
         response.success = false;
         }
@@ -126,19 +126,19 @@ exports.getVolunteerInfo = async (clientID, volunteerID) =>
 ////////////////////////////////////////////////////////////
 // Will editVolunteer to database
 //
-// @param[in]  clientID                 volunteerID of client making function call
+// @param[in]  user                 volunteerID of client making function call
 // @param[in]  volunteerData            Data of volunteer to be added
 //
-// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
-exports.editVolunteer = async (clientID, volunteerData) => 
+exports.editVolunteer = async (user, volunteerData) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorcode: -1};
 
     try 
         {
-        console.log('editVolunteer() called by: ' + clientID);
+        console.log('editVolunteer() called by: ' + user);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
@@ -161,14 +161,14 @@ exports.editVolunteer = async (clientID, volunteerData) =>
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -182,18 +182,18 @@ exports.editVolunteer = async (clientID, volunteerData) =>
 ////////////////////////////////////////////////////////////
 // Will addVolunteer to database
 //
-// @param[in]  clientID                 volunteerID of client making function call
+// @param[in]  user                 volunteerID of client making function call
 // @param[in]  volunteerData            Data of volunteer to be added
 //
-// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
-exports.addVolunteer = async (clientID, volunteerData) => {
-    var response = {success: false, errorCode: error.UNKNOWN_ERROR};
+exports.addVolunteer = async (user, volunteerData) => {
+    var response = {success: false, errorcode: error.UNKNOWN_ERROR};
     var errorOccurred = false;
 
     try {
-        console.log('addVolunteer() called by: ' + clientID);
+        console.log('addVolunteer() called by: ' + user);
 
 
         //Validate inputs here
@@ -233,12 +233,12 @@ exports.addVolunteer = async (clientID, volunteerData) => {
             await database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, password, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + hashedPassword + "', '" + volunteerData.email + "', '" + volunteerData.type + "')", 
                                 (res, e) => {
                 if(e) {
-                    response.errorCode = error.DATABASE_ACCESS_ERROR;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                 }
                 else {
                     //Send the user an email with their account info 
-                    response.errorCode = error.NOERROR;
+                    response.errorcode = error.NOERROR;
                     response.success = true;
                 }
             });
@@ -247,7 +247,7 @@ exports.addVolunteer = async (clientID, volunteerData) => {
     catch (err) {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
     }
 
@@ -259,21 +259,21 @@ exports.addVolunteer = async (clientID, volunteerData) => {
 
 
 ////////////////////////////////////////////////////////////
-// Will addVolunteer to database
+// Will update user info in database
 //
-// @param[in]  clientID                 volunteerID of client making function call
+// @param[in]  user                     volunteerID of client making function call
 // @param[in]  userInfo                 Info of user to be updated
 //
-// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
-exports.updateUserInfo = async (clientID, userInfo) => 
+exports.changePassword = async (user, userInfo) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorcode: -1};
 
     try 
         {
-        console.log('updateUserInfo() called by: ' + clientID);
+        console.log('changePassword() called by: ' + user);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
@@ -291,19 +291,19 @@ exports.updateUserInfo = async (clientID, userInfo) =>
               
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
 
     //Log completion of function
-    console.log('Result of updateUserInfo() is: ' + response.success);
+    console.log('Result of changePassword() is: ' + response.success);
     
     return response;
     }
