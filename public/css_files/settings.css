@@ -1,0 +1,78 @@
+/*******************************************************************
+* settings.css -- styling for the settings page
+*                   
+* Ryan Stolys,	18/01/21
+*    - File Created
+*
+*******************************************************************/
+
+.settingType{
+    height: 75px;
+    float: left;
+    width: 100%;
+
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    color: black;
+}
+
+.settingDivide{
+    border-top: 2px solid black;
+    padding-top: 3px;
+}
+
+.settingContainer{
+    float:left;
+    width: 50%; 
+    height: 75px;
+    padding: 10px;
+}
+
+.settingTitle{
+    float: left;
+    width: 50%;
+    height: 100%; 
+    padding-top: 10px;
+
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a6600;
+}
+
+.settingInput{
+    float: left;
+    width: 50%;
+    height: 100%; 
+}
+
+.settingSaveBtn{
+    float: left;
+    width: 100%;
+    height: 75px; 
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.settingBtnWidth{
+    width: 30% !important;
+}
+
+@media(max-width: 950px) {
+    .insitutionContainer{
+        width: 100%; 
+    }
+
+    .settingBtnWidth{
+        width: 50% !important;
+    }
+}
+
+
+.passwordPrompt{
+    font-weight: bold;
+    font-size: 16px;
+    color: #1a6600;
+
+    padding-top: 10px;
+}

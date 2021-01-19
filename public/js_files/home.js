@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-// index.js -- frontend behaviour for the index.js view
+// home.js -- frontend behaviour for the home.js view
 //                  
 //
 // Ryan Stolys, 04/08/20
@@ -18,7 +18,7 @@ function init()
     {
     setupWelcomePage();
 
-    initLogout();
+    initLogout();       //In General
     }
 
 
@@ -31,6 +31,7 @@ function init()
 function setupWelcomePage()
     {
     /*
+    setLoaderVisibility(true);
     handlePostMethod(null, "/getInstituionInfo", response =>
         {
         var iInfo;
@@ -41,7 +42,7 @@ function setupWelcomePage()
             }
         else 
             {
-            console.log("Error retriving instituiton information." + response.errorCode);
+            printUserErrorMessage(response.errorcode);
 
             //Set some default values to use
             iInfo = 
@@ -57,6 +58,8 @@ function setupWelcomePage()
         getRef("instituionName").innerHTML = iInfo.name;
         getRef("numVolunteers").innerHTML = iInfo.numVolunteers;
         getRef("totalHours").innerHTML = iInfo.totalHours;
+
+        setLoaderVisibility(false);
         });
     */
 

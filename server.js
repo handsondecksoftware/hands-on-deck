@@ -102,20 +102,24 @@ app.get('/', function(request, response){
 });
 
 app.get('/home', auth.authcheck_get, function(request, response){
-    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false});
+    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
 app.get('/volunteers', auth.authcheck_get, function(request, response){
-  response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false});
+  response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, settings: false});
 });
 
 app.get('/opportunities', auth.authcheck_get, function(request, response){
-  response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false});
+  response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false, settings: false});
 });
 
 app.get('/teams', auth.authcheck_get, function(request, response){
-  response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true});
+  response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true, settings: false});
 });
+
+app.get('/settings', auth.authcheck_get, function(request, response){
+    response.render('pages/settings', { home: false, opps: false, volunt: false, teams: false, settings: true});
+  });
 
 app.get('/signIn', function(request, response) {
   response.render('pages/signIn', { 'message': (request.message || '')});
@@ -318,7 +322,8 @@ app.post('/signIn', function(request, response, next) {
 //
 // Authenticate users using passport
 //
-// idea for using session based login came from a medium article https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
+// idea for using session based login came from a medium article 
+// https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
 //
 ////////////////////////////////////////////////////////////////////////
 passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email, password, done) => {

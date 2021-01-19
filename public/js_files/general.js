@@ -113,11 +113,11 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     var data;
     if(dataInJSON == null)
         {
-        dataInJSON = {isMobile: true};
+        dataInJSON = {isMobile: false};
         }
     else 
         {
-        dataInJSON["isMobile"] = true;
+        dataInJSON["isMobile"] = false;
         }
     
     data = JSON.stringify(dataInJSON);
@@ -138,6 +138,37 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     return;
     }
 
+
+var loaderQueue = [];
+//////////////////////////////////////////////////////////////////
+//
+// Will hide and show the loader element 
+//
+//////////////////////////////////////////////////////////////////
+function setLoaderVisibility(setOn) 
+    {
+    const loaderID = "loader";
+    var loader = getRef(loaderID);
+
+    if(setOn)
+        {
+        loaderQueue.push(true);
+        loader.style.display = "block";
+        }
+    else 
+        {
+        loaderQueue.pop();
+
+        //If the array is empty
+        if(!Array.isArray(loaderQueue) || !loaderQueue.length)
+            {
+            loader.style.display = "none";
+            }
+        }
+    
+    return;
+    }
+    
 
 //////////////////////////////////////////////////////////////////
 //
@@ -256,3 +287,112 @@ function getMinutesFromISOString(ISOdate)
     return parseInt(new Date(ISOdate).toString().slice(19, 21));      //Convert to format hh:mm
     }
 
+
+
+//////////////////////////////////////////////////////////////////
+//
+//  All functions below will generate one of the standard data
+//       objects for api calls
+//
+//////////////////////////////////////////////////////////////////
+function gen_iInfo()
+    {
+    return {
+        id: null, 
+        name: null,
+        location: null,
+        numVolunteers: null,
+        totalHours: null,
+        };
+    }
+
+
+function gen_vInfo()
+    {
+    return {
+        id: null, 
+        name: null,
+        email: null,
+        leaderboards: null,
+        teamname: null,
+        team_id: null,
+        numhours: null,
+        };
+    }
+
+
+function gen_vData()
+    {
+    return {
+        id: null, 
+        name: null,
+        email: null,
+        leaderboards: null,
+        teamname: null,
+        team_id: null,
+        numhours: null,
+        volunteeringdata: null,
+        };
+    }
+
+
+function gen_oppInfo()
+    {
+    return {
+        id: null, 
+        sequencenum: null,
+        title: null,
+        type: null,
+        starttime: null,
+        endtime: null,
+        numvolunteers: null,
+        };
+    }
+
+
+function gen_oppData()
+    {
+    return {
+        id: null, 
+        sequencenum: null,
+        title: null,
+        type: null,
+        starttime: null,
+        endtime: null,
+        location: null, 
+        description: null, 
+        viewableby: null, 
+        volunteerlimit: null, 
+        coordinatorname: null, 
+        coordinatoremail: null, 
+        coordinatorphone: null, 
+        numvolunteers: null,
+        volunteers: null,
+        };
+    }
+
+
+function gen_tInfo()
+    {
+    return {
+        id: null, 
+        name: null,
+        sex: null,
+        numvolunteers: null,
+        numhours: null,
+        };
+    }
+
+
+function gen_tData()
+    {
+    return {
+        id: null, 
+        name: null,
+        sex: null,
+        numvolunteers: null,
+        numhours: null,
+        leaderboard, 
+        volunteers,
+        };
+    }

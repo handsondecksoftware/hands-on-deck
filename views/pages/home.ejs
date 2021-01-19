@@ -16,7 +16,7 @@
 
         <!-- Style Sheets -->
         <link rel="stylesheet" href="../css_files/general.css"> 
-        <link rel="stylesheet" href="../css_files/main.css"> 
+        <link rel="stylesheet" href="../css_files/home.css"> 
         <link rel="stylesheet" href="../css_files/components.css"> 
 
         <!-- Font Awesome 6-->
@@ -26,7 +26,6 @@
         <script src="../js_files/general.js"></script>
         <script src="../js_files/logout.js"></script>
         <script src="../js_files/home.js"></script>
-        <script src="../js_files/d3.js"></script>
 
         <!-- Page Title -->
         <title>Hands On Deck - Home</title>
@@ -38,6 +37,8 @@
     <body onload="init()">
 
         <%- include ("../partials/nav.ejs") %>
+
+        <div id="loader" style="display:none;"></div>
 
         <div class="pageContainer">
             <div class="infoBar">
@@ -71,8 +72,8 @@
                     </a>
                 </div>
                 <div class="navBoxContainer">
-                    <a class="navBox green_h" href="/home">
-                        <div class="navBox-text">Home</div>
+                    <a class="navBox green_h" href="/settings">
+                        <div class="navBox-text">Settings</div>
                     </a>
                 </div>
             </div>

@@ -64,6 +64,11 @@ function initSlider(pageName)
 
             break;
             } 
+        case 'Settings':
+            {
+            document.getElementById('settingLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+            break;
+            }
         default:
             {
             //do nothing
@@ -120,6 +125,11 @@ function changeSliderLabel(sliderID)
         case 'viewInvolvement-validated':
             {
             sliderOptions = ['No', 'Yes'];
+            break; 
+            }
+        case 'settingLeaderboards':
+            {
+            sliderOptions = ['Don\'t Include', 'Include'];
             break; 
             }
         default:
