@@ -3,6 +3,8 @@
 //                  
 // Ryan Stolys, 14/09/20
 //    - File Created
+// Jayden Cole, 18/01/21
+//    - Updated to new design document
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +24,7 @@ const error = require('./errorCodes');
 ////////////////////////////////////////////////////////////
 exports.getOpportunityData = async (volunteerID, opportunityID) => 
   {
-  var response = {success: false, errorCode: -1, oppData: []};
+  var response = {success: false, errorcode: -1, oppData: []};
 
   try 
     {
@@ -52,14 +54,14 @@ exports.getOpportunityData = async (volunteerID, opportunityID) =>
     response.oppData.push(oppElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppData = null;
     response.success = false;
     }
@@ -83,7 +85,7 @@ exports.getOpportunityData = async (volunteerID, opportunityID) =>
 ////////////////////////////////////////////////////////////
 exports.getOpportunityInfo = async (volunteerID, opportunityID) => 
   {
-  var response = {success: false, errorCode: -1, oppInfo: []};
+  var response = {success: false, errorcode: -1, oppInfo: []};
 
   try 
     {
@@ -112,14 +114,14 @@ exports.getOpportunityInfo = async (volunteerID, opportunityID) =>
     response.oppInfo.push(oppElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -138,12 +140,12 @@ exports.getOpportunityInfo = async (volunteerID, opportunityID) =>
 // @param[in]  volunteerID              volunteerID of client making function call
 // @param[in]  oppData                  JSON of opportunity JSON for event being added
 //
-// @param[out] {success, errorCode}     Values indicating success of add  
+// @param[out] {success, errorcode}     Values indicating success of add  
 //
 ////////////////////////////////////////////////////////////////////////////////////
 exports.addOpportunity = async (volunteerID, oppData) => 
   {
-  var response = {success: false, errorCode: -1};
+  var response = {success: false, errorcode: -1};
 
   try 
     {
@@ -154,7 +156,7 @@ exports.addOpportunity = async (volunteerID, oppData) =>
     
     ////////////////////////ADD SQL QUERY TO ADD DATA HERE////////////////////////////////////
     
-    //response.errorCode = error.NOERROR;
+    //response.errorcode = error.NOERROR;
     console.log("entering db call insert")
     var errorOccurred = false;
     if(!errorOccurred) {
@@ -162,12 +164,12 @@ exports.addOpportunity = async (volunteerID, oppData) =>
         (res, e) => {
           if(e) {
             console.log("error occured")
-              response.errorCode = error.DATABASE_ACCESS_ERROR;
+              response.errorcode = error.DATABASE_ACCESS_ERROR;
               response.success = false;
           }
           else {
               //Send the user an email with their account info 
-              response.errorCode = error.NOERROR;
+              response.errorcode = error.NOERROR;
               response.success = true;
           }
       });
@@ -177,7 +179,7 @@ exports.addOpportunity = async (volunteerID, oppData) =>
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -195,12 +197,12 @@ exports.addOpportunity = async (volunteerID, oppData) =>
 // @param[in]  volunteerID              volunteerID of client making function call
 // @param[in]  oppData                  JSON of opportunity JSON for event being editted
 //
-// @param[out] {success, errorCode}     Values indicating success of add  
+// @param[out] {success, errorcode}     Values indicating success of add  
 //
 ////////////////////////////////////////////////////////////////////////////////////
 exports.editOpportunity = async (volunteerID, oppData) => 
   {
-  var response = {success: false, errorCode: -1};
+  var response = {success: false, errorcode: -1};
 
   try 
     {
@@ -210,14 +212,14 @@ exports.editOpportunity = async (volunteerID, oppData) =>
     console.log(oppData);
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.success = false;
     }
 
@@ -234,12 +236,12 @@ exports.editOpportunity = async (volunteerID, oppData) =>
 // @param[in]  volunteerID              volunteerID of client making function call
 // @param[in]  opportunityID           opportunityID to be deleted
 //
-// @param[out] {success, errorCode}     Values indicating success of add  
+// @param[out] {success, errorcode}     Values indicating success of add  
 //
 ////////////////////////////////////////////////////////////////////////////////////
 exports.deleteOpportunity = async (volunteerID, opportunityID) => 
   {
-  var response = {success: false, errorCode: -1};
+  var response = {success: false, errorcode: -1};
 
   try 
     {
@@ -249,14 +251,14 @@ exports.deleteOpportunity = async (volunteerID, opportunityID) =>
     //Need to check that this user has permission to delete opportunity as well
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -278,7 +280,7 @@ exports.deleteOpportunity = async (volunteerID, opportunityID) =>
 ////////////////////////////////////////////////////////////////////////////////////
 exports.getOpportunityTypes = async volunteerID => 
   {
-  var response = {success: false, errorCode: -1, OpportunityTypes: []};
+  var response = {success: false, errorcode: -1, OpportunityTypes: []};
 
   try 
     {
@@ -291,14 +293,14 @@ exports.getOpportunityTypes = async volunteerID =>
     response.opportunityTypes = ["Meetings", "Special Olympics", "Game Day Events", "Social Events"];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -314,14 +316,14 @@ exports.getOpportunityTypes = async volunteerID =>
 // Will add the opportunity types to the institution enum
 //
 // @param[in]  volunteerID              volunteerID of client making function call
-// @param[in]  opportunityType         volunteerID of client making function call
+// @param[in]  opportunityType          opportunity type to be added
 //
-// @param[out] {success, errorCode}     Values indicating success of add  
+// @param[out] {success, errorcode}     Values indicating success of add  
 //
 ////////////////////////////////////////////////////////////////////////////////////
 exports.addOpportunityType = async (volunteerID, opportunityType)  => 
   {
-  var response = {success: false, errorCode: -1, OpportunityTypes: []};
+  var response = {success: false, errorcode: -1, OpportunityTypes: []};
 
   try 
     {
@@ -333,14 +335,14 @@ exports.addOpportunityType = async (volunteerID, opportunityType)  =>
     
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }
@@ -357,12 +359,12 @@ exports.addOpportunityType = async (volunteerID, opportunityType)  =>
 //
 // @param[in]  volunteerID              volunteerID of client making function call
 //
-// @param[out] {success, errorCode}     Values indicating success of add  
+// @param[out] {success, errorcode}     Values indicating success of add  
 //
 ////////////////////////////////////////////////////////////////////////////////////
 exports.getTeamsForViewable = async volunteerID => 
   {
-  var response = {success: false, errorCode: -1, teams: []};
+  var response = {success: false, errorcode: -1, teams: []};
 
   try 
     {
@@ -374,14 +376,14 @@ exports.getTeamsForViewable = async volunteerID =>
     response.teams = [{name: "M - Golf", id: 1}, {name: "W - Golf", id: 3}, {name: "M - Swim", id: 2}, {name: "W - Swim", id: 4}];
     ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.oppInfo = null;
     response.success = false;
     }

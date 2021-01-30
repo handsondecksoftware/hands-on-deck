@@ -3,6 +3,8 @@
 //                  
 // Ryan Stolys, 14/09/20
 //    - File Created
+// Jayden Cole, 18/01/21
+//    - Update to current design documentation
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -27,7 +29,7 @@ const FEMALE = 0;
 ////////////////////////////////////////////////////////////
 exports.getTeamData = async (volunteerID, teamID) => 
   {
-  var response = {success: false, errorCode: -1, teamData: []};
+  var response = {success: false, errorcode: -1, teamData: []};
 
   try 
     {
@@ -49,14 +51,14 @@ exports.getTeamData = async (volunteerID, teamID) =>
     response.teamData.push(teamElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.teamData = null;
     response.success = false;
     }
@@ -72,7 +74,7 @@ exports.getTeamData = async (volunteerID, teamID) =>
 // Will get the team info
 //
 // @param[in]  volunteerID      volunteerID of client making function call
-// @param[in]  teamID           ID of team client is looking for detail on
+// @param[in]  teamID           ID of team the client is looking for detail on
 //                                  value of -1 means all values are of interest
 //
 // @param[out] volunteerInfo          Array of data JSONs for client  
@@ -80,7 +82,7 @@ exports.getTeamData = async (volunteerID, teamID) =>
 ////////////////////////////////////////////////////////////
 exports.getTeamInfo = async (volunteerID, teamID) => 
   {
-  var response = {success: false, errorCode: -1, teamInfo: []};
+  var response = {success: false, errorcode: -1, teamInfo: []};
 
   try 
     {
@@ -100,14 +102,14 @@ exports.getTeamInfo = async (volunteerID, teamID) =>
     response.teamInfo.push(teamElement);
     ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
     
-    response.errorCode = error.NOERROR;
+    response.errorcode = error.NOERROR;
     response.success = true;
     }
   catch (err)
     {
     console.log("Error Occurred: " + err.message);
 
-    response.errorCode = error.SERVER_ERROR;
+    response.errorcode = error.SERVER_ERROR;
     response.teamInfo = null;
     response.success = false;
     }
@@ -125,12 +127,12 @@ exports.getTeamInfo = async (volunteerID, teamID) =>
 // @param[in]  volunteerID              volunteerID of client making function call
 // @param[in]  teamData                 Data of team to be added
 //
-// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
 exports.editTeam = async (volunteerID, teamData) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorcode: -1};
 
     try 
         {
@@ -152,14 +154,14 @@ exports.editTeam = async (volunteerID, teamData) =>
         */   
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -176,12 +178,12 @@ exports.editTeam = async (volunteerID, teamData) =>
 // @param[in]  volunteerID              volunteerID of client making function call
 // @param[in]  teamData                 Data of team to be added
 //
-// @param[out] {success, errorCode}     return variables indicating the success or failure of the request 
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
 exports.addTeam = async (volunteerID, teamData) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorcode: -1};
 
     try 
         {
@@ -206,12 +208,12 @@ exports.addTeam = async (volunteerID, teamData) =>
         await database.queryDB("INSERT INTO team (team_id, name, institution_id, leaderboard, sex) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + teamData.name + "', '" + 1 + "', '" + teamData.leaderboards + "', '" + teamData.sex + "')", 
                                 (res, e) => {
                 if(e) {
-                    response.errorCode = error.DATABASE_ACCESS_ERROR;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                 }
                 else {
                     //Send the user an email with their account info 
-                    response.errorCode = error.NOERROR;
+                    response.errorcode = error.NOERROR;
                     response.success = true;
                 }
             });
@@ -220,7 +222,7 @@ exports.addTeam = async (volunteerID, teamData) =>
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
 
@@ -232,16 +234,16 @@ exports.addTeam = async (volunteerID, teamData) =>
 
 
 ////////////////////////////////////////////////////////////
-// Will add the team to database
+// Will get teams to view
 //
 // @param[in]  volunteerID          volunteerID of client making function call
 //
-// @param[out] teamInfoBasic[]      return variables indicating the success or failure of the request 
+// @param[out] teamInfo[]      Array of teamInfos that are part of an institution
 //
 ////////////////////////////////////////////////////////////
 exports.getTeamsForViewable = async volunteerID => 
     {
-    var response = {success: false, errorCode: -1, teamInfoBasic: []};
+    var response = {success: false, errorcode: -1, teamInfo: []};
 
     try 
         {
@@ -252,19 +254,19 @@ exports.getTeamsForViewable = async volunteerID =>
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Used as default values for now
-        response.teamInfoBasic.push({name: "Golf", id: 1, sex: 1});
-        response.teamInfoBasic.push({name: "Golf", id: 1, sex: 0});
-        response.teamInfoBasic.push({name: "Swim", id: 1, sex: 1});
+        response.teamInfo.push({name: "Golf", id: 1, sex: 1});
+        response.teamInfo.push({name: "Golf", id: 1, sex: 0});
+        response.teamInfo.push({name: "Swim", id: 1, sex: 1});
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
-        response.errorCode = error.NOERROR;
+        response.errorcode = error.NOERROR;
         response.success = true;
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.errorCode = error.SERVER_ERROR;
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
 

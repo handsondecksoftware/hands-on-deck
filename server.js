@@ -6,6 +6,8 @@
 //    - File Created and configured
 // Ryan Stolys, 14/09/20
 //    - File organized, added references to modularization
+// Jayden Cole, 18/01/21
+//    - Update to current design documentation
 //
 ////////////////////////////////////////////////////////////
 
@@ -24,7 +26,11 @@ const bcrypt = require('bcryptjs');
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
-// NONE
+
+var HOURS_IN_DAY = 24;
+var SECONDS_IN_HOUR = 3600;
+var MILISECS_IN_SECOND = 1000;
+
 ////////////////////////////////////////////////////////////////////////
 // END OF GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -66,7 +72,7 @@ app.use(cookieParser('secretString'));
 app.use(session({
     secret: 'bulky keyboard',
     resave: true,
-    cookie: { maxAge: 1000*60*60*24 },  //1 day session length
+    cookie: { maxAge: MILISECS_IN_SECOND * SECONDS_IN_HOUR * HOURS_IN_DAY },
     saveUninitialized: true
 }))
 app.use(passport.initialize())
@@ -170,6 +176,7 @@ app.post('/editOpportunity', auth.authcheck, async (request, response) =>
     response.send(await opportunity.editOpportunity(request.user[0].volunteer_id, request.body.oppData));
     });
 
+
 app.post('/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
     response.send(await opportunity.deleteOpportunity(request.user[0].volunteer_id, request.body.opportunityID));
@@ -192,7 +199,6 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
     response.send(await opportunity.getTeamsForViewable(request.user[0].volunteer_id));
     });
-
 
 
 /////////VOLUNTEERING DATA REQUESTS/////////////////////////////////////////////
@@ -237,11 +243,10 @@ app.post('/addVolunteer', auth.authcheck, async (request, response) =>
     });
 
 
-app.post('/updateUserInfo', auth.authcheck, async (request, response) =>
+app.post('/changePassword', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.updateUserInfo(request.user[0].volunteer_id, request.body.userInfo));
+    response.send(await volunteer.changePassword(request.user[0].volunteer_id, request.body.userInfo));
     });
-
 
 
 /////////TEAM REQUESTS//////////////////////////////////////////////////
@@ -273,7 +278,6 @@ app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
     response.send(await team.getTeamsForViewable(request.user[0].volunteer_id));
     });
-
 
 
 /////////AUTHENTICATION REQUESTS////////////////////////////////////////
