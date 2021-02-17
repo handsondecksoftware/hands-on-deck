@@ -230,7 +230,7 @@ function teamCanView(teamID)
 function fillOpportunityTable()
     {
     //Call method to load oppourtunities -- value of -1 will get all oppourtunities for my instituition
-    handlePostMethod({OpportunityID: -1}, '/getOpportunityInfo', response =>
+    handleAPIcall({OpportunityID: -1}, '/getOpportunityInfo', response =>
         {
         if(response.success)
             {
@@ -340,7 +340,7 @@ function addOpportunity()
         volunteers: null,                           //They have not been set yet
     };
 
-    handlePostMethod({oppData: oppData}, "/addOpportunity", response => 
+    handleAPIcall({oppData: oppData}, "/addOpportunity", response => 
         {
         if(response.success)
             {
@@ -463,7 +463,7 @@ function saveEditOpportunity()
     };
 
     //Send post request and handle the response
-    handlePostMethod({oppData: oppData}, "/editOpportunity", response => 
+    handleAPIcall({oppData: oppData}, "/editOpportunity", response => 
         {
         if(response.success)
             {
@@ -529,7 +529,7 @@ function saveEditOpportunity()
 function fillOpportunityTypeOptions(dropdownID)
     {
     //Get the Opportunity Type options 
-    handlePostMethod(null, '/getOpportunityTypes', response =>
+    handleAPIcall(null, '/getOpportunityTypes', response =>
         {
         if(response.success)
             { 
@@ -566,7 +566,7 @@ function fillOpportunityTypeOptions(dropdownID)
 function fillOpportunityViewableByOptions() 
     {
     //Get the teams Type options 
-    handlePostMethod(null, '/getTeamsForViewable', response =>
+    handleAPIcall(null, '/getTeamsForViewable', response =>
         {
         if(response.success)
             {
@@ -631,7 +631,7 @@ function deleteOpportunity(elementID)
     if(confirm("Are you sure you want to delete this entry?"))
         {
         //Delete the selected Opportunity
-        handlePostMethod({OpportunityID: OpportunityID}, '/deleteOpportunity', response =>
+        handleAPIcall({OpportunityID: OpportunityID}, '/deleteOpportunity', response =>
             {
             if(response.success)
                 {
@@ -667,7 +667,7 @@ function viewOpportunity(elementID){
     //      would need this everytime we call for a post request where the user waits for us
 
     //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
-    handlePostMethod({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
+    handleAPIcall({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
         {
         if(response.success)
             {
@@ -762,7 +762,7 @@ function viewVolunteerForOpportunity(elementID)
 
     //Get the volunteer data ID -- passed as an array of 1 element
     /*
-    handlePostMethod({dataID: [VolunteerDataID]}, '/getVolunteeringData', response => 
+    handleAPIcall({dataID: [VolunteerDataID]}, '/getVolunteeringData', response => 
         {
         if(response.success)
             {

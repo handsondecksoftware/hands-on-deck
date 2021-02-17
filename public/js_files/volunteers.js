@@ -11,26 +11,52 @@
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will initialize 
+// Will initialize page buttons and load volunteers
 //
 //////////////////////////////////////////////////////////////////////// 
 function init()
-  {
-  //Setup open and close of popup box
-  // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
-  document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
-  document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
-  document.getElementById('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
-  document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
-  document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
-  document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
+    {
+    //Setup open and close of popup box
+    // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
+    document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
+    document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
+    document.getElementById('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
+    document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
+    document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
+    document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
 
-  initSlider('Volunteers');
+    initSlider('Volunteers');
 
-  initLogout();
-  }
+    initLogout();
+
+    loadVolunteers();
+    }
 
 
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will initialize 
+//
+//////////////////////////////////////////////////////////////////////// 
+function loadVolunteers()
+    {
+    handleAPIcall({vol_ID: -1}, "/api/getVolunteerInfo", response => 
+        {
+        if(response.success)
+            {
+            alert("We found " + response.volunteerInfo.length + " volunteers");
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorcode);
+            }
+        })
+    .catch(error)
+        {
+        alert("Oops. We ran into an issue loading the page. Please try again");
+        };
+    }
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -38,21 +64,21 @@ function init()
 //
 ////////////////////////////////////////////////////////////////////////
 function toggleAddVolunteerBoxVisibility()
-{
+    {
     //Open the add oppourtuntiy popup box
     var currentState = document.getElementById('addVolunteerPopup').style.display; 
 
     if(currentState === "none")
-    {
+        {
         document.getElementById('addVolunteerPopup').style.display = "block"; 
-    }
+        }
     else 
-    {
+        {
         document.getElementById('addVolunteerPopup').style.display = "none"; 
-    }
+        }
 
   return;
-}
+    }
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -61,23 +87,23 @@ function toggleAddVolunteerBoxVisibility()
 //
 ////////////////////////////////////////////////////////////////////////
 function toggleViewVolVisibility()
-{
+    {
     // Turn on/off a specific volunteers' hours page
     var currentState = document.getElementById('viewVolunteerPage').style.display;
     
     if(currentState === "none")
-    {
+        {
         document.getElementById('volunteerMainPage').style.display = "none";
         document.getElementById('viewVolunteerPage').style.display = "block";
-    }
+        }
     else
-    {
+        {
         document.getElementById('viewVolunteerPage').style.display = "none";
         document.getElementById('volunteerMainPage').style.display = "block";
-    }
+        }
 
     return;
-}
+    }
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -101,7 +127,7 @@ function addVolunteer()
         volunteeringData: null,
     };
 
-    handlePostMethod({volunteerData: volunteerData}, "/addVolunteer", response => 
+    handleAPIcall({volunteerData: volunteerData}, "/addVolunteer", response => 
         {
         if(response.success)
             {
@@ -117,7 +143,6 @@ function addVolunteer()
         {
         alert("Error submitting request. Please try again");
         };
-
     }
 
 ////////////////////////////////////////////////////////////////////////
@@ -231,13 +256,13 @@ function toggleViewOppDetails(){
     var currentState = document.getElementById('viewOppourtunityDetailsPopup').style.display; 
 
     if(currentState == "none")
-    {
+        {
         document.getElementById('viewOppourtunityDetailsPopup').style.display = "block"; 
-    }
+        }
     else 
-    {
+        {
         document.getElementById('viewOppourtunityDetailsPopup').style.display = "none"; 
-    }
+        }
 
     return;
 }

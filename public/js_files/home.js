@@ -30,9 +30,8 @@ function init()
 //////////////////////////////////////////////////////////////////////// 
 function setupWelcomePage()
     {
-    /*
     setLoaderVisibility(true);
-    handlePostMethod(null, "/getInstituionInfo", response =>
+    handleAPIcall(null, "/api/getInstitutionInfo", response =>
         {
         var iInfo;
 
@@ -60,13 +59,14 @@ function setupWelcomePage()
         getRef("totalHours").innerHTML = iInfo.totalHours;
 
         setLoaderVisibility(false);
-        });
-    */
+        })
+    .catch(error => 
+        {
+        setLoaderVisibility(false);
 
-    //Temp until backend function is implemented
-    getRef("instituionName").innerHTML = "SFU (HARD CODE)";
-    getRef("numVolunteers").innerHTML = "245 (HARD CODE)";
-    getRef("totalHours").innerHTML = "365 (HARD CODE)";
+        alert("Looks like we ran into an error loading the page. Please try again");
+        console.error(error.message);
+        });
     }
 
 

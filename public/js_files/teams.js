@@ -74,7 +74,7 @@ function addTeam()
     };
     console.log(teamData)
 
-    handlePostMethod({teamData: teamData}, "/addTeam", response => 
+    handleAPIcall({teamData: teamData}, "/addTeam", response => 
         {
           console.log(response)
         if(response.success)

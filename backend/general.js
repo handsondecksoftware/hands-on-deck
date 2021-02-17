@@ -47,50 +47,6 @@ exports.getVolunteerInstitutionID = async volunteerID =>
 
 ////////////////////////////////////////////////////////////
 //
-// Will get the volunteers instituion id 
-//
-////////////////////////////////////////////////////////////
-exports.getInstitutionStats = async volunteerID => 
-    {
-    var response = {success: false, errorCode: -1, iStats: null};
-
-    try 
-        {
-        console.log('getInstitutionStats() called by: ' + volunteerID);
-
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        response.iStats = 
-            {
-            institution: "Simon Fraser University", 
-            activeVolunteers: 45, 
-            inactiveVolunteers: 354, 
-            volunteerHoursGoal: 750, 
-            currentVolunteerHours: 79,
-            }
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-
-        response.errorCode = error.NOERROR;
-        response.success = true;
-        }
-    catch (err)
-        {
-        console.log("Error Occurred: " + err.message);
-
-        response.errorCode = error.SERVER_ERROR;
-        response.iStats = null;
-        response.success = false;
-        }
-
-    //Log completion of function
-    console.log('Result of getInstitutionStats() is: ' + response.success);
-
-    return response;
-    }
-
-
-////////////////////////////////////////////////////////////
-//
 // Will generate a random 8 digit password for the user
 //
 ////////////////////////////////////////////////////////////

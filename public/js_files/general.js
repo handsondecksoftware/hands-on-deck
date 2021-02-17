@@ -103,7 +103,7 @@ function newArrayFrom1toN(n)
 //                      from the post request 
 //
 //////////////////////////////////////////////////////////////////////// 
-function handlePostMethod(dataInJSON, postName, callbackFunction)
+function handleAPIcall(dataInJSON, postName, callbackFunction)
     {
     //Specify default values 
     var headerName = 'Content-Type';
@@ -123,13 +123,22 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
     data = JSON.stringify(dataInJSON);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", postName, true);
+    xhr.open("GET", postName, true);
     xhr.setRequestHeader(headerName, headerValue);
     xhr.onreadystatechange = function()
         {
         if(xhr.readyState == XMLHttpRequest.DONE) 
             {
-            callbackFunction(JSON.parse(xhr.responseText));
+            var response;
+            try {response = JSON.parse(xhr.responseText);}
+            catch (error) 
+                {
+                console.error(error.message);
+                response = {success: false};
+                }
+             
+            //Return response to callback function
+            callbackFunction(response);
             }
         }
 
@@ -137,7 +146,7 @@ function handlePostMethod(dataInJSON, postName, callbackFunction)
 
     return;
     }
-
+    
 
 var loaderQueue = [];
 //////////////////////////////////////////////////////////////////

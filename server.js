@@ -42,11 +42,12 @@ const database = require('./backend/databaseSetup');
 
 const error = require('./backend/errorCodes');
 
-const volunteer = require('./backend/volunteer');
-const opportunity = require('./backend/opportunity');
-const team = require('./backend/team');
-const general = require('./backend/general');
+const institution = require('./backend/institutionAPI');
+const volunteer = require('./backend/volunteerAPI');
+const opportunity = require('./backend/opportunityAPI');
+const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
+const general = require('./backend/general');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -142,146 +143,166 @@ app.get('/logout', auth.authcheck_get, function (req, res) {
 
 
 ////////////////////////////////////////////////////////////////////////
-// POST REQUESTS
+// API INTERFACE
 ////////////////////////////////////////////////////////////////////////
 
-/////////GENERAL REQUESTS///////////////////////////////////////////////
-app.post('/getInstitutionStats', auth.authcheck, async (request, response) =>
+/////////INSTITUITION API CALLS///////////////////////////////////////////////
+app.get('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await general.getInstitutionStats(request.user[0].volunteer_id));
+    console.log("HELLO?");
+    response.send(await institution.getInstitutionInfo(request.user[0]));
+    });
+
+app.get('/api/editInstitutionStats', auth.authcheck, async (request, response) =>
+    {
+    response.send(await institution.editInstitutionInfo(request.user[0], request.body.iInfo));
+    });
+
+/* We don't need this yet -- can be implemented later
+app.get('/api/addInstitution', auth.authcheck, async (request, response) =>
+    {
+    response.send(await institution.addInstitution(request.user[0], request.iInfo));
+    });
+*/
+
+
+/////////VOLUNTEER API CALLS/////////////////////////////////////////////
+app.get('/api/getVolunteerInfo', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.getVolunteerInfo(request.user[0], request.body.vol_ID));
+    });
+
+app.get('/api/getVolunteerData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.getVolunteerData(request.user[0], request.body.vol_ID));
+    });
+
+app.get('/api/editVolunteer', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.editVolunteer(request.user[0], request.body.volunteerData));
+    });
+
+app.get('/api/changePassword', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.changePassword(request.user[0], request.body.oldPassword, request.body.newPassword));
+    });
+
+/* Can add this at the end. Volunteers are added from app through the "createAccount" api call
+app.get('/api/addVolunteer', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.addVolunteer(request.user[0], request.body.volunteerData));
+    });
+*/
+
+
+
+/////////VOLUNTEERING DATA API CALLS/////////////////////////////////////////////
+app.get('/api/getVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.getVolunteeringData(request.user[0], request.body.vol_ID));
+    });
+
+app.get('/api/addVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.addVolunteeringData(request.user[0], request.body.volunteeringData));
+    });
+
+app.get('/api/editVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.editVolunteeringData(request.user[0], request.body.volunteeringData));
     });
 
 
-/////////OPPORTUNITY REQUESTS//////////////////////////////////////////
-app.post('/getOpportunityData', auth.authcheck, async (request, response) =>
+
+/////////TEAM API CALLS//////////////////////////////////////////////////
+app.get('/api/getTeamInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityData(request.user[0].volunteer_id, request.body.opportunityID));
+    response.send(await team.getTeamInfo(request.user[0], request.body.teamID));
+    });
+
+app.get('/api/getTeamData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.getTeamData(request.user[0], request.body.teamID));
+    });
+
+app.get('/api/editTeam', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.editTeam(request.user[0], request.teamData));
+    });
+
+app.get('/api/addTeam', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.addTeam(request.user[0], request.body.teamData));
+    });
+
+app.get('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.getTeamsForViewable(request.user[0]));
     });
 
 
-app.post('/getOpportunityInfo', auth.authcheck, async (request, response) =>
+
+/////////OPPORTUNITY API CALLS//////////////////////////////////////////
+app.get('/api/getAllOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityInfo(request.user[0].volunteer_id, request.body.opportunityID));
+    response.send(await opportunity.getAllOpportunityInfo(request.user[0], request.body.oppID));
+    });
+
+app.get('/api/getOpportunityInfo', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.getOpportunityInfo(request.user[0], request.body.oppID));
+    });
+
+app.get('/api/getOpportunityData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.getOpportunityData(request.user[0], request.body.oppID));
+    });
+
+app.get('/api/addOpportunity', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.addOpportunity(request.user[0], request.body.oppData));
     });
 
 
-app.post('/addOpportunity', auth.authcheck, async (request, response) =>
+app.get('/api/editOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addOpportunity(request.user[0].volunteer_id, request.body.oppData));
+    response.send(await opportunity.editOpportunity(request.user[0], request.body.oppData));
     });
 
 
-app.post('/editOpportunity', auth.authcheck, async (request, response) =>
+app.get('/api/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.editOpportunity(request.user[0].volunteer_id, request.body.oppData));
+    response.send(await opportunity.deleteOpportunity(request.user[0], request.body.opportunityID));
     });
 
 
-app.post('/deleteOpportunity', auth.authcheck, async (request, response) =>
+app.get('/api/getOpportunityTypes', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.deleteOpportunity(request.user[0].volunteer_id, request.body.opportunityID));
+    response.send(await opportunity.getOpportunityTypes(request.user[0]));
+    });
+
+/* Not availible due to use of enum for opp types
+app.get('/api/addOpportunityType', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.addOpportunityType(request.user[0], request.body.opportunityType));
+    });
+*/
+
+app.get('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
+    {
+    response.send(await opportunity.getTeamsForViewable(request.user[0]));
     });
 
 
-app.post('/getOpportunityTypes', auth.authcheck, async (request, response) =>
+
+/////////ACCOUNT/ AUTHENTICATION API CALLS///////////////////////////////////////////////
+app.get('/api/createAccount', async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityTypes(request.user[0].volunteer_id));
+    //Temp response until we implement this funtionality
+    response.send({success: false, errormessage: " Request Recieved. Not yet implemented."});
     });
 
-
-app.post('/addOpportunityType', auth.authcheck, async (request, response) =>
-    {
-    response.send(await opportunity.addOpportunityType(request.user[0].volunteer_id, request.body.opportunityType));
-    });
-
-
-app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
-    {
-    response.send(await opportunity.getTeamsForViewable(request.user[0].volunteer_id));
-    });
-
-
-/////////VOLUNTEERING DATA REQUESTS/////////////////////////////////////////////
-app.post('/getVolunteeringData', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteerData.getVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
-    });
-
-app.post('/addVolunteeringData', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteerData.addVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
-    });
-
-app.post('/editVolunteeringData', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteerData.editVolunteeringData(request.user[0].volunteer_id, request.body.volunteerID));
-    });
-
-
-/////////VOLUNTEER REQUESTS/////////////////////////////////////////////
-app.post('/getVolunteerData', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteer.getVolunteerData(request.user[0].volunteer_id, request.body.volunteerID));
-    });
-
-
-app.post('/getVolunteerInfo', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteer.getVolunteerInfo(request.user[0].volunteer_id, request.body.volunteerID));
-    });
-
-
-app.post('/editVolunteer', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteer.editVolunteer(request.user[0].volunteer_id, request.body.volunteerData));
-    });
-
-
-app.post('/addVolunteer', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteer.addVolunteer(request.user[0].volunteer_id, request.body.volunteerData));
-    });
-
-
-app.post('/changePassword', auth.authcheck, async (request, response) =>
-    {
-    response.send(await volunteer.changePassword(request.user[0].volunteer_id, request.body.userInfo));
-    });
-
-
-/////////TEAM REQUESTS//////////////////////////////////////////////////
-app.post('/getTeamData', auth.authcheck, async (request, response) =>
-    {
-    response.send(await team.getTeamData(request.user[0].volunteer_id, request.body.teamID));
-    });
-
-
-app.post('/getTeamInfo', auth.authcheck, async (request, response) =>
-    {
-    response.send(await team.getTeamInfo(request.user[0].volunteer_id, request.body.teamID));
-    });
-
-
-app.post('/editTeam', auth.authcheck, async (request, response) =>
-    {
-    response.send(await team.editTeam(request.user[0].volunteer_id, request.teamData));
-    });
-
-
-app.post('/addTeam', auth.authcheck, async (request, response) =>
-    {
-    response.send(await team.addTeam(request.user[0].volunteer_id, request.body.teamData));
-    });
-
-
-app.post('/getTeamsForViewable', auth.authcheck, async (request, response) =>
-    {
-    response.send(await team.getTeamsForViewable(request.user[0].volunteer_id));
-    });
-
-
-/////////AUTHENTICATION REQUESTS////////////////////////////////////////
-app.post('/signIn', function(request, response, next) {
+app.get('/api/signIn', function(request, response, next) {
     passport.authenticate('local', (err, user, info) => {
     if (err) { 
         return next(err); 
@@ -296,14 +317,14 @@ app.post('/signIn', function(request, response, next) {
                 return next(err); 
             }
 
-            var isMobile = JSON.parse(request.body.isMobile);
+            var isMobile = JSON.parse(request.query.isMobile);
             if(isMobile)
                 {
                 return response.send({success: true, session: user, message: "Successful Sign In"});
                 }
             else
                 {
-                return response.redirect('home');
+                return response.redirect('../home');
                 }
                 
         });
@@ -312,7 +333,7 @@ app.post('/signIn', function(request, response, next) {
     })(request, response, next);
   });
 ////////////////////////////////////////////////////////////////////////
-// END OF POST REQUESTS
+// END OF API INTERFACE
 ////////////////////////////////////////////////////////////////////////
 
 

@@ -47,7 +47,7 @@ function loadSettings()
     /*
     setLoaderVisibility(true);  //Set twice since we are doing two post calls
     setLoaderVisibility(true);
-    handlePostMethod(null, "/getInstituionInfo", response =>
+    handleAPIcall(null, "/getInstituionInfo", response =>
         {
         var iInfo;
 
@@ -78,7 +78,7 @@ function loadSettings()
 
     
     //Set vol_ID to 0 to get personal volunteer info
-    handlePostMethod({volID: 0}, "/getVolunteerInfo", response =>
+    handleAPIcall({volID: 0}, "/getVolunteerInfo", response =>
         {
         var vInfo;
 
@@ -139,7 +139,7 @@ function saveInstitutionSettings()
             setLoaderVisibility(true);
             var iInfo = gen_iInfo();
             iInfo.name = name; iInfo.location: location; 
-            handlePostMethod({iInfo: iInfo}, "/editVolunteer", response =>
+            handleAPIcall({iInfo: iInfo}, "/editVolunteer", response =>
                 {
                 if(response.success)
                     {
@@ -204,7 +204,7 @@ function savePersonalSettings()
             setLoaderVisibility(true);
             var vInfo = gen_vInfo();
             vInfo.name = name; vInfo.email: email; vInfo.leaderboards = leaderboards; 
-            handlePostMethod({volunteerInfo: vInfo}, "/editVolunteer", response =>
+            handleAPIcall({volunteerInfo: vInfo}, "/editVolunteer", response =>
                 {
                 if(response.success)
                     {
@@ -254,7 +254,7 @@ function changePassword()
         {
         /*
         setLoaderVisibility(true);
-        handlePostMethod({oldPassword: oldPassword, newPassword: newPassword}, "/changePassword", response =>
+        handleAPIcall({oldPassword: oldPassword, newPassword: newPassword}, "/changePassword", response =>
             {
             if(response.success)
                 {
