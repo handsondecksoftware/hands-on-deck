@@ -65,7 +65,7 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
     }
 
 ////////////////////////////////////////////////////////////
-// Will get the oppoutunity info
+// Will get the opportunity info
 //
 // @param[in]  user             user information
 // @param[in]  opportunityID    ID of opp user is looking for detail on
@@ -88,7 +88,7 @@ exports.getOpportunityInfo = async (user, oppID) =>
             {
             id: oppID,
             sequencenum: 1,
-            title: "Your Oppourtunity",
+            title: "Your Opportunity",
             type: "Meetings",
             starttime: 1616617800000,
             endtime: 1616625000000,
