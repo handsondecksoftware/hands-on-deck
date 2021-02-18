@@ -110,7 +110,19 @@ app.get('/', function(request, response){
 });
 
 app.get('/home', auth.authcheck_get, function(request, response){
-    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
+    jwt.verify(request.token, 'privatekey', (err, authorizedData) => {
+            if(err){
+                console.log(err)
+                //If error send Forbidden (403)
+                console.log('ERROR: Could not connect to the protected route');
+                response.sendStatus(403);
+            } else {
+                //If token is successfully verified, we can send the autorized data 
+                response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
+                console.log('SUCCESS: Connected to protected route');
+            }
+        })
+    // response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
 app.get('/volunteers', auth.authcheck_get, function(request, response){
@@ -307,8 +319,10 @@ app.get('/api/createAccount', async (request, response) =>
 app.get('/api/signIn', function(request, response, next) {
     const email = request.query.username;
     const password = request.query.password;
+    const isMobile = JSON.parse(request.query.isMobile);
+
     console.log(request.query)
-    const user = {
+    var user = {
         email: email,
         password: password
     }
@@ -320,12 +334,18 @@ app.get('/api/signIn', function(request, response, next) {
               if (err) {
                 console.log('Error Occured: ');
                 console.log(err);
-                response.send(err);
+                if(isMobile)
+                    response.send("-1");
+                else
+                    response.render('pages/signIn', { 'message': "Unknown Database Error Occurred"}); 
               }
   
               if (result.rows[0] == null) {
                 console.log("Oops. Incorrect login details.");
-                response.send(null, false, { message: 'Incorrect Email' });
+                if(isMobile)
+                    response.send("-2");   
+                else
+                    response.render('pages/signIn', { 'message': "Incorrect Email"}); 
               }
               else {
   
@@ -333,16 +353,32 @@ app.get('/api/signIn', function(request, response, next) {
                     if (err) throw err;
                     else if (isMatch) {
                         console.log("Passwords matched!");
+                        user = {
+                            // probably would not want to pass this sensitive info, revise
+                            email: email,
+                            password: password,
+                            institution_id: result.rows[0].institution_id,
+                            volunteer_id: result.rows[0].volunteer_id,
+                            volunteertype: result.rows[0].volunteertype
+                        }
                         //if user log in success, generate a JWT token for the user with a secret key
-                        jwt.sign({user}, 'privatekey', { expiresIn: '1h' },(err, token) => {
-                            if(err) { console.log(err) }    
-                            response.send(token);
+                        jwt.sign({user}, 'privatekey', { expiresIn: "24h" },(err, token) => {
+                            if(err) { console.log(err) }
+                            if(isMobile)
+                                response.send(token);
+                            else {
+                                response.cookie('tokenKey', token);
+                                return response.redirect('../home');
+                            }
                         })
                         //return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
                       }
                       else {
                         console.log("Oops. Incorrect login details.");
-                        response.send(null, false, { message: 'Incorrect Password' });
+                        if(isMobile)
+                            response.send("-3");
+                        else
+                            response.render('pages/signIn', { 'message': "Incorrect Password"}); 
                         }
                     });
                 };
