@@ -360,14 +360,18 @@ app.get('/api/signIn', function(request, response, next) {
                             jwt.sign({user}, SECRETKEY, { expiresIn: (isMobile ? APP_EXPIRY : WEB_EXPIRY) }, (err, token) => 
                                 {
                                 if(err) { console.log(err) }
-                                if(isMobile)
-                                    response.send({success: true, session: token, message: "Successful Sign In"});
-                                else 
+                                else
                                     {
-                                    //Set the token in the cookie
-                                    response.cookie('tokenKey', token);
-                                    return response.redirect('../home');
+                                    if(isMobile)
+                                        response.send({success: true, session: token, message: "Successful Sign In"});
+                                    else 
+                                        {
+                                        //Set the token in the cookie
+                                        response.cookie('tokenKey', token);
+                                        return response.redirect('../home');
+                                        }
                                     }
+                                
                                 });
                             }
                         else 

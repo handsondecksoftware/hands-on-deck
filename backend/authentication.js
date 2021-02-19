@@ -39,7 +39,7 @@ exports.authcheck = (req, res, next) =>
                 } 
             else 
                 { 
-                req["user"] = authorizedData.payloadData;   //Set the user information for the api to use
+                req["user"] = authorizedData.user;   //Set the user information for the api to use
                 return next();                              // if the user is logged in, proceed to the next function, as needed
                 }
             });
