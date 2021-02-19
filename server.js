@@ -17,13 +17,16 @@ var express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 var http = require('http');
-var passport = require('passport');
+//var passport = require('passport');
 const cookieParser = require('cookie-parser');
-const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
-const session = require('express-session');
+//const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
+const session = require('express-session');     //Do we need this?
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
+const SECRETKEY = "secretkey";      //Should probably revise this and should probably be an environment variable
+const WEB_EXPIRY = "15m";
+const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -71,14 +74,15 @@ app.use(require('body-parser').urlencoded({ extended: true }))
 app.use(require('cookie-parser')())
 app.use(cookieParser('secretString'));
 
-app.use(session({
-    secret: 'bulky keyboard',
-    resave: true,
-    cookie: { maxAge: MILISECS_IN_SECOND * SECONDS_IN_HOUR * HOURS_IN_DAY },
-    saveUninitialized: true
-}))
-app.use(passport.initialize())
-app.use(passport.session())
+
+// app.use(session({
+//     secret: 'bulky keyboard',
+//     resave: true,
+//     cookie: { maxAge: MILISECS_IN_SECOND * SECONDS_IN_HOUR * HOURS_IN_DAY },
+//     saveUninitialized: true
+// }))
+// app.use(passport.initialize())
+// app.use(passport.session())
 ////////////////////////////////////////////////////////////////////////
 // END OF EXPRESS AND PASSPORT SETUP
 ////////////////////////////////////////////////////////////////////////
@@ -90,65 +94,50 @@ app.use(passport.session())
 app.get('*', async function (req, res, next) { // universal access variable, keep working
     
     //Log status of user
-    console.log("THE USER IS currently " + req.isAuthenticated());
+    //console.log("THE USER IS currently " + req.isAuthenticated());
 
-    res.locals.user = req.user || null;
-    if (res.locals.user != null) {
-        console.log("the user is");
-        console.log(res.locals.user);
-    }
+    // res.locals.user = req.user || null;
+    // if (res.locals.user != null) {
+    //     console.log("the user is");
+    //     console.log(res.locals.user);
+    // }
   
     next();
 })
 
 
-app.get('/', function(request, response){
-	if(request.isAuthenticated())
-		response.redirect('home');
-  else
-  	response.redirect('signIn');
+app.get('/', (request, response) => {
+    //Always send to signin
+	response.redirect('signIn');
 });
 
-app.get('/home', auth.authcheck_get, function(request, response){
-    jwt.verify(request.token, 'privatekey', (err, authorizedData) => {
-            console.log(authorizedData)
-            if(err){
-                console.log(err)
-                //If error send Forbidden (403)
-                console.log('ERROR: Could not connect to the protected route');
-                response.sendStatus(403);
-            } else {
-                //If token is successfully verified, we can send the autorized data 
-                response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
-                console.log('SUCCESS: Connected to protected route');
-            }
-        })
-    // response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
+app.get('/home', auth.authcheck, (request, response) => {
+    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
-app.get('/volunteers', auth.authcheck_get, function(request, response){
-  response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, settings: false});
+app.get('/volunteers', auth.authcheck, (request, response) => {
+    response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, settings: false});
 });
 
-app.get('/opportunities', auth.authcheck_get, function(request, response){
-  response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false, settings: false});
+app.get('/opportunities', auth.authcheck, (request, response) => {
+    response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false, settings: false});
 });
 
-app.get('/teams', auth.authcheck_get, function(request, response){
-  response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true, settings: false});
+app.get('/teams', auth.authcheck, (request, response) => {
+    response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true, settings: false});
 });
 
-app.get('/settings', auth.authcheck_get, function(request, response){
+app.get('/settings', auth.authcheck, (request, response) => {
     response.render('pages/settings', { home: false, opps: false, volunt: false, teams: false, settings: true});
-  });
-
-app.get('/signIn', function(request, response) {
-  response.render('pages/signIn', { 'message': (request.message || '')});
 });
 
-app.get('/logout', auth.authcheck_get, function (req, res) {
+app.get('/signIn', (request, response) =>  {
+    response.render('pages/signIn', { 'message': (request.message || '')});
+});
+
+app.get('/logout', auth.authcheck, function (req, res) {
     req.logout();             //Logout user using passport
-    console.log("Upon logout user status is " + req.isAuthenticated());     //log new status of user
+    //console.log("Upon logout user status is " + req.isAuthenticated());     //log new status of user
     res.redirect('/');        //Redirect to signIn page
 });
 ////////////////////////////////////////////////////////////////////////
@@ -163,18 +152,18 @@ app.get('/logout', auth.authcheck_get, function (req, res) {
 /////////INSTITUITION API CALLS///////////////////////////////////////////////
 app.get('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await institution.getInstitutionInfo(request.cookies.user));
+    response.send(await institution.getInstitutionInfo(request.user));
     });
 
 app.get('/api/editInstitutionStats', auth.authcheck, async (request, response) =>
     {
-    response.send(await institution.editInstitutionInfo(request.user[0], request.body.iInfo));
+    response.send(await institution.editInstitutionInfo(request.user, request.body.iInfo));
     });
 
 /* We don't need this yet -- can be implemented later
 app.get('/api/addInstitution', auth.authcheck, async (request, response) =>
     {
-    response.send(await institution.addInstitution(request.user[0], request.iInfo));
+    response.send(await institution.addInstitution(request.user, request.iInfo));
     });
 */
 
@@ -182,28 +171,28 @@ app.get('/api/addInstitution', auth.authcheck, async (request, response) =>
 /////////VOLUNTEER API CALLS/////////////////////////////////////////////
 app.get('/api/getVolunteerInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.getVolunteerInfo(request.user[0], request.body.vol_ID));
+    response.send(await volunteer.getVolunteerInfo(request.user, request.body.vol_ID));
     });
 
 app.get('/api/getVolunteerData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.getVolunteerData(request.user[0], request.body.vol_ID));
+    response.send(await volunteer.getVolunteerData(request.user, request.body.vol_ID));
     });
 
 app.get('/api/editVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.editVolunteer(request.user[0], request.body.volunteerData));
+    response.send(await volunteer.editVolunteer(request.user, request.body.volunteerData));
     });
 
 app.get('/api/changePassword', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.changePassword(request.user[0], request.body.oldPassword, request.body.newPassword));
+    response.send(await volunteer.changePassword(request.user, request.body.oldPassword, request.body.newPassword));
     });
 
 /* Can add this at the end. Volunteers are added from app through the "createAccount" api call
 app.get('/api/addVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.addVolunteer(request.user[0], request.body.volunteerData));
+    response.send(await volunteer.addVolunteer(request.user, request.body.volunteerData));
     });
 */
 
@@ -212,17 +201,17 @@ app.get('/api/addVolunteer', auth.authcheck, async (request, response) =>
 /////////VOLUNTEERING DATA API CALLS/////////////////////////////////////////////
 app.get('/api/getVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.getVolunteeringData(request.user[0], request.body.vol_ID));
+    response.send(await volunteerData.getVolunteeringData(request.user, request.body.vol_ID));
     });
 
 app.get('/api/addVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.addVolunteeringData(request.user[0], request.body.volunteeringData));
+    response.send(await volunteerData.addVolunteeringData(request.user, request.body.volunteeringData));
     });
 
 app.get('/api/editVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.editVolunteeringData(request.user[0], request.body.volunteeringData));
+    response.send(await volunteerData.editVolunteeringData(request.user, request.body.volunteeringData));
     });
 
 
@@ -230,27 +219,27 @@ app.get('/api/editVolunteeringData', auth.authcheck, async (request, response) =
 /////////TEAM API CALLS//////////////////////////////////////////////////
 app.get('/api/getTeamInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.getTeamInfo(request.user[0], request.body.teamID));
+    response.send(await team.getTeamInfo(request.user, request.body.teamID));
     });
 
 app.get('/api/getTeamData', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.getTeamData(request.user[0], request.body.teamID));
+    response.send(await team.getTeamData(request.user, request.body.teamID));
     });
 
 app.get('/api/editTeam', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.editTeam(request.user[0], request.teamData));
+    response.send(await team.editTeam(request.user, request.teamData));
     });
 
 app.get('/api/addTeam', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.addTeam(request.user[0], request.body.teamData));
+    response.send(await team.addTeam(request.user, request.body.teamData));
     });
 
 app.get('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.getTeamsForViewable(request.user[0]));
+    response.send(await team.getTeamsForViewable(request.user));
     });
 
 
@@ -258,52 +247,52 @@ app.get('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
 /////////OPPORTUNITY API CALLS//////////////////////////////////////////
 app.get('/api/getAllOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getAllOpportunityInfo(request.user[0], request.body.oppID));
+    response.send(await opportunity.getAllOpportunityInfo(request.user, request.body.oppID));
     });
 
 app.get('/api/getOpportunityInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityInfo(request.user[0], request.body.oppID));
+    response.send(await opportunity.getOpportunityInfo(request.user, request.body.oppID));
     });
 
 app.get('/api/getOpportunityData', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityData(request.user[0], request.body.oppID));
+    response.send(await opportunity.getOpportunityData(request.user, request.body.oppID));
     });
 
 app.get('/api/addOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addOpportunity(request.user[0], request.body.oppData));
+    response.send(await opportunity.addOpportunity(request.user, request.body.oppData));
     });
 
 
 app.get('/api/editOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.editOpportunity(request.user[0], request.body.oppData));
+    response.send(await opportunity.editOpportunity(request.user, request.body.oppData));
     });
 
 
 app.get('/api/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.deleteOpportunity(request.user[0], request.body.opportunityID));
+    response.send(await opportunity.deleteOpportunity(request.user, request.body.opportunityID));
     });
 
 
 app.get('/api/getOpportunityTypes', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getOpportunityTypes(request.user[0]));
+    response.send(await opportunity.getOpportunityTypes(request.user));
     });
 
 /* Not availible due to use of enum for opp types
 app.get('/api/addOpportunityType', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.addOpportunityType(request.user[0], request.body.opportunityType));
+    response.send(await opportunity.addOpportunityType(request.user, request.body.opportunityType));
     });
 */
 
 app.get('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.getTeamsForViewable(request.user[0]));
+    response.send(await opportunity.getTeamsForViewable(request.user));
     });
 
 
@@ -320,106 +309,114 @@ app.get('/api/createAccount', async (request, response) =>
 app.get('/api/signIn', function(request, response, next) {
     const email = request.query.username;
     const password = request.query.password;
-    const isMobile = JSON.parse(request.query.isMobile); // json.parse ensures that isMobile acts as a bboolean
+    const isMobile = JSON.parse(request.query.isMobile); 
+        // JSON.parse() ensures that isMobile acts as a boolean instead of string
 
-    console.log(request.query)
-    var user = {
-        email: email,
-        password: password
-    }
-
-    try {
-          console.log("CURRENT USERNAME IS " + email);
-          database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
-    
-              if (err) {
+    try 
+        {
+        //console.log("CURRENT USERNAME IS " + email);
+        //Query database
+        database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email='" + email + "';", (result, err) => 
+            {
+            if (err) 
+                {
                 console.log('Error Occured: ');
                 console.log(err);
+
                 if(isMobile)
                     response.send({success: false, session: null, message: "Unknown Database Error Occurred"});
                 else
                     response.render('pages/signIn', { 'message': "Unknown Database Error Occurred"}); 
-              }
-  
-              if (result.rows[0] == null) {
-                console.log("Oops. Incorrect login details.");
-                if(isMobile)
-                    response.send({success: false, session: null, message: "Incorrect Email"});
+                }
+            else 
+                {
+                //If there is no user matching the provided email
+                if(result.rows[0] == null) 
+                    {
+                    console.log("Oops. Incorrect login details.");
 
-                else
-                    response.render('pages/signIn', { 'message': "Incorrect Email"}); 
-              }
-              else {
-  
-                  bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
-                    if (err) throw err;
-                    else if (isMatch) {
-                        console.log("Passwords matched!");
-                        user = {
-                            // probably would not want to pass this sensitive info, revise
-                            email: email,
-                            institution_id: result.rows[0].institution_id,
-                            volunteer_id: result.rows[0].volunteer_id,
-                            volunteertype: result.rows[0].volunteertype
-                        }
-                        //if user log in success, generate a JWT token for the user with a secret key
-                        jwt.sign({user}, 'privatekey', { expiresIn: "24h" },(err, token) => {
-                            if(err) { console.log(err) }
-                            if(isMobile)
-                                response.send({success: true, session: token, message: "Successful Sign In"});
-                            else {
-                                response.cookie('tokenKey', token);
-                                response.cookie('user', user);
-                                return response.redirect('../home');
+                    if(isMobile)
+                        response.send({success: false, session: null, message: "Incorrect Email"});
+                    else
+                        response.render('pages/signIn', { 'message': "Incorrect Email"}); 
+                    }
+                else 
+                    {
+                    bcrypt.compare(password, result.rows[0].password, (err, isMatch) => 
+                        {
+                        if (err) throw err;
+                        else if (isMatch)       //Passwords matched
+                            {
+                            //console.log("Passwords matched!");
+                            //Define payload data for user 
+                            var user = {
+                                email: email,
+                                institution_id: result.rows[0].institution_id,
+                                volunteer_id: result.rows[0].volunteer_id,
+                                volunteertype: result.rows[0].volunteertype
+                            };
+
+                            //if user log in success, generate a JWT token for the user with a secret key
+                            jwt.sign({user}, SECRETKEY, { expiresIn: (isMobile ? APP_EXPIRY : WEB_EXPIRY) }, (err, token) => 
+                                {
+                                if(err) { console.log(err) }
+                                if(isMobile)
+                                    response.send({success: true, session: token, message: "Successful Sign In"});
+                                else 
+                                    {
+                                    //Set the token in the cookie
+                                    response.cookie('tokenKey', token);
+                                    return response.redirect('../home');
+                                    }
+                                });
                             }
-                        })
-                        //return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
-                      }
-                      else {
-                        console.log("Oops. Incorrect login details.");
-                        if(isMobile)
-                            response.send({success: false, session: null, message: "Incorrect Password"});
-                        else
-                            response.render('pages/signIn', { 'message': "Incorrect Password"}); 
-                        }
-                    });
-                };
-          })
-         }
-        catch (e) { throw (e); }
+                        else 
+                            {
+                            console.log("Oops. Incorrect login details.");
 
-})
-
-app.get('/api/signIndummy', function(request, response, next) {
-    passport.authenticate('local', (err, user, info) => {
-    if (err) { 
-        return next(err); 
-    }
-
-    if (!user) { 
-        return response.render('pages/signIn', { 'message': info.message}); 
-    }
-    else {
-        request.logIn(user, (err) => {
-            if (err) { 
-                return next(err); 
-            }
-
-            var isMobile = JSON.parse(request.query.isMobile);
-            if(isMobile)
-                {
-                return response.send({success: true, session: user, message: "Successful Sign In"});
+                            if(isMobile)
+                                response.send({success: false, session: null, message: "Incorrect Password"});
+                            else
+                                response.render('pages/signIn', { 'message': "Incorrect Password"}); 
+                            }
+                        });
+                    }
                 }
-            else
-                {
-                return response.redirect('../home');
-                }
+            });
+        }
+    catch (e) { throw (e); }
+});
+
+// app.get('/api/signIndummy', function(request, response, next) {
+//     passport.authenticate('local', (err, user, info) => {
+//     if (err) { 
+//         return next(err); 
+//     }
+
+//     if (!user) { 
+//         return response.render('pages/signIn', { 'message': info.message}); 
+//     }
+//     else {
+//         request.logIn(user, (err) => {
+//             if (err) { 
+//                 return next(err); 
+//             }
+
+//             var isMobile = JSON.parse(request.query.isMobile);
+//             if(isMobile)
+//                 {
+//                 return response.send({success: true, session: user, message: "Successful Sign In"});
+//                 }
+//             else
+//                 {
+//                 return response.redirect('../home');
+//                 }
                 
-        });
-    }
+//         });
+//     }
     
-    })(request, response, next);
-  });
+//     })(request, response, next);
+//   });
 ////////////////////////////////////////////////////////////////////////
 // END OF API INTERFACE
 ////////////////////////////////////////////////////////////////////////
@@ -439,44 +436,44 @@ app.get('/api/signIndummy', function(request, response, next) {
 // https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
 //
 ////////////////////////////////////////////////////////////////////////
-passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email, password, done) => {
+// passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email, password, done) => {
 
-    loginAttempt();
-    async function loginAttempt() {
+//     loginAttempt();
+//     async function loginAttempt() {
   
-        try {
-          console.log("CURRENT USERNAME IS " + email);
-          database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
+//         try {
+//           console.log("CURRENT USERNAME IS " + email);
+//           database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
     
-              if (err) {
-                console.log('Error Occured: ');
-                console.log(err);
-                return done(err);
-              }
+//               if (err) {
+//                 console.log('Error Occured: ');
+//                 console.log(err);
+//                 return done(err);
+//               }
   
-              if (result.rows[0] == null) {
-                console.log("Oops. Incorrect login details.");
-                return done(null, false, { message: 'Incorrect Email' });
-              }
-              else {
+//               if (result.rows[0] == null) {
+//                 console.log("Oops. Incorrect login details.");
+//                 return done(null, false, { message: 'Incorrect Email' });
+//               }
+//               else {
   
-                  bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
-                    if (err) throw err;
-                    else if (isMatch) {
-                        console.log("Passwords matched!");
-                        return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
-                      }
-                      else {
-                        console.log("Oops. Incorrect login details.");
-                        return done(null, false, { message: 'Incorrect Password' });
-                        }
-                    });
-                };
-          })
-         }
-        catch (e) { throw (e); }
-    };
-}));
+//                   bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
+//                     if (err) throw err;
+//                     else if (isMatch) {
+//                         console.log("Passwords matched!");
+//                         return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
+//                       }
+//                       else {
+//                         console.log("Oops. Incorrect login details.");
+//                         return done(null, false, { message: 'Incorrect Password' });
+//                         }
+//                     });
+//                 };
+//           })
+//          }
+//         catch (e) { throw (e); }
+//     };
+// }));
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -484,20 +481,20 @@ passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email
 // Used by passport
 //
 ////////////////////////////////////////////////////////////////////////
-passport.serializeUser(function (user, done) {
-  //console.log(user);
-  done(null, user);
-});
+// passport.serializeUser(function (user, done) {
+//   //console.log(user);
+//   done(null, user);
+// });
 
 ////////////////////////////////////////////////////////////////////////
 //
 // Used by passport
 //
 ////////////////////////////////////////////////////////////////////////
-passport.deserializeUser(function (user, done) {
-  //console.log("deserial" + user);
-  done(null, user);
-});
+// passport.deserializeUser(function (user, done) {
+//   //console.log("deserial" + user);
+//   done(null, user);
+// });
 
 ////////////////////////////////////////////////////////////////////////
 // END OF PASSPORT AUTHENTIFICATION FUNCTIONS
