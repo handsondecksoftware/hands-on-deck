@@ -41,7 +41,7 @@ exports.authcheck_get = (req, res, next) =>
 ////////////////////////////////////////////////////////////
 exports.authcheck = (req, res, next) => 
     {
-    if (req.isAuthenticated() || req.body.isMobile) 
+    if (req.isAuthenticated()) 
         {
         return next();   // if the user is logged in, proceed to the next function, as needed
         }

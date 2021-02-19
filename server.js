@@ -162,6 +162,7 @@ app.get('/logout', auth.authcheck_get, function (req, res) {
 /////////INSTITUITION API CALLS///////////////////////////////////////////////
 app.get('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     {
+    console.log("HELLO?");
     response.send(await institution.getInstitutionInfo(request.user[0]));
     });
 
