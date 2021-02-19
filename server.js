@@ -23,6 +23,7 @@ const LocalStrategy = require('passport-local').Strategy; // strategy for authen
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 
+const jwt = require('jsonwebtoken');
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -109,7 +110,19 @@ app.get('/', function(request, response){
 });
 
 app.get('/home', auth.authcheck_get, function(request, response){
-    response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
+    jwt.verify(request.token, 'privatekey', (err, authorizedData) => {
+            if(err){
+                console.log(err)
+                //If error send Forbidden (403)
+                console.log('ERROR: Could not connect to the protected route');
+                response.sendStatus(403);
+            } else {
+                //If token is successfully verified, we can send the autorized data 
+                response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
+                console.log('SUCCESS: Connected to protected route');
+            }
+        })
+    // response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
 app.get('/volunteers', auth.authcheck_get, function(request, response){
@@ -301,7 +314,115 @@ app.get('/api/createAccount', async (request, response) =>
     response.send({success: false, errormessage: " Request Recieved. Not yet implemented."});
     });
 
+
+
 app.get('/api/signIn', function(request, response, next) {
+    const email = request.query.username;
+    const password = request.query.password;
+    const isMobile = JSON.parse(request.query.isMobile);
+
+    console.log(request.query)
+    var user = {
+        email: email,
+        password: password
+    }
+
+    try {
+          console.log("CURRENT USERNAME IS " + email);
+          database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
+    
+              if (err) {
+                console.log('Error Occured: ');
+                console.log(err);
+                if(isMobile)
+                    response.send("-1");
+                else
+                    response.render('pages/signIn', { 'message': "Unknown Database Error Occurred"}); 
+              }
+  
+              if (result.rows[0] == null) {
+                console.log("Oops. Incorrect login details.");
+                if(isMobile)
+                    response.send("-2");   
+                else
+                    response.render('pages/signIn', { 'message': "Incorrect Email"}); 
+              }
+              else {
+  
+                  bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
+                    if (err) throw err;
+                    else if (isMatch) {
+                        console.log("Passwords matched!");
+                        user = {
+                            // probably would not want to pass this sensitive info, revise
+                            email: email,
+                            password: password,
+                            institution_id: result.rows[0].institution_id,
+                            volunteer_id: result.rows[0].volunteer_id,
+                            volunteertype: result.rows[0].volunteertype
+                        }
+                        //if user log in success, generate a JWT token for the user with a secret key
+                        jwt.sign({user}, 'privatekey', { expiresIn: "24h" },(err, token) => {
+                            if(err) { console.log(err) }
+                            if(isMobile)
+                                response.send(token);
+                            else {
+                                response.cookie('tokenKey', token);
+                                return response.redirect('../home');
+                            }
+                        })
+                        //return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
+                      }
+                      else {
+                        console.log("Oops. Incorrect login details.");
+                        if(isMobile)
+                            response.send("-3");
+                        else
+                            response.render('pages/signIn', { 'message': "Incorrect Password"}); 
+                        }
+                    });
+                };
+          })
+         }
+        catch (e) { throw (e); }
+
+})
+//Check to make sure header is not undefined, if so, return Forbidden (403)
+const checkToken = (req, res, next) => {
+    const header = req.headers['authorization'];
+
+    if(typeof header !== 'undefined') {
+        const bearer = header.split(' ');
+        const token = bearer[1];
+
+        req.token = token;
+        next();
+    } else {
+        //If header is undefined return Forbidden (403)
+        res.sendStatus(403)
+    }
+}
+
+//This is a protected route 
+app.get('/user/data', checkToken, (req, res) => {
+    //verify the JWT token generated for the user
+    jwt.verify(req.token, 'privatekey', (err, authorizedData) => {
+        if(err){
+            //If error send Forbidden (403)
+            console.log('ERROR: Could not connect to the protected route');
+            res.sendStatus(403);
+        } else {
+            //If token is successfully verified, we can send the autorized data 
+            res.json({
+                message: 'Successful log in',
+                authorizedData
+            });
+            console.log('SUCCESS: Connected to protected route');
+        }
+    })
+});
+
+app.get('/api/signIndummy', function(request, response, next) {
     passport.authenticate('local', (err, user, info) => {
     if (err) { 
         return next(err); 
