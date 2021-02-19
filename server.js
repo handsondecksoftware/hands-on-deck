@@ -111,6 +111,7 @@ app.get('/', function(request, response){
 
 app.get('/home', auth.authcheck_get, function(request, response){
     jwt.verify(request.token, 'privatekey', (err, authorizedData) => {
+            console.log(authorizedData)
             if(err){
                 console.log(err)
                 //If error send Forbidden (403)
@@ -162,7 +163,7 @@ app.get('/logout', auth.authcheck_get, function (req, res) {
 /////////INSTITUITION API CALLS///////////////////////////////////////////////
 app.get('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     {
-    response.send(await institution.getInstitutionInfo(request.user[0]));
+    response.send(await institution.getInstitutionInfo(request.cookies.user));
     });
 
 app.get('/api/editInstitutionStats', auth.authcheck, async (request, response) =>
@@ -319,7 +320,7 @@ app.get('/api/createAccount', async (request, response) =>
 app.get('/api/signIn', function(request, response, next) {
     const email = request.query.username;
     const password = request.query.password;
-    const isMobile = JSON.parse(request.query.isMobile);
+    const isMobile = JSON.parse(request.query.isMobile); // json.parse ensures that isMobile acts as a bboolean
 
     console.log(request.query)
     var user = {
@@ -335,7 +336,7 @@ app.get('/api/signIn', function(request, response, next) {
                 console.log('Error Occured: ');
                 console.log(err);
                 if(isMobile)
-                    response.send("-1");
+                    response.send({success: false, session: null, message: "Unknown Database Error Occurred"});
                 else
                     response.render('pages/signIn', { 'message': "Unknown Database Error Occurred"}); 
               }
@@ -343,7 +344,8 @@ app.get('/api/signIn', function(request, response, next) {
               if (result.rows[0] == null) {
                 console.log("Oops. Incorrect login details.");
                 if(isMobile)
-                    response.send("-2");   
+                    response.send({success: false, session: null, message: "Incorrect Email"});
+
                 else
                     response.render('pages/signIn', { 'message': "Incorrect Email"}); 
               }
@@ -356,7 +358,6 @@ app.get('/api/signIn', function(request, response, next) {
                         user = {
                             // probably would not want to pass this sensitive info, revise
                             email: email,
-                            password: password,
                             institution_id: result.rows[0].institution_id,
                             volunteer_id: result.rows[0].volunteer_id,
                             volunteertype: result.rows[0].volunteertype
@@ -365,9 +366,10 @@ app.get('/api/signIn', function(request, response, next) {
                         jwt.sign({user}, 'privatekey', { expiresIn: "24h" },(err, token) => {
                             if(err) { console.log(err) }
                             if(isMobile)
-                                response.send(token);
+                                response.send({success: true, session: token, message: "Successful Sign In"});
                             else {
                                 response.cookie('tokenKey', token);
+                                response.cookie('user', user);
                                 return response.redirect('../home');
                             }
                         })
@@ -376,7 +378,7 @@ app.get('/api/signIn', function(request, response, next) {
                       else {
                         console.log("Oops. Incorrect login details.");
                         if(isMobile)
-                            response.send("-3");
+                            response.send({success: false, session: null, message: "Incorrect Password"});
                         else
                             response.render('pages/signIn', { 'message': "Incorrect Password"}); 
                         }
@@ -387,40 +389,6 @@ app.get('/api/signIn', function(request, response, next) {
         catch (e) { throw (e); }
 
 })
-//Check to make sure header is not undefined, if so, return Forbidden (403)
-const checkToken = (req, res, next) => {
-    const header = req.headers['authorization'];
-
-    if(typeof header !== 'undefined') {
-        const bearer = header.split(' ');
-        const token = bearer[1];
-
-        req.token = token;
-        next();
-    } else {
-        //If header is undefined return Forbidden (403)
-        res.sendStatus(403)
-    }
-}
-
-//This is a protected route 
-app.get('/user/data', checkToken, (req, res) => {
-    //verify the JWT token generated for the user
-    jwt.verify(req.token, 'privatekey', (err, authorizedData) => {
-        if(err){
-            //If error send Forbidden (403)
-            console.log('ERROR: Could not connect to the protected route');
-            res.sendStatus(403);
-        } else {
-            //If token is successfully verified, we can send the autorized data 
-            res.json({
-                message: 'Successful log in',
-                authorizedData
-            });
-            console.log('SUCCESS: Connected to protected route');
-        }
-    })
-});
 
 app.get('/api/signIndummy', function(request, response, next) {
     passport.authenticate('local', (err, user, info) => {
