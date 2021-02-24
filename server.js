@@ -136,8 +136,12 @@ app.get('/signIn', (request, response) =>  {
 });
 
 app.get('/logout', auth.authcheck, function (req, res) {
-    req.logout();             //Logout user using passport
-    //console.log("Upon logout user status is " + req.isAuthenticated());     //log new status of user
+    console.log("Upon logout user status is still valid. It is the responsibility of the client to delete their token.");
+    // We can keep track of expired tokens in our database and then check against that 
+    //  each time we do a new server call to make sure the token is valid. Then we can set a trigger
+    //  on that table to remove rows whenever a new write (or read?) is made to that table
+    // https://stackoverflow.com/questions/26046816/is-there-a-way-to-set-an-expiry-time-after-which-a-data-entry-is-automaticall 
+    // More in-depth explanation of jwt expiry not being easily possible is here: https://medium.com/devgorilla/how-to-log-out-when-using-jwt-a8c7823e8a6 
     res.redirect('/');        //Redirect to signIn page
 });
 ////////////////////////////////////////////////////////////////////////
