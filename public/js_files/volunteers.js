@@ -17,11 +17,10 @@
 function init()
     {
     //Setup open and close of popup box
-    // DOM element to open volunteer oppourtunity -- will have to be view buttons in table
-    document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
-    document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
+    //document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
+    //document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
     document.getElementById('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
-    document.getElementById('returnToVolList').onclick = function(){toggleViewVolVisibility()};
+    document.getElementById('returnToVolList').onclick = function(){toggleViewVolunteerVisibility()};
     document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
     document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
 
@@ -33,7 +32,6 @@ function init()
     }
 
 
-
 ////////////////////////////////////////////////////////////////////////
 // 
 // Will initialize 
@@ -41,20 +39,54 @@ function init()
 //////////////////////////////////////////////////////////////////////// 
 function loadVolunteers()
     {
-    handleAPIcall({vol_ID: -1}, "/api/getVolunteerInfo", response => 
+    try 
         {
-        if(response.success)
+        setLoaderVisibility(true);
+
+        handleAPIcall({vol_ID: -1}, "/api/getVolunteerInfo", response => 
             {
-            alert("We found " + response.volunteerInfo.length + " volunteers");
-            }
-        else 
-            {
-            printUserErrorMessage(response.errorcode);
-            }
-        })
-    .catch(error)
+            if(response.success)
+                {
+                //Get reference to table 
+                var volunteerTable = document.getElementById('volunteersTable');
+                var rowNum = 1;
+    
+                //Fill in table elements
+                for(var volNum = 0; volNum < response.volunteerInfo.length; volNum++)
+                    {
+                    //Create new row
+                    var row = volunteerTable.insertRow(rowNum++);
+    
+                    //Create row elements 
+                    var name = row.insertCell(0);
+                    var email = row.insertCell(1);
+                    var team = row.insertCell(2);
+                    var volunteerHrs = row.insertCell(3);
+                    var view = row.insertCell(4);
+                    var remove = row.insertCell(5);
+                    
+                    //Fill in row elements
+                    name.innerHTML = response.volunteerInfo[volNum].name;
+                    email.innerHTML = response.volunteerInfo[volNum].email;
+                    team.innerHTML = response.volunteerInfo[volNum].teamname;
+                    volunteerHrs.innerHTML = response.volunteerInfo[volNum].numhours;
+    
+                    view.innerHTML = "<i id=\"view_" + response.volunteerInfo[volNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteer(this.id)\"></i>";
+                    remove.innerHTML = "<i id=\"delete_" + response.volunteerInfo[volNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id)\"></i>";
+                    }
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
         {
         alert("Oops. We ran into an issue loading the page. Please try again");
+        setLoaderVisibility(false);
         };
     }
 
@@ -65,6 +97,8 @@ function loadVolunteers()
 ////////////////////////////////////////////////////////////////////////
 function toggleAddVolunteerBoxVisibility()
     {
+    alert("Volunteers can only be created through the app interface for now.");
+    return;
     //Open the add oppourtuntiy popup box
     var currentState = document.getElementById('addVolunteerPopup').style.display; 
 
@@ -86,7 +120,7 @@ function toggleAddVolunteerBoxVisibility()
 // Will display or hide a specific volunteers volunteering history
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleViewVolVisibility()
+function toggleViewVolunteerVisibility()
     {
     // Turn on/off a specific volunteers' hours page
     var currentState = document.getElementById('viewVolunteerPage').style.display;
@@ -151,34 +185,70 @@ function addVolunteer()
 // list to the individual's volunteering page
 //
 ////////////////////////////////////////////////////////////////////////
-function showVolunteer(e){
-    e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
+function viewVolunteer(buttonID)
+    {
+    //Get the volunteer ID
+    var vol_ID = buttonID.slice(5);      //Remove "view_"
 
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            // Get Name, Team, and Role of Volunteer from the clicked row
-            var volName = parent.cells.item(0).innerHTML;
-            var volTeam = parent.cells.item(2).innerHTML;
+    //alert("vol_ID is: " + vol_ID);
 
-            document.getElementById("volName").innerHTML = volName;
-            document.getElementById("volTeam").innerHTML = volTeam;
+    try
+        {
+        // Show the new page while the user waits for the content to load
+        toggleViewVolunteerVisibility();
 
-            //TODO: Get volunteer "role" and populate table with instances where this individual volunteered
+        setLoaderVisibility(true);
+        handleAPIcall({vol_ID: vol_ID}, "/api/getVolunteerData", response => 
+            {
+            if(response.success)
+                {
+                document.getElementById("volName").innerHTML = response.volunteerData.name;
+                document.getElementById("volTeam").innerHTML = response.volunteerData.teamname;
 
-            // Flip page visibility
-            toggleViewVolVisibility()
+                //Get reference to table 
+                var volunteerHistoryTable = document.getElementById('volunteerHistoryTable');
+                var rowNum = 1;
+    
+                var volunteeringData = response.volunteerData.volunteeringdata;
 
-           return true;
+                //Fill in table elements
+                for(var vData = 0; vData < volunteeringData.length; vData++)
+                    {
+                    //Create new row
+                    var row = volunteerHistoryTable.insertRow(rowNum++);
+    
+                    //Create row elements 
+                    var title = row.insertCell(0);
+                    var type = row.insertCell(1);
+                    var duration = row.insertCell(2);
+                    var date = row.insertCell(3);
+                    var time = row.insertCell(4);
+                    var view = row.insertCell(5);
+                    
+                    //Fill in row elements
+                    title.innerHTML = volunteeringData.title;
+                    type.innerHTML = volunteeringData.type;
+                    duration.innerHTML = "TBD"; //volunteeringData.name;
+                    date.innerHTML = "TBD"; //volunteeringData.name;
+                    time.innerHTML = "TBD"; //volunteeringData.name;
+                    
+                    view.innerHTML = "<i id=\"view_" + volunteeringData.id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id)\"></i>";
+                    }
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+    
+            setLoaderVisibility(false);
+            });
+        }
+    catch(error)
+        {
+        alert("Oops, looks like something went wrong while loading the volunteer information. Try again");
+        setLoaderVisibility(false);
         }
     }
-    return false;
-}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -273,10 +343,30 @@ function toggleViewOppDetails(){
 // Will save the opportunity details that a volunteer attended
 //
 ////////////////////////////////////////////////////////////////////////
-function saveOppDetails(){
+function saveOppDetails() 
+    {
     // TODO: Save opportunity details to database
     
     // Now toggle visibility of pop up box
     toggleViewOppDetails();
     return;
-}
+    }
+
+
+/*
+Could be useful code for the search functionality
+  e = e || event;
+    var eventEl = e.srcElement || e.target, 
+    parent = eventEl.parentNode,
+    isRow = function(el) {
+                return el.tagName.match(/tr/i);
+            };
+
+    // Move up the DOM until tr is reached
+    while (parent = parent.parentNode) {
+        if (isRow(parent)) {
+            // Get Name, Team, and Role of Volunteer from the clicked row
+            var volName = parent.cells.item(0).innerHTML;
+            var volTeam = parent.cells.item(2).innerHTML;
+
+*/

@@ -48,105 +48,139 @@
 
     <div class="pageContainer"> 
     
-      <!-- Volunteers main page -->
-      <div id="volunteerMainPage">
+        <!-- Volunteers main page -->
+        <div id="volunteerMainPage">
 
-        <div style="height: 60px">  <!-- Define height of top section to avoid spacing issues with text above table-->
-          <div class="addVolunteerButton">
-            <button class="button" id="addVolunteerButton">Add Volunteer</button>
-          </div>
-    
-          <div class="searchVolunteer paddingTop5 search">
-            <input class="textInput" type="text" placeholder="Search" id="searchVolunteers">
-          </div>
-        </div>
+            <div style="height: 60px">  <!-- Define height of top section to avoid spacing issues with text above table-->
+                <div class="addVolunteerButton">
+                <button class="button" id="addVolunteerButton">Add Volunteer</button>
+                </div>
 
-        <!-- Displays list of volunteers-->
-        <div id="volunteersTableDiv" class="table"> 
-          <span class="table-title">Volunteers:</span>
-          <table id="volunteersTable"> 
-            <tr>
-                <th class="width25">Name</th>
-                <th class="width25">Email</th>
-                <th class="width20">Team</th>
-                <th class="width20">Volunteer Hours</th> 
-                <th class="width5">View</th>
-                <th class="width5">Delete</th>
-            </tr>
-          </table>
-        </div>
-      
-      </div>
-      
-      <!-- Used to show the volunteer history of volunteer -->
-      <div id="viewVolunteerPage" style="display: none;">
+                <div class="searchVolunteer paddingTop5 search">
+                <input class="textInput" type="text" placeholder="Search" id="searchVolunteers">
+                </div>
+            </div>
+
+            <!-- Displays list of volunteers-->
+            <div id="volunteersTableDiv" class="table"> 
+                <span class="table-title">Volunteers:</span>
+                <table id="volunteersTable"> 
+                    <tr>
+                        <th class="width25">Name</th>
+                        <th class="width25">Email</th>
+                        <th class="width20">Team</th>
+                        <th class="width20">Volunteer Hours</th> 
+                        <th class="width5">View</th>
+                        <th class="width5">Delete</th>
+                    </tr>
+                </table>
+            </div>
         
-        <div id="volunteerHistoryTitle">
-
-            <div class="col_33p row_100p">
-                <div class="row_50p">
-                    <div class="col_100p subTitle3"> Name:</div>
+        </div>
+        
+        <!-- Used to show the volunteer history of volunteer -->
+        <div id="viewVolunteerPage" style="display: none;">
+            <div id="volunteerHistoryTitle">
+                <div class="col_33p row_100p">
+                    <button class="button col_16p" style="width: 30%;" id="returnToVolList"> Return to Volunteers</button>
                 </div>
-                <div class="row_50p">
-                    <div id="volName" class="subTitle3"></div>
+                <div class="col_33p row_100p">
+                    <div class="row_50p">
+                        <div class="col_100p subTitle3"> Name:</div>
+                    </div>
+                    <div class="row_50p">
+                        <div id="volName" class="subTitle3"></div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col_33p row_100p">
-                <div class="row_50p">
-                    <div class="col_100p subTitle3"> Team:</div>
-                </div>
-                <div class="row_50p">
-                    <div id="volTeam" class="subTitle3"></div>
-                </div>
-            </div>
-
-            <div class="col_33p row_100p">
-                <div class="row_50p">
-                    <div class="col_100p subTitle3"> Role:</div>
-                </div>
-                <div class="row_50p">
-                    <div class="col_100p subTitle3">
-                      <input class="textInput" type="text" placeholder="Role" id="volunteerInfo-team">
+                <div class="col_33p row_100p">
+                    <div class="row_50p">
+                        <div class="col_100p subTitle3"> Team:</div>
+                    </div>
+                    <div class="row_50p">
+                        <div id="volTeam" class="subTitle3"></div>
                     </div>
                 </div>
             </div>
 
+            <div id="volunteerHistoryTableDiv" class="table"> 
+                <span class="table-title">Volunteer History:</span>
+                <table id="volunteerHistoryTable"> 
+                    <tr>
+                        <th class="width35">Title</th>
+                        <th class="width20">Type</th>
+                        <th class="width15">Number of Hours</th>
+                        <th class="width15">Date</th> 
+                        <th class="width10">Time</th> 
+                        <th class="width5">View</th>
+                    </tr>
+                </table>
+            </div>     
         </div>
 
-        <div id="volunteerHistoryTableDiv" class="table"> 
-          <span class="table-title">Volunteer History:</span>
-          <table id="volunteerHistoryTable"> 
-            <tr>
-              <th class="width35">Title</th>
-              <th class="width20">Type</th>
-              <th class="width15">Number of Hours</th>
-              <th class="width15">Date</th> 
-              <th class="width10">Time</th> 
-              <th class="width5">View</th>
-            </tr>
-            <tr>
-              <td>Operation Christmas Child</td>
-              <td>Local Community</td> 
-              <td>2.5</td>
-              <td>Nov. 23, 2020</td>
-              <td>6:30 PM</td>
-              <td><i class="fas fa-eye table-view" onclick=showOpportunityDetails()></i></td> 
-            </tr>
-            <tr>
-              <td>Special Olympics</td>
-              <td>Local Community</td> 
-              <td>1.25</td>
-              <td>Nov. 24, 2020</td>
-              <td>7:30 PM</td>
-              <td><i class="fas fa-eye table-view" onclick=showOpportunityDetails()></i></td> 
-            </tr>
-          </table>
-        </div> 
-        <button class="button col_16p" style="width: 30%;" id="returnToVolList"> Return to Volunteers</button>
-        
-      </div>
 
+        <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
+        <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">
+            <div class="popup-box">
+                <div class="popup-title">
+                    <h1 id="opportunityTitle">Opportunity Title</h1>
+                </div>
+                <div class="popup-content" style="height:175px">
+
+                    <div class="col_50p row_100p">
+                        <div class="row_20p">
+                            <div class="col_50p subTitle3"> Date:</div>
+                            <div class="col_50p subTitle3"> Time:</div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_50p subTitle3">
+                            <input class="textInput" type="text" placeholder="Date" id="oppDate">
+                            </div>
+                            <div class="col_50p subTitle3">
+                            <input class="textInput" type="text" placeholder="Time" id="oppTime">
+                            </div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_35p subTitle3"> Validated:</div>
+                            <div class="col_65p subTitle3">
+                                <div class="sliderLabel" id="oppValidatedLabel">Yes</div>
+                                <div class="sliderContainer sliderWidth">
+                                    <input type="range" min="0" max="1" value="0" class="slider" id="oppValidated">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col_50p row_100p">
+                        <div class="row_20p">
+                            <div class="col_100p subTitle3"> Duration:</div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_100p subTitle3">
+                                <input class="textInput" type="text" placeholder="Duration" id="oppDuration">
+                            </div>
+                        </div>
+                        <div class="row_40p">
+                            <div class="col_35p subTitle3"> Occurred:</div>
+                            <div class="col_65p">
+                                <div class="sliderLabel" id="oppOccurredLabel">Yes</div>
+                                <div class="sliderContainer sliderWidth">
+                                    <input type="range" min="0" max="1" value="0" class="slider" id="oppOccurred">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="popup-buttons">
+                    <div class="popup-buttons-cancel"><button class="button" id="cancelOppourtunityView">Cancel</button></div>
+                    <div class="popup-buttons-add"><button class="button" id="saveOppourtunityView">Save</button></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--
         <div id="addVolunteerPopup" class="popup-greyOut" style="display:none">
             <div class="popup-box">
                 <div class="popup-title" >
@@ -198,72 +232,11 @@
                 </div>
             </div>
         </div>
-
-        <!-- Pop up box for viewing an opportunity that a volunteer has participated in-->
-        <div id="viewOppourtunityDetailsPopup" class="popup-greyOut" style="display:none">
-            <div class="popup-box">
-                <div class="popup-title">
-                    <h1 id="opportunityTitle">Opportunity Title</h1>
-                </div>
-                <div class="popup-content" style="height:175px">
-
-                    <div class="col_50p row_100p">
-                        <div class="row_20p">
-                            <div class="col_50p subTitle3"> Date:</div>
-                            <div class="col_50p subTitle3"> Time:</div>
-                        </div>
-                        <div class="row_40p">
-                            <div class="col_50p subTitle3">
-                            <input class="textInput" type="text" placeholder="Date" id="oppDate">
-                            </div>
-                            <div class="col_50p subTitle3">
-                            <input class="textInput" type="text" placeholder="Time" id="oppTime">
-                            </div>
-                        </div>
-                        <div class="row_40p">
-                            <div class="col_35p subTitle3"> Validated:</div>
-                            <div class="col_65p subTitle3">
-                            <div class="sliderLabel" id="oppValidatedLabel">Yes</div>
-                            <div class="sliderContainer sliderWidth">
-                                <input type="range" min="0" max="1" value="0" class="slider" id="oppValidated">
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col_50p row_100p">
-                        <div class="row_20p">
-                            <div class="col_100p subTitle3"> Duration:</div>
-                        </div>
-                        <div class="row_40p">
-                            <div class="col_100p subTitle3">
-                                <input class="textInput" type="text" placeholder="Duration" id="oppDuration">
-                            </div>
-                        </div>
-                        <div class="row_40p">
-                            <div class="col_35p subTitle3"> Occurred:</div>
-                            <div class="col_65p">
-                                <div class="sliderLabel" id="oppOccurredLabel">Yes</div>
-                                <div class="sliderContainer sliderWidth">
-                                    <input type="range" min="0" max="1" value="0" class="slider" id="oppOccurred">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="popup-buttons">
-                    <div class="popup-buttons-cancel"><button class="button" id="cancelOppourtunityView">Cancel</button></div>
-                    <div class="popup-buttons-add"><button class="button" id="saveOppourtunityView">Save</button></div>
-                </div>
-            </div>
-        </div>
+        -->
 
         <div id="logout" style="display:none"></div>
 
     </div>
 
-  </body>
-  
+</body>
 </html>

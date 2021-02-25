@@ -41,7 +41,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             name: "Ryan Stolys",
             email: "rstolys@sfu.ca",
             leaderboards: true, 
-            teammame: "M - Golf", 
+            teamname: "M - Golf", 
             team_id: 1,
             numhours: 23, 
             };
@@ -53,7 +53,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             name: "Jayden Cole",
             email: "jcole@sfu.ca",
             leaderboards: true, 
-            teammame: "M - Swim", 
+            teamname: "M - Swim", 
             team_id: 1,
             numhours: 34, 
             };
@@ -95,7 +95,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
 
     try 
         {
-        console.log('getVolunteerData() called by: ' + user.volunteer_id);
+        console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Set some default values to use for now
@@ -107,7 +107,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 name: "Ryan Stolys",
                 email: "rstolys@sfu.ca",
                 leaderboards: true, 
-                teammame: "M - Golf", 
+                teamname: "M - Golf", 
                 team_id: 1,
                 numhours: 23,
                 volunteeringData: null
@@ -124,7 +124,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 name: "Jayden Cole",
                 email: "jcole@sfu.ca",
                 leaderboards: true, 
-                teammame: "M - Swim", 
+                teamname: "M - Swim", 
                 team_id: 1,
                 numhours: 34, 
                 volunteeringData: null
