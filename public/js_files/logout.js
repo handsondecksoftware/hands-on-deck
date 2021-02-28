@@ -56,25 +56,7 @@ function generateLogoutBox()
     getRef('confirmLogoutChoice').onclick = function(){logoutUser()};
     }
 
-
-/*
-<!-- Pop up box for logging out -->
-<div id="logoutPopup" class="popup-greyOut" style="display:none">
-    <div class="logout-popup">
-        <div class="logout-content subTitle">
-            Are you sure you want to logout?
-        </div>
-        <div class="logout-buttons">
-            <div class="popup-buttons-cancel"><button class="button" id="cancelLogoutChoice">Cancel</button></div>
-            <div class="popup-buttons-add"><button class="button" id="yesLogoutChoice">Yes</button></div>
-        </div>
-    </div>
-</div>
-*/
-
-
-
-
+    
 ////////////////////////////////////////////////////////////////////////
 // 
 // Will eiter display or hide the add oppourtuntiy box depending on the current state
@@ -98,8 +80,9 @@ function logoutUser()
     {
     closeLogoutBox();
 
-    //Do stuff here to logout user officially
-
-    //Move to signin page
-    window.location.href = '/logout';
+    handleAPIcall(null, "/api/logout", response =>
+        {
+        console.log(response);
+        window.location.href = "/signIn";
+        });
     }

@@ -21,7 +21,6 @@
     <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
 
     <!-- Scripts -->
-    <script src="../js_files/signIn.js"></script>
 
 
     <!-- Page Title -->
@@ -53,10 +52,10 @@
             </div>
         </div>
         <div class="row_70p paddingTop10">
-            <form class="row_100p" onsubmit="return signIn()" method="post">
+            <form class="row_100p" action="/api/signIn" method="post">
                 <div class="row_30p signIn-input">
                     <div class="subTitle3">  Email:</div>
-                    <input class="textInput" type="text" id="username" name="username" placeholder="Email" required />
+                    <input class="textInput" type="text" id="email" name="email" placeholder="Email" required />
                 </div>
                 <div class="row_30p signIn-input">
                     <div class="subTitle3">  Password:</div>
