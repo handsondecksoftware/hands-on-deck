@@ -21,8 +21,8 @@ const SECRETKEY = "secretkey";      //Should probably revise this
 exports.authcheck = (req, res, next) => 
     {
     //Extract token -- will this work for app or do we need to check somewhere else
-    //console.log("At Authcheck");
-    //console.log(req);
+    console.log("At Authcheck");
+    console.log(req);
     const token = req.headers.authorization;
     if(typeof token !== 'undefined')
         {

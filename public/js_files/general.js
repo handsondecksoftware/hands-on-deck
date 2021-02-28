@@ -126,6 +126,7 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
     xhr.open("POST", postName, true);
     xhr.setRequestHeader(headerName, headerValue);
     xhr.setRequestHeader("Authorization", "testing, please work");
+    console.log(document.cookie)
     xhr.onreadystatechange = function()
         {
         if(xhr.readyState == XMLHttpRequest.DONE) 

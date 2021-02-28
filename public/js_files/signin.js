@@ -27,11 +27,14 @@ function signIn()
         if(response.success)
             {
             //Set the jwt to the header
-            var authHeader = new Headers();
-            authHeader.set('Authorization', response.access_token);
+            // var authHeader = new Headers();
+            // authHeader.set('Authorization', response.access_token);
+            let authHeader = new Headers({'Content-Type': 'application/json'});  
+            authHeader.append('Authorization','Bearer ')
             //alert(response.access_token);
-
-            window.location.href = "/home";     //Go to home page
+            console.log("Checking header here")
+            console.log(authHeader)
+            // window.location.href = "/home";     //Go to home page
             }
         });
 
@@ -75,10 +78,12 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
     var xhr = new XMLHttpRequest();
     xhr.open("POST", postName, true);
     xhr.setRequestHeader(headerName, headerValue);
+    xhr.setRequestHeader('Authorization','Bearer ')
     xhr.onreadystatechange = function()
         {
         if(xhr.readyState == XMLHttpRequest.DONE) 
             {
+            console.log("inside done function")
             var response;
             try {response = JSON.parse(xhr.responseText);}
             catch (error) 
@@ -86,7 +91,7 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
                 console.error(error.message);
                 response = {success: false};
                 }
-             
+            console.log(response)
             //Return response to callback function
             callbackFunction(response);
             }

@@ -111,7 +111,7 @@ app.get('/', (request, response) => {
 	response.redirect('signIn');
 });
 
-app.get('/home', auth.authcheck, (request, response) => {
+app.get('/home', (request, response) => {
     response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
@@ -371,13 +371,14 @@ app.post('/api/signIn', function(request, response, next) {
                                     else 
                                         {
                                         //Set the token in the cookie
-                                        response.setHeader("Authorization", ["Bearer", token]);      //??
-                                        console.log("After signin");
-                                        console.log(response.getHeaders());
-                                        console.log("Before next call");
-                                        return response.send({success: true, access_token: token, message: "Successful Sign In"})
+                                        // response.setHeader("Authorization", ["Bearer", token]);      //??
+                                        // console.log("After signin");
+                                        // console.log(response);
+                                        // console.log("Before next call");
+                                        response.cookie("access_token", token)
+                                        // return response.send({success: true, access_token: token, message: "Successful Sign In"})
                                         //return response.render('pages/signIn', { 'message': "Testing, go to home now"});
-                                        //return response.redirect('../home');
+                                        return response.redirect('../home');
                                         }
                                     }
                                 
