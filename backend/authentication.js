@@ -21,7 +21,9 @@ const SECRETKEY = "secretkey";      //Should probably revise this
 exports.authcheck = (req, res, next) => 
     {
     //Extract token -- will this work for app or do we need to check somewhere else
-    const token = req.cookies.tokenKey
+    //console.log("At Authcheck");
+    //console.log(req);
+    const token = req.headers.authorization;
     if(typeof token !== 'undefined')
         {
         //Verify the jwt

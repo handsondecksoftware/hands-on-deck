@@ -25,7 +25,7 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 const SECRETKEY = "secretkey";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "15m";
+const WEB_EXPIRY = "1m";
 const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
@@ -311,16 +311,16 @@ app.post('/api/createAccount', async (request, response) =>
 
 
 app.post('/api/signIn', function(request, response, next) {
-    const email = request.query.username;
-    const password = request.query.password;
-    const isMobile = JSON.parse(request.query.isMobile); 
+    const email = request.body.email;
+    const password = request.body.password;
+    const isMobile = JSON.parse(request.body.isMobile); 
         // JSON.parse() ensures that isMobile acts as a boolean instead of string
 
     try 
         {
         //console.log("CURRENT USERNAME IS " + email);
         //Query database
-        database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email='" + email + "';", (result, err) => 
+        database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteer_type FROM volunteer WHERE email='" + email + "';", (result, err) => 
             {
             if (err) 
                 {
@@ -367,12 +367,17 @@ app.post('/api/signIn', function(request, response, next) {
                                 else
                                     {
                                     if(isMobile)
-                                        response.send({success: true, session: token, message: "Successful Sign In"});
+                                        response.send({success: true, access_token: token, message: "Successful Sign In"});
                                     else 
                                         {
                                         //Set the token in the cookie
-                                        response.cookie('tokenKey', token);
-                                        return response.redirect('../home');
+                                        response.setHeader("Authorization", ["Bearer", token]);      //??
+                                        console.log("After signin");
+                                        console.log(response.getHeaders());
+                                        console.log("Before next call");
+                                        return response.send({success: true, access_token: token, message: "Successful Sign In"})
+                                        //return response.render('pages/signIn', { 'message': "Testing, go to home now"});
+                                        //return response.redirect('../home');
                                         }
                                     }
                                 

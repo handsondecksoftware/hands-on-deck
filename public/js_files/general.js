@@ -123,8 +123,9 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
     data = JSON.stringify(dataInJSON);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", postName, true);
+    xhr.open("POST", postName, true);
     xhr.setRequestHeader(headerName, headerValue);
+    xhr.setRequestHeader("Authorization", "testing, please work");
     xhr.onreadystatechange = function()
         {
         if(xhr.readyState == XMLHttpRequest.DONE) 
