@@ -379,7 +379,10 @@ app.post('/api/signIn', function(request, response, next)
     catch (e) 
         { 
         console.log("UNEXPECTED ERROR OCCURRED");
-        console.log(e);     //Log the error
+        console.log("Sent Request Body:");
+        console.log(request);
+        console.log("Error:");
+        console.log(e); 
 
         response.send({success: false, session: null, message: "An Unexpected Error Occurred"});
        
