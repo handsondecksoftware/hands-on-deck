@@ -295,14 +295,16 @@ app.post('/api/logout', auth.makeTokenInvalid, (request, response) =>
     });
 
 
-app.post('/api/signIn', function(request, response, next) {
-    const email = request.body.email;
-    const password = request.body.password;
-    const isMobile = JSON.parse(request.body.isMobile); 
-        // JSON.parse() ensures that isMobile acts as a boolean instead of string
+app.post('/api/signIn', function(request, response, next) 
+    {
 
     try 
         {
+        const email = request.body.email;
+        const password = request.body.password;
+        const isMobile = JSON.parse(request.body.isMobile); 
+            // JSON.parse() ensures that isMobile acts as a boolean instead of string
+
         //Query database
         database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteer_type FROM volunteer WHERE email='" + email + "';", (result, err) => 
             {
@@ -374,8 +376,16 @@ app.post('/api/signIn', function(request, response, next) {
                 }
             });
         }
-    catch (e) { throw (e); }
-});
+    catch (e) 
+        { 
+        console.log("UNEXPECTED ERROR OCCURRED");
+        console.log(e);     //Log the error
+
+        response.send({success: false, session: null, message: "An Unexpected Error Occurred"});
+       
+        //throw (e); 
+        }
+    });
 ////////////////////////////////////////////////////////////////////////
 // END OF API INTERFACE
 ////////////////////////////////////////////////////////////////////////
