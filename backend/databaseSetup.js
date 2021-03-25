@@ -28,7 +28,7 @@ exports.queryDB = async (queryString, callbackFunction) => {
 
     var client = await pool.connect();
 
-    console.time("db Start");
+    //console.time("db Start");
 
     try {
         result = await client.query(queryString).catch(e => {
@@ -45,7 +45,7 @@ exports.queryDB = async (queryString, callbackFunction) => {
         
         client.release();          //Remove connection to database
 
-        console.timeEnd("db Start");
+        //console.timeEnd("db Start");
         }
     catch (err) {
        

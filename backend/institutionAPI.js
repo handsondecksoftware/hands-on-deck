@@ -8,6 +8,7 @@
 
 const database = require('./databaseSetup');
 const error = require('./errorCodes');
+const enumType = require('./enumTypes');
 
 
 ////////////////////////////////////////////////////////////
@@ -23,20 +24,36 @@ exports.getInstitutionInfo = async user =>
         {
         console.log('getInstitutionInfo() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        response.iInfo = 
+        if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
-            id: user.institution_id,
-            name: "Simon Fraser University",
-            location: "Burnaby, BC", 
-            numVolunteers: 2, 
-            totalHours: 5,
+            await database.queryDB("SELECT institution_id AS id, name, location FROM institution WHERE institution_id = '" + user.institution_id + "';",
+            (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("error occured")
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    //Send the user an email with their account info 
+                    response.iInfo = res.rows[0];
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+    
+            //Set some default values to use for now
+            response.iInfo['numVolunteers'] = 2;
+            response.iInfo['totalHours'] = 5;
             }
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-
-        response.errorcode = error.NOERROR;
-        response.success = true;
+        else 
+            {
+            response.iInfo = null;
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -61,18 +78,35 @@ exports.getInstitutionInfo = async user =>
 ////////////////////////////////////////////////////////////
 exports.editInstitutionInfo = async (user, iInfo) => 
     {
-    var response = {success: false, errormessage: -1};
+    var response = {success: false, errorcode: -1};
 
     try 
         {
         console.log('editInstitutionInfo() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        // Query to update instituion stats
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-
-        response.errormessage = "";
-        response.success = true;
+        if(user.volunteer_type == DEV || user.volunteer_type == ADMIN)
+            {
+            await database.queryDB("UPDATE institution SET name = '" + iInfo.name + "', location = '" + iInfo.location + "' WHERE institution_id = '" + user.institution_id + "';",
+            (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("error occured")
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            }
+        else 
+            {
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
