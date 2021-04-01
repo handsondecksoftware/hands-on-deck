@@ -139,7 +139,7 @@ app.post('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     response.send(await institution.getInstitutionInfo(request.user));
     });
 
-app.post('/api/editInstitutionStats', auth.authcheck, async (request, response) =>
+app.post('/api/editInstitutionInfo', auth.authcheck, async (request, response) =>
     {
     response.send(await institution.editInstitutionInfo(request.user, request.body.iInfo));
     });
@@ -274,11 +274,6 @@ app.post('/api/addOpportunityType', auth.authcheck, async (request, response) =>
     });
 */
 
-app.post('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
-    {
-    response.send(await opportunity.getTeamsForViewable(request.user));
-    });
-
 
 
 /////////ACCOUNT/ AUTHENTICATION API CALLS///////////////////////////////////////////////
@@ -300,13 +295,13 @@ app.post('/api/signIn', function(request, response, next)
 
     try 
         {
-        const email = request.body.email;
+        const username = request.body.username;
         const password = request.body.password;
         const isMobile = JSON.parse(request.body.isMobile); 
             // JSON.parse() ensures that isMobile acts as a boolean instead of string
 
         //Query database
-        database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteer_type FROM volunteer WHERE email='" + email + "';", (result, err) => 
+        database.queryDB("SELECT volunteer_id, institution_id, username, password, volunteer_type FROM volunteer WHERE username='" + username + "';", (result, err) => 
             {
             if (err) 
                 {
@@ -326,9 +321,9 @@ app.post('/api/signIn', function(request, response, next)
                     console.log("Oops. Incorrect login details.");
 
                     if(isMobile)
-                        response.send({success: false, session: null, message: "Incorrect Email"});
+                        response.send({success: false, session: null, message: "Incorrect Username"});
                     else
-                        response.render('pages/signIn', { 'message': "Incorrect Email"}); 
+                        response.render('pages/signIn', { 'message': "Incorrect Username"}); 
                     }
                 else 
                     {
@@ -340,7 +335,7 @@ app.post('/api/signIn', function(request, response, next)
                             //console.log("Passwords matched!");
                             //Define payload data for user 
                             var user = {
-                                email: email,
+                                username: username,
                                 institution_id: result.rows[0].institution_id,
                                 volunteer_id: result.rows[0].volunteer_id,
                                 volunteer_type: result.rows[0].volunteer_type

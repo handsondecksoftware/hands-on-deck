@@ -23,7 +23,7 @@ exports.authcheck = async (req, res, next) =>
     {
     try 
         {
-        console.log("authcheck");
+        //console.log("authcheck");
         //Extract token
         const token = req.headers.authorization.split(" ")[1];      //split removes 'Bearer ' from header
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
@@ -73,7 +73,7 @@ exports.authcheck_get = async (req, res, next) =>
     {
     try
         {
-        console.log("authcheck_get");
+        //console.log("authcheck_get");
         //Extract token
         const token = req.cookies.access_token;      //No need to remove Bearer since it is not in cookie
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
@@ -123,11 +123,10 @@ async function tokenNotExpired(token)
     {
     var notExpired = false;
 
-    console.log("Searching for: " + token);
+    //console.log("Searching for: " + token);
     //Query database for token in expired table
     await database.queryDB("SELECT * FROM expire_table WHERE token='" + token + "';", (result, err) => 
         {
-        console.log("Returned from db query");
         if (err) 
             {
             console.log('DATABASE ACCESS ERROR. Assuming invalid token');
@@ -139,12 +138,12 @@ async function tokenNotExpired(token)
             //If there is no token matching the one we are looking for
             if(result.rows[0] == null) 
                 {
-                console.log('Token not found in expire_table');
+                //console.log('Token not found in expire_table');
                 notExpired = true;
                 }
             else 
                 {
-                console.log('Token found in expire_table. Is currently invalid');
+                //console.log('Token found in expire_table. Is currently invalid');
                 notExpired = false;
                 }
             }
