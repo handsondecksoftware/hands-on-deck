@@ -21,7 +21,7 @@ exports.getInstitutionInfo = async user =>
 
     try 
         {
-        console.log('getInstitutionStats() called by: ' + user.volunteer_id);
+        console.log('getInstitutionInfo() called by: ' + user.volunteer_id);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Set some default values to use for now
@@ -48,7 +48,7 @@ exports.getInstitutionInfo = async user =>
         }
 
     //Log completion of function
-    console.log('Result of getInstitutionStats() is: ' + response.success);
+    console.log('Result of getInstitutionInfo() is: ' + response.success);
 
     return response;
     }

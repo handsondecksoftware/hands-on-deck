@@ -10,27 +10,19 @@
 //    - Update to current design documentation
 //
 ////////////////////////////////////////////////////////////
-
-global.users = false;
-
 var express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
-var http = require('http');
-//var passport = require('passport');
 const cookieParser = require('cookie-parser');
-//const LocalStrategy = require('passport-local').Strategy; // strategy for authenticating with a username and password
-const session = require('express-session');     //Do we need this?
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
-const SECRETKEY = "secretkey";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "1m";
+const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
+const WEB_EXPIRY = "10m";
 const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
-
 var HOURS_IN_DAY = 24;
 var SECONDS_IN_HOUR = 3600;
 var MILISECS_IN_SECOND = 1000;
@@ -44,14 +36,14 @@ var MILISECS_IN_SECOND = 1000;
 ////////////////////////////////////////////////////////////////////////
 const database = require('./backend/databaseSetup');
 
-const error = require('./backend/errorCodes');
+//const error = require('./backend/errorCodes');
 
 const institution = require('./backend/institutionAPI');
 const volunteer = require('./backend/volunteerAPI');
 const opportunity = require('./backend/opportunityAPI');
 const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
-const general = require('./backend/general');
+//const general = require('./backend/general');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -75,14 +67,6 @@ app.use(require('cookie-parser')())
 app.use(cookieParser('secretString'));
 
 
-// app.use(session({
-//     secret: 'bulky keyboard',
-//     resave: true,
-//     cookie: { maxAge: MILISECS_IN_SECOND * SECONDS_IN_HOUR * HOURS_IN_DAY },
-//     saveUninitialized: true
-// }))
-// app.use(passport.initialize())
-// app.use(passport.session())
 ////////////////////////////////////////////////////////////////////////
 // END OF EXPRESS AND PASSPORT SETUP
 ////////////////////////////////////////////////////////////////////////
@@ -91,6 +75,7 @@ app.use(cookieParser('secretString'));
 ////////////////////////////////////////////////////////////////////////
 // GET REQUESTS
 ////////////////////////////////////////////////////////////////////////
+/*
 app.get('*', async function (req, res, next) { // universal access variable, keep working
     
     //Log status of user
@@ -104,6 +89,7 @@ app.get('*', async function (req, res, next) { // universal access variable, kee
   
     next();
 })
+*/
 
 
 app.get('/', (request, response) => {
@@ -111,38 +97,32 @@ app.get('/', (request, response) => {
 	response.redirect('signIn');
 });
 
-app.get('/home', (request, response) => {
+app.get('/home', auth.authcheck_get, (request, response) => {
+    console.log("Rendering home");
     response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
-app.get('/volunteers', auth.authcheck, (request, response) => {
+app.get('/volunteers', auth.authcheck_get, (request, response) => {
+    console.log("Rendering vols");
     response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, settings: false});
 });
 
-app.get('/opportunities', auth.authcheck, (request, response) => {
+app.get('/opportunities', auth.authcheck_get, (request, response) => {
+    console.log("Rendering opps");
     response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false, settings: false});
 });
 
-app.get('/teams', auth.authcheck, (request, response) => {
+app.get('/teams', auth.authcheck_get, (request, response) => {
+    console.log("Rendering teams");
     response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true, settings: false});
 });
 
-app.get('/settings', auth.authcheck, (request, response) => {
+app.get('/settings', auth.authcheck_get, (request, response) => {
     response.render('pages/settings', { home: false, opps: false, volunt: false, teams: false, settings: true});
 });
 
 app.get('/signIn', (request, response) =>  {
     response.render('pages/signIn', { 'message': (request.message || '')});
-});
-
-app.get('/logout', auth.authcheck, function (req, res) {
-    console.log("Upon logout user status is still valid. It is the responsibility of the client to delete their token.");
-    // We can keep track of expired tokens in our database and then check against that 
-    //  each time we do a new server call to make sure the token is valid. Then we can set a trigger
-    //  on that table to remove rows whenever a new write (or read?) is made to that table
-    // https://stackoverflow.com/questions/26046816/is-there-a-way-to-set-an-expiry-time-after-which-a-data-entry-is-automaticall 
-    // More in-depth explanation of jwt expiry not being easily possible is here: https://medium.com/devgorilla/how-to-log-out-when-using-jwt-a8c7823e8a6 
-    res.redirect('/');        //Redirect to signIn page
 });
 ////////////////////////////////////////////////////////////////////////
 // END OF GET REQUESTS
@@ -309,16 +289,22 @@ app.post('/api/createAccount', async (request, response) =>
     });
 
 
+app.post('/api/logout', auth.makeTokenInvalid, (request, response) => 
+    {
+    response.send({success: true, session: null, message: "Logout Successful"});
+    });
 
-app.post('/api/signIn', function(request, response, next) {
-    const email = request.body.email;
-    const password = request.body.password;
-    const isMobile = JSON.parse(request.body.isMobile); 
-        // JSON.parse() ensures that isMobile acts as a boolean instead of string
+
+app.post('/api/signIn', function(request, response, next) 
+    {
 
     try 
         {
-        //console.log("CURRENT USERNAME IS " + email);
+        const email = request.body.email;
+        const password = request.body.password;
+        const isMobile = JSON.parse(request.body.isMobile); 
+            // JSON.parse() ensures that isMobile acts as a boolean instead of string
+
         //Query database
         database.queryDB("SELECT volunteer_id, institution_id, email, password, volunteer_type FROM volunteer WHERE email='" + email + "';", (result, err) => 
             {
@@ -357,7 +343,7 @@ app.post('/api/signIn', function(request, response, next) {
                                 email: email,
                                 institution_id: result.rows[0].institution_id,
                                 volunteer_id: result.rows[0].volunteer_id,
-                                volunteertype: result.rows[0].volunteertype
+                                volunteer_type: result.rows[0].volunteer_type
                             };
 
                             //if user log in success, generate a JWT token for the user with a secret key
@@ -370,23 +356,15 @@ app.post('/api/signIn', function(request, response, next) {
                                         response.send({success: true, access_token: token, message: "Successful Sign In"});
                                     else 
                                         {
-                                        //Set the token in the cookie
-                                        // response.setHeader("Authorization", ["Bearer", token]);      //??
-                                        // console.log("After signin");
-                                        // console.log(response);
-                                        // console.log("Before next call");
                                         response.cookie("access_token", token)
-                                        // return response.send({success: true, access_token: token, message: "Successful Sign In"})
-                                        //return response.render('pages/signIn', { 'message': "Testing, go to home now"});
                                         return response.redirect('../home');
                                         }
                                     }
-                                
                                 });
                             }
                         else 
                             {
-                            console.log("Oops. Incorrect login details.");
+                            //console.log("Oops. Incorrect login details.");
 
                             if(isMobile)
                                 response.send({success: false, session: null, message: "Incorrect Password"});
@@ -398,118 +376,19 @@ app.post('/api/signIn', function(request, response, next) {
                 }
             });
         }
-    catch (e) { throw (e); }
-});
+    catch (e) 
+        { 
+        console.log("UNEXPECTED ERROR OCCURRED");
+        console.log("Sent Request Body:");
+        console.log(request);
+        console.log("Error:");
+        console.log(e); 
 
-// app.get('/api/signIndummy', function(request, response, next) {
-//     passport.authenticate('local', (err, user, info) => {
-//     if (err) { 
-//         return next(err); 
-//     }
-
-//     if (!user) { 
-//         return response.render('pages/signIn', { 'message': info.message}); 
-//     }
-//     else {
-//         request.logIn(user, (err) => {
-//             if (err) { 
-//                 return next(err); 
-//             }
-
-//             var isMobile = JSON.parse(request.query.isMobile);
-//             if(isMobile)
-//                 {
-//                 return response.send({success: true, session: user, message: "Successful Sign In"});
-//                 }
-//             else
-//                 {
-//                 return response.redirect('../home');
-//                 }
-                
-//         });
-//     }
-    
-//     })(request, response, next);
-//   });
+        response.send({success: false, session: null, message: "An Unexpected Error Occurred"});
+       
+        //throw (e); 
+        }
+    });
 ////////////////////////////////////////////////////////////////////////
 // END OF API INTERFACE
-////////////////////////////////////////////////////////////////////////
-
-
-
-////////////////////////////////////////////////////////////////////////
-// PASSPORT AUTHENTIFICATION FUNCTIONS
-////////////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////////////
-//
-// Authenticate users using passport
-//
-// idea for using session based login came from a medium article 
-// https://medium.com/@timtamimi/getting-started-with-authentication-in-node-js-with-passport-and-postgresql-2219664b568c
-//
-////////////////////////////////////////////////////////////////////////
-// passport.use('local', new LocalStrategy({ passReqToCallback: true }, (req, email, password, done) => {
-
-//     loginAttempt();
-//     async function loginAttempt() {
-  
-//         try {
-//           console.log("CURRENT USERNAME IS " + email);
-//           database.queryDB('SELECT volunteer_id, institution_id, email, password, volunteertype FROM volunteer WHERE email=\'' + email + '\';', function (result, err) {
-    
-//               if (err) {
-//                 console.log('Error Occured: ');
-//                 console.log(err);
-//                 return done(err);
-//               }
-  
-//               if (result.rows[0] == null) {
-//                 console.log("Oops. Incorrect login details.");
-//                 return done(null, false, { message: 'Incorrect Email' });
-//               }
-//               else {
-  
-//                   bcrypt.compare(password, result.rows[0].password, function (err, isMatch) {
-//                     if (err) throw err;
-//                     else if (isMatch) {
-//                         console.log("Passwords matched!");
-//                         return done(null, [{ institution_id: result.rows[0].institution_id, volunteer_id: result.rows[0].volunteer_id, volunteertype: result.rows[0].volunteertype}]);
-//                       }
-//                       else {
-//                         console.log("Oops. Incorrect login details.");
-//                         return done(null, false, { message: 'Incorrect Password' });
-//                         }
-//                     });
-//                 };
-//           })
-//          }
-//         catch (e) { throw (e); }
-//     };
-// }));
-
-
-////////////////////////////////////////////////////////////////////////
-//
-// Used by passport
-//
-////////////////////////////////////////////////////////////////////////
-// passport.serializeUser(function (user, done) {
-//   //console.log(user);
-//   done(null, user);
-// });
-
-////////////////////////////////////////////////////////////////////////
-//
-// Used by passport
-//
-////////////////////////////////////////////////////////////////////////
-// passport.deserializeUser(function (user, done) {
-//   //console.log("deserial" + user);
-//   done(null, user);
-// });
-
-////////////////////////////////////////////////////////////////////////
-// END OF PASSPORT AUTHENTIFICATION FUNCTIONS
 ////////////////////////////////////////////////////////////////////////
