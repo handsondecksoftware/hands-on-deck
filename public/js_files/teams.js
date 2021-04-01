@@ -31,8 +31,37 @@ function init()
 
   initLogout();
 
+  loadTeams();
+
   }
 
+////////////////////////////////////////////////////////////////////////
+// 
+// Will initialize 
+//
+//////////////////////////////////////////////////////////////////////// 
+function loadTeams()
+    {
+    handleAPIcall({vol_ID: -1}, "/api/getTeamInfo", response => 
+        {
+        if(response.success)
+            {
+            console.log(response.teamInfo);
+            alert("We found " + response.teamInfo.length + " teams");
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorcode);
+            }
+
+        })
+    
+    .catch(error)
+        {
+        alert("Oops. We ran into an issue loading the page. Please try again");
+        };
+    
+    }
 
 ///////////////////////////////////////////////////////////////////////
 // 

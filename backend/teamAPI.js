@@ -24,7 +24,7 @@ const FEMALE = 0;
 // @param[in]  teamID           ID of team the client is looking for detail on
 //                                  value of -1 means all values are of interest
 //
-// @param[out] volunteerInfo          Array of data JSONs for client  
+// @param[out] teamInfo          Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
 exports.getTeamInfo = async (user, teamID) => 
@@ -36,18 +36,24 @@ exports.getTeamInfo = async (user, teamID) =>
         console.log('getTeamInfo() called by: ' + user.volunteer_id);
 
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var teamElement = 
-            {
-            id: 1, 
-            name: "Golf", 
-            sex: MALE, 
-            numvolunteers: 1, 
-            numhours: 23, 
-            };
-                
+        var query = "SELECT * FROM team WHERE institution_id='"+ user.institution_id + "';"
+        await database.queryDB(query, (res, e) => 
+            { 
+            if(e) 
+                {
+                response.teamInfo = null;
+                response.errorcode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+                }
+            else 
+                {
+                //Send the list of available teams to the user
+                response.teamInfo = res.rows;
+                response.errorcode = error.NOERROR;
+                response.success = true;
+                }
+            });
 
-        response.teamInfo.push(teamElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
 
         response.errorcode = error.NOERROR;
