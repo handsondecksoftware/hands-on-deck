@@ -13,6 +13,7 @@ const database = require('./databaseSetup');
 const general = require('./general');
 const error = require('./errorCodes');
 const bcrypt = require('bcryptjs');
+const enumType = require('./enumTypes');
 
 
 ////////////////////////////////////////////////////////////
@@ -28,40 +29,78 @@ const bcrypt = require('bcryptjs');
 exports.getVolunteerInfo = async (user, volunteerID) => 
     {
     var response = {success: false, errorcode: -1, volunteerInfo: []};
+    var goodQuery = true;
 
     try 
         {
         console.log('getVolunteerInfo() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var volunteerElement = 
+        //Determine Correct Query to run
+        if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            id: 1,
-            name: "Ryan Stolys",
-            email: "rstolys@sfu.ca",
-            leaderboards: true, 
-            teammame: "M - Golf", 
-            team_id: 1,
-            numhours: 23, 
-            };
-        response.volunteerInfo.push(volunteerElement);
+            //Set the query
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
+            query += " FROM volunteer AS V LEFT JOIN";
+            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
+            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + ";";
+            }
+        else if(volunteerID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
+            {
+            //Set the query
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
+            query += " FROM volunteer AS V LEFT JOIN";
+            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
+            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + user.volunteer_id + ";";
+            }
+        //To access specific volunteer that is not that user they must have admin or dev privileges
+        else if(volunteerID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
+            {
+            //Set the query
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
+            query += " FROM volunteer AS V LEFT JOIN";
+            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
+            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + volunteerID + ";";
+            }
+        else 
+            {
+            response.volunteerInfo = null;
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            goodQuery = false;
+            }
 
-        var volunteerElement2 = 
+            "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours FROM volunteer AS V INNER JOIN (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data ON vd_data.volunteer_id = V.volunteer_id INNER JOIN team AS T ON T.team_id = V.team_id WHERE V.volunteer_type != 'Volunteer' AND V.institution_id = 1;"
+
+                //, SUM(age(VD.endtime, VD.starttime)) AS numhour
+        //Run query if query is valid
+        if(goodQuery)
             {
-            id: 2,
-            name: "Jayden Cole",
-            email: "jcole@sfu.ca",
-            leaderboards: true, 
-            teammame: "M - Swim", 
-            team_id: 1,
-            numhours: 34, 
-            };
-        response.volunteerInfo.push(volunteerElement2);
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.volunteerInfo = null;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    //Send the user an email with their account info 
+                    response.volunteerInfo = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+
+                //Set some default values to use for now
+                response.volunteerInfo['numhours'] = 5;
+                });
+            }
         }
     catch (err)
         {

@@ -24,10 +24,14 @@ exports.getInstitutionInfo = async user =>
         {
         console.log('getInstitutionInfo() called by: ' + user.volunteer_id);
 
+        //Set the query
+        var query = "SELECT institution_id AS id, name, location ";
+        query += "FROM institution";
+        query += " WHERE institution_id = " + user.institution_id + ";"
+
         if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
-            await database.queryDB("SELECT institution_id AS id, name, location FROM institution WHERE institution_id = '" + user.institution_id + "';",
-            (res, e) => 
+            await database.queryDB(query, (res, e) => 
                 { 
                 if(e) 
                     {
