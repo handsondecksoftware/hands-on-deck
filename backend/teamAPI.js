@@ -342,8 +342,8 @@ exports.getTeamLeaderboard = async user =>
             numhours: 5, 
             };
 
-        response.teamInfo.add(teamElement);
-        response.teamInfo.add(teamElement2);
+        response.teamInfo.push(teamElement);
+        response.teamInfo.push(teamElement2);
 
         response.errorcode = error.NOERROR;
         response.success = true;

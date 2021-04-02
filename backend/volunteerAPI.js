@@ -326,8 +326,8 @@ exports.getVolunteerLeaderboard = async user =>
             numhours: 3,
             };
 
-        response.volunteerInfo.add(volunteerElement);
-        response.volunteerInfo.add(volunteerElement2);
+        response.volunteerInfo.push(volunteerElement);
+        response.volunteerInfo.push(volunteerElement2);
 
         response.errorcode = error.NOERROR;
         response.success = true;
