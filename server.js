@@ -274,6 +274,17 @@ app.post('/api/addOpportunityType', auth.authcheck, async (request, response) =>
     });
 */
 
+/////////LEADERBOARD API CALLS///////////////////////////////////////////////
+app.post('/api/getVolunteerLeaderboard', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.getVolunteerLeaderboard(request.user));
+    });
+
+
+app.post('/api/getTeamLeaderboard', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.getTeamLeaderboard(request.user));
+    });
 
 
 /////////ACCOUNT/ AUTHENTICATION API CALLS///////////////////////////////////////////////

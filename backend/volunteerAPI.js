@@ -285,6 +285,68 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
     }
 
 
+////////////////////////////////////////////////////////////
+// Will update user info in database
+//
+// @param[in]  user             user information
+//
+// @param[out] volunteerInfo    array of top 10 volunteers based on hours
+//
+////////////////////////////////////////////////////////////
+exports.getVolunteerLeaderboard = async user => 
+    {
+    var response = {success: false, errorcode: -1, volunteerInfo: []};
+
+    try 
+        {
+        console.log('getVolunteerLeaderboard() called by: ' + user.volunteer_id);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Query only the top 10 volunteers in the list
+        // Don't send any personal information such as email, team_id, user_id, or leaderboards
+        // only name, team and number of hours
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        var volunteerElement = 
+                {
+                id: null,
+                name: "Ryan Stolys",
+                email: null,
+                leaderboards: null, 
+                teammame: "M - Golf", 
+                numhours: 23,
+                };
+
+        var volunteerElement2 = 
+            {
+            id: null,
+            name: "Jayden Cole",
+            email: null,
+            leaderboards: null, 
+            teammame: "M - Swim", 
+            numhours: 3,
+            };
+
+        response.volunteerInfo.add(volunteerElement);
+        response.volunteerInfo.add(volunteerElement2);
+
+        response.errorcode = error.NOERROR;
+        response.success = true;
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.volunteerInfo = null;
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getVolunteerLeaderboard() is: ' + response.success);
+    
+    return response;
+    }
+
 
 ////////////////////////////////////////////////////////////
 // Will addVolunteer to database

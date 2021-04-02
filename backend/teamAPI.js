@@ -302,3 +302,63 @@ exports.getTeamsForViewable = async user =>
     
     return response;
     }
+
+
+////////////////////////////////////////////////////////////
+// Will update user info in database
+//
+// @param[in]  user             user information
+//
+// @param[out] teamInfo         array of all teams from an insitution
+//
+////////////////////////////////////////////////////////////
+exports.getTeamLeaderboard = async user => 
+    {
+    var response = {success: false, errorcode: -1, teamInfo: []};
+
+    try 
+        {
+        console.log('getTeamLeaderboard() called by: ' + user.volunteer_id);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        //Query only the top 10 volunteers in the list
+        // Don't send team id value, only the relevant information to display
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+        var teamElement = 
+            { 
+            id: null,
+            name: "Golf", 
+            sex: MALE, 
+            numvolunteers: 1, 
+            numhours: 23, 
+            };
+
+        var teamElement2 = 
+            {
+            id: null, 
+            name: "Swim", 
+            sex: MALE, 
+            numvolunteers: 1, 
+            numhours: 5, 
+            };
+
+        response.teamInfo.add(teamElement);
+        response.teamInfo.add(teamElement2);
+
+        response.errorcode = error.NOERROR;
+        response.success = true;
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.teamInfo = null;
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getTeamLeaderboard() is: ' + response.success);
+    
+    return response;
+    }
