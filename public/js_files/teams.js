@@ -8,6 +8,10 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////
+// Global Variables
+//////////////////////////////////////////////////////////////////////// 
+currentTeam_gv = -1;
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -15,23 +19,81 @@
 //
 //////////////////////////////////////////////////////////////////////// 
 function init()
-  {
-  //Setup open and close of add team popup box
-  document.getElementById('addTeamButton').onclick = function(){toggleTeamBoxVisibility()};
-  document.getElementById('cancelTeamChoice').onclick = function(){toggleTeamBoxVisibility()};
-  document.getElementById('addTeamChoice').onclick = function(){addTeam()};
+    {
+    loadTeams();
 
-  document.getElementById('editViewVolunteer').onclick = function(){toggleViewVolunteerBoxVisibility()}; //Need to edit volunteer on this click
-  document.getElementById('cancelViewVolunteer').onclick = function(){toggleViewVolunteerBoxVisibility()};
-  document.getElementById('viewVolunteerInfo').onclick = function(){toggleViewVolunteerBoxVisibility()};
+    //Setup open and close of add team popup box
+    getRef('addTeamButton').onclick = function(){toggleTeamBoxVisibility()};
+    getRef('cancelTeamChoice').onclick = function(){toggleTeamBoxVisibility()};
+    getRef('addTeamChoice').onclick = function(){addTeam()};
 
-  document.getElementById('backToAllTeamsButton').onclick = function(){toggleViewTeams()};
-  
-  initSlider('Teams');
+    getRef('returnToAllTeams').onclick = function(){showAllTeams()};
+    getRef('editTeam').onclick = function(){editTeam()};
 
-  initLogout();
+    initSlider('Teams');
+    initDropdowns('Teams');
 
-  }
+    initLogout();
+    }
+
+
+///////////////////////////////////////////////////////////////////////
+// 
+// Will eiter display or hide the add team box depending on the current state
+//
+////////////////////////////////////////////////////////////////////////
+function loadTeams()
+    {
+    try 
+        {
+        setLoaderVisibility(true);
+
+        handleAPIcall({teamID: -1}, "/api/getTeamInfo", response => 
+            {
+            if(response.success)
+                {
+                //Get reference to table 
+                var teamTable = getRef('teamsTable');
+                var rowNum = 1;
+    
+                //Fill in table elements
+                for(var teamNum = 0; teamNum < response.teamInfo.length; teamNum++)
+                    {
+                    //Create new row
+                    var row = teamTable.insertRow(rowNum++);
+    
+                    //Create row elements 
+                    var teamName = row.insertCell(0);
+                    var sex = row.insertCell(1);
+                    var numVolunteers = row.insertCell(2);
+                    var volunteerHrs = row.insertCell(3);
+                    var view = row.insertCell(4);
+                    var remove = row.insertCell(5);
+                    
+                    //Fill in row elements
+                    teamName.innerHTML = response.teamInfo[teamNum].name;
+                    sex.innerHTML = response.teamInfo[teamNum].sex;
+                    numVolunteers.innerHTML = response.teamInfo[teamNum].numvolunteers;
+                    volunteerHrs.innerHTML = response.teamInfo[teamNum].numhours ?? 0;
+    
+                    view.innerHTML = "<i id=\"view_" + response.teamInfo[teamNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewTeam(this.id)\"></i>";
+                    remove.innerHTML = "<i id=\"delete_" + response.teamInfo[teamNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteTeam(this.id)\"></i>";
+                    }
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
+        {
+        alert("Oops. We ran into an issue loading the page. Please try again");
+        setLoaderVisibility(false);
+        };
+    }
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -40,21 +102,19 @@ function init()
 //
 ////////////////////////////////////////////////////////////////////////
 function toggleTeamBoxVisibility()
-  {
-  //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('addTeamPopup').style.display; 
-
-  if(currentState === "none")
     {
-    document.getElementById('addTeamPopup').style.display = "block"; 
-    }
-  else 
-    {
-    document.getElementById('addTeamPopup').style.display = "none"; 
-    }
+    //Open the add oppourtuntiy popup box
+    var currentState = getRef('addTeamPopup').style.display; 
 
-  return;
-  }
+    if(currentState === "none")
+        {
+        getRef('addTeamPopup').style.display = "block"; 
+        }
+    else 
+        {
+        getRef('addTeamPopup').style.display = "none"; 
+        }
+    }
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -68,15 +128,13 @@ function addTeam()
   {
     //Collect Form Values
     var teamData = {
-        name: document.getElementById('addTeam-name').value,
-        leaderboards: document.getElementById('includeLeaderboards').value,
-        sex: document.getElementById('teamSex').value,
+        name: getRef('addTeam-name').value,
+        leaderboards: getRef('includeLeaderboards').value,
+        sex: getRef('teamSex').value,
     };
-    console.log(teamData)
 
-    handleAPIcall({teamData: teamData}, "/addTeam", response => 
+    handleAPIcall({teamData: teamData}, "/api/addTeam", response => 
         {
-          console.log(response)
         if(response.success)
             {
             alert("You successfully added the team");
@@ -93,28 +151,19 @@ function addTeam()
         };
   }
 
-
-///////////////////////////////////////////////////////////////////////
-// 
-// Will eiter display or hide the add team box depending on the current state
+////////////////////////////////////////////////////////////////////////
+//
+// This function will take a user from viewing a specific team to all teams
+// from the institution
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleViewVolunteerBoxVisibility()
-  {
-  //Open the add oppourtuntiy popup box
-  var currentState = document.getElementById('viewVolunteerPopup').style.display; 
-
-  if(currentState === "none")
+function showAllTeams()
     {
-    document.getElementById('viewVolunteerPopup').style.display = "block"; 
-    }
-  else 
-    {
-    document.getElementById('viewVolunteerPopup').style.display = "none"; 
-    }
+    getRef("teamMainPage").style.display = "block";
+    getRef("viewTeamPage").style.display = "none";
 
-  return;
-  }
+    currentTeam_gv = -1;
+    }
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -123,30 +172,30 @@ function toggleViewVolunteerBoxVisibility()
 // the team in the database
 //
 ////////////////////////////////////////////////////////////////////////
-function deleteTeam(e){
-    if(confirm("Are you sure you want to delete this entry?")){
-        // Finds the row of the delete button clicked
-        e = e || event;
-        var eventEl = e.srcElement || e.target, 
-        parent = eventEl.parentNode,
-        isRow = function(el) {
-                    return el.tagName.match(/tr/i);
-                };
-            
-        // Move up the DOM until tr is reached
-        while (parent = parent.parentNode) {
-            if (isRow(parent)) {
-                // Delete the row visually
-                parent.remove()
-            
-                //TODO: Delete the team from the back end
-            
-                return true;
-            }
+function deleteTeam(buttonID)
+    {
+    if(confirm("Are you sure you want to delete this team?"))
+        {
+        var teamID = buttonID.slice(7);      //Remove "delete_"
+
+        handleAPIcall({teamID: teamID}, "/api/deleteTeam", response => 
+            {
+            if(response.success)
+                {
+                alert("You successfully deleted the team");
+                location.reload();
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorCode);
+                }
+            })
+        .catch(error)
+            {
+            alert("Something unexpected happened. Please try again");
+            };
         }
     }
-    return false
-}
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -154,45 +203,157 @@ function deleteTeam(e){
 // View a specific team
 //
 ////////////////////////////////////////////////////////////////////////
-function viewTeam(e){
-    // Switch view to the specific team page
-    document.getElementById("teamMainPage").style.display = "none";
-    document.getElementById("viewTeamPage").style.display = "block";
+function viewTeam(buttonID)
+    {
+    //Get the volunteer ID
+    var teamID = buttonID.slice(5);      //Remove "view_"
+    currentTeam_gv = teamID;
 
-    // Determines the team
-    e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
+    try
+        {
+        setLoaderVisibility(true);
+        handleAPIcall({teamID: teamID}, "/api/getTeamData", response => 
+            {
+            if(response.success)
+                {
+                getRef("viewTeamPage").style.display = "block";
+                getRef("teamMainPage").style.display = "none";
+                getRef('editTeam').innerHTML == "Edit"
 
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            // Get team name and gender from the clicked row
-            var teamName = parent.cells.item(0).innerHTML;
-            var sex = parent.cells.item(1).innerHTML;
+                //Load team specific data 
+                getRef("viewTeam-name").value = response.teamData.name;
+                getRef("dropdown-title-viewTeamSex").innerHTML = response.teamData.sex;
+                getRef("dropdown-title-viewTeamLeaderboards").innerHTML = response.teamData.leaderboard ? "Yes" : "No";
 
-            document.getElementById("teamInfo-name").innerHTML = teamName;
-            document.getElementById("teamInfoSexLabel").innerHTML = sex;
+                //Stop team data from being modified
+                getRef('viewTeam-name').readOnly = false;
+                getRef('viewTeamSex').onclick = function(){return};
+                getRef('viewTeamLeaderboards').onclick = function(){return};
+                    
+                //Get reference to table 
+                var teamMemTable = getRef('teamMembersTable');
+                var rowNum = 1;
+                var teamMemberData = response.teamData.volunteers;
 
-            //TODO: Get volunteers from the team and fill out team's table
+                //Clear the team members table to ensure it is not full
+                var rowCount = teamMemTable.rows.length;
+                for (var i = rowCount - 1; i >= 1; i--) 
+                    {
+                    teamMemTable.deleteRow(i);
+                    }
 
-           return true;
+                //Load the team members
+                for(var teamMem = 0; teamMem < response.teamData.volunteers.length; teamMem++)
+                    {
+                    //Create new row
+                    var row = teamMemTable.insertRow(rowNum++);
+    
+                    //Create row elements 
+                    var name = row.insertCell(0);
+                    var email = row.insertCell(1);
+                    var teams = row.insertCell(2);
+                    var volunteerhours = row.insertCell(3);
+                    
+                    //Fill in row elements
+                    name.innerHTML = teamMemberData[teamMem].name;
+                    email.innerHTML = teamMemberData[teamMem].email;
+                    teams.innerHTML = teamMemberData[teamMem].teamname;
+                    volunteerhours.innerHTML = teamMemberData[teamMem].numhours;                    
+                    }
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+    
+            setLoaderVisibility(false);
+            });
+        }
+    catch(error)
+        {
+        alert("Oops, looks like something went wrong while loading the team information. Try again");
+        setLoaderVisibility(false);
         }
     }
-    return false;
-}
+
 
 ////////////////////////////////////////////////////////////////////////
 //
-// This function will take a user from viewing a specific team to all teams
-// from the institution
+// Will allow for the team information to be modified
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleViewTeams(){
-    document.getElementById("teamMainPage").style.display = "block";
-    document.getElementById("viewTeamPage").style.display = "none";
-    return;
-}
+function editTeam()
+    {
+    if(getRef('editTeam').innerHTML == "Save")
+        {
+        //Show we are doing something, call function to save opportunity
+        getRef('editTeam').innerHTML = "Saving...";
+        saveEditTeam();
+        }
+    else 
+        {
+        //Change button display
+        getRef('editTeam').innerHTML = "Save"; 
+
+        //Allow all the fields to be updated
+        getRef('viewTeam-name').readOnly = false;
+
+        //Activite dropdown menus
+        getRef('viewTeamSex').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewTeamLeaderboards').onclick = function(){toggleDropdownMenu(this.id)};
+        }
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Will allow for the editted team to be saved and their settings updated
+//
+////////////////////////////////////////////////////////////////////////
+function saveEditTeam()
+    {
+    var teamData = {
+        id: currentTeam_gv, 
+        name: getRef("viewTeam-name").value,
+        sex: getRef("dropdown-title-viewTeamSex").innerHTML, 
+        numvolunteers: null,
+        numhours: null,
+        leaderboard: (getRef("dropdown-title-viewTeamSex").viewTeamLeaderboards == "Yes"),
+        volunteers: null,
+    }
+
+    setLoaderVisibility(true);
+
+    //Send post request and handle the response
+    handleAPIcall({teamData: teamData}, "/api/editTeam", response => 
+        {
+        if(response.success)
+            {
+            alert("You successfully updated the team");
+
+            //Set the inputs to view only
+            getRef('viewTeam-name').readOnly = true;
+
+            //Activite dropdown menus
+            getRef('viewTeamSex').onclick = function(){return};
+            getRef('viewTeamLeaderboards').onclick = function(){return};
+
+            //Change button display
+            getRef('editTeam').innerHTML = "Edit"; 
+
+            //Stay on the current page to allow user to do what they want next
+            }
+        else 
+            {
+            printUserErrorMessage(response.errorCode);
+            }
+        
+        setLoaderVisibility(false);
+        })
+    .catch(error)
+        {
+        console.log(error.message);
+        alert("Error saving team. Please try again");
+        setLoaderVisibility(false);
+        };
+    }

@@ -656,96 +656,100 @@ function deleteOpportunity(elementID)
 // View an opportunity
 //
 ////////////////////////////////////////////////////////////////////////
-function viewOpportunity(elementID){
+function viewOpportunity(elementID)
+    {
 
     //Get the elementID
     var OpportunityID = elementID.slice(5);      //Will remove 'view_'
 
-    //TODO: 
-    //      We should have a loader to show so that they know we are loading
-    //      https://www.w3schools.com/howto/howto_css_loader.asp
-    //      would need this everytime we call for a post request where the user waits for us
-
-    //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
-    handleAPIcall({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
+    try 
         {
-        if(response.success)
+        setLoaderVisibility(true);
+        //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
+        handleAPIcall({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
             {
-            currentViewedOpportunity_gv = response.oppData[0];      //Set the current Opportunity
-
-            //Fill in the data for the view screen -- our request will only return 1 element in the array
-            document.getElementById('viewOpportunity-title').value = response.oppData[0].title;
-
-            document.getElementById('viewOpportunity-startDate').value = getUTCFormatFromISOString(response.oppData[0].startDatetime);
-            document.getElementById('viewOpportunity-endDate').value = getUTCFormatFromISOString(response.oppData[0].endDatetime);
-
-            var startTimeHrs = getHoursFromISOString(response.oppData[0].startDatetime);
-            var startTimeMin = getMinutesFromISOString(response.oppData[0].startDatetime);
-            document.getElementById('dropdown-title-viewOpportunityStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
-            document.getElementById('dropdown-title-viewOpportunityStartTimeMin').innerHTML = startTimeMin;
-            document.getElementById('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
-
-            var endTimeHrs = getHoursFromISOString(response.oppData[0].endDatetime);
-            var endTimeMin = getMinutesFromISOString(response.oppData[0].endDatetime);
-            document.getElementById('dropdown-title-viewOpportunityEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
-            document.getElementById('dropdown-title-viewOpportunityEndTimeMin').innerHTML = endTimeMin;
-            document.getElementById('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
-
-            document.getElementById('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
-            document.getElementById('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
-            changeSliderLabel('viewOpportunityVolunteerLimit');
-            document.getElementById('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
-            opportunityViewableBy_gv = response.oppData[0].viewableBy;
-
-            document.getElementById('viewOpportunity-location').value = response.oppData[0].location;
-            document.getElementById('viewOpportunity-description').value = response.oppData[0].description;
-
-            document.getElementById('viewOpportunity-coordinatorName').value = response.oppData[0].coordinatorInfo.name;
-            document.getElementById('viewOpportunity-coordinatorEmail').value = response.oppData[0].coordinatorInfo.email;
-            document.getElementById('viewOpportunity-coordinatorPhone').value = response.oppData[0].coordinatorInfo.phone;
-
-            //Get table id
-            var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOpportunityTable');
-            var rowNum = 1;
-
-            //Add volunteers to the table
-            for(var volNum = 0; volNum < response.oppData[0].volunteers.length; volNum++)
+            if(response.success)
                 {
-                //Create new row
-                var row = viewOpp_VolunteerTable.insertRow(rowNum++);
+                currentViewedOpportunity_gv = response.oppData[0];      //Set the current Opportunity
 
-                //Create row elements 
-                var name = row.insertCell(0);
-                var email = row.insertCell(1);
-                var team = row.insertCell(2);
-                var hours = row.insertCell(3);
-                var view = row.insertCell(4);
-        
-                
-                //Fill in row elements
-                name.innerHTML = response.oppData[0].volunteers[volNum].name;
-                email.innerHTML = response.oppData[0].volunteers[volNum].email;
-                team.innerHTML = response.oppData[0].volunteers[volNum].team;
-                hours.innerHTML = response.oppData[0].volunteers[volNum].hours;
-                view.innerHTML = "<i id=\"view_" + response.oppData[0].volunteers[volNum].volDataID + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteerForOpportunity(this.id)\"></i>";
+                //Fill in the data for the view screen -- our request will only return 1 element in the array
+                document.getElementById('viewOpportunity-title').value = response.oppData[0].title;
+
+                document.getElementById('viewOpportunity-startDate').value = getUTCFormatFromISOString(response.oppData[0].startDatetime);
+                document.getElementById('viewOpportunity-endDate').value = getUTCFormatFromISOString(response.oppData[0].endDatetime);
+
+                var startTimeHrs = getHoursFromISOString(response.oppData[0].startDatetime);
+                var startTimeMin = getMinutesFromISOString(response.oppData[0].startDatetime);
+                document.getElementById('dropdown-title-viewOpportunityStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
+                document.getElementById('dropdown-title-viewOpportunityStartTimeMin').innerHTML = startTimeMin;
+                document.getElementById('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
+
+                var endTimeHrs = getHoursFromISOString(response.oppData[0].endDatetime);
+                var endTimeMin = getMinutesFromISOString(response.oppData[0].endDatetime);
+                document.getElementById('dropdown-title-viewOpportunityEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
+                document.getElementById('dropdown-title-viewOpportunityEndTimeMin').innerHTML = endTimeMin;
+                document.getElementById('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
+
+                document.getElementById('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
+                document.getElementById('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
+                changeSliderLabel('viewOpportunityVolunteerLimit');
+                document.getElementById('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
+                opportunityViewableBy_gv = response.oppData[0].viewableBy;
+
+                document.getElementById('viewOpportunity-location').value = response.oppData[0].location;
+                document.getElementById('viewOpportunity-description').value = response.oppData[0].description;
+
+                document.getElementById('viewOpportunity-coordinatorName').value = response.oppData[0].coordinatorInfo.name;
+                document.getElementById('viewOpportunity-coordinatorEmail').value = response.oppData[0].coordinatorInfo.email;
+                document.getElementById('viewOpportunity-coordinatorPhone').value = response.oppData[0].coordinatorInfo.phone;
+
+                //Get table id
+                var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOpportunityTable');
+                var rowNum = 1;
+
+                //Add volunteers to the table
+                for(var volNum = 0; volNum < response.oppData[0].volunteers.length; volNum++)
+                    {
+                    //Create new row
+                    var row = viewOpp_VolunteerTable.insertRow(rowNum++);
+
+                    //Create row elements 
+                    var name = row.insertCell(0);
+                    var email = row.insertCell(1);
+                    var team = row.insertCell(2);
+                    var hours = row.insertCell(3);
+                    var view = row.insertCell(4);
+            
+                    
+                    //Fill in row elements
+                    name.innerHTML = response.oppData[0].volunteers[volNum].name;
+                    email.innerHTML = response.oppData[0].volunteers[volNum].email;
+                    team.innerHTML = response.oppData[0].volunteers[volNum].team;
+                    hours.innerHTML = response.oppData[0].volunteers[volNum].hours;
+                    view.innerHTML = "<i id=\"view_" + response.oppData[0].volunteers[volNum].volDataID + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteerForOpportunity(this.id)\"></i>";
+                    }
+
+
+                //Show the content to the user
+                document.getElementById("opportunitiesMainPage").style.display = "none";
+                document.getElementById("viewOpportunityPage").style.display = "block";
                 }
+            else 
+                {
+                console.log("Could not successfully load Opportunity data. Error Code: " + response.errorCode);
 
-
-            //Show the content to the user
-            document.getElementById("opportunitiesMainPage").style.display = "none";
-            document.getElementById("viewOpportunityPage").style.display = "block";
-            }
-        else 
-            {
-            console.log("Could not successfully load Opportunity data. Error Code: " + response.errorCode);
-
-            printUserErrorMessage(response.errorCode);
-            }
-        });
-
-
-    return false;
-}
+                printUserErrorMessage(response.errorCode);
+                }
+            
+            setLoaderVisibility(false);
+            });   
+        }
+    catch(error)
+        {
+        alert("Oops, looks like something went wrong while loading the opportunity information. Try again");
+        setLoaderVisibility(false);
+        }
+    }
 
 
 ////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
     <!-- Scripts -->
     <script src="../js_files/general.js"></script>
     <script src="../js_files/teams.js"></script>
+    <script src="../js_files/dropdown.js"></script>
     <script src="../js_files/slider.js"></script>
     <script src="../js_files/logout.js"></script>
 
@@ -58,45 +59,13 @@
             <div class="table"> 
                 <span class="table-title">Teams:</span>
                 <table id="teamsTable"> 
-                <tr class="table-top">
-                    <th class="width40">Team Name</th>
-                    <th class="width10">Sex</th>
-                    <th class="width20">Number of Volunteers</th>
-                    <th class="width20">Volunteer Hours</th> 
-                    <th class="width5">View</th>
-                    <th class="width5">Delete</th> 
-                </tr>
-                <tr>
-                    <td>Golf</td>
-                    <td>Men</td> 
-                    <td>9</td>
-                    <td>54</td>
-                    <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
-                    <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
-                </tr>
-                <tr>
-                    <td>Golf</td>
-                    <td>Women</td> 
-                    <td>9</td>
-                    <td>59</td>
-                    <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
-                    <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
-                </tr>
-                <tr>
-                    <td>Swimming</td>
-                    <td>Women</td> 
-                    <td>18</td>
-                    <td>101</td>
-                    <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
-                    <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
-                </tr>
-                <tr>
-                    <td>Swimming</td>
-                    <td>Men</td> 
-                    <td>19</td>
-                    <td>71</td>
-                    <td><i class="fas fa-eye table-view" onclick="viewTeam()"></i></td> 
-                    <td><i class="fa fa-trash table-view" onclick="deleteTeam()"></i></td>
+                    <tr class="table-top">
+                        <th class="width40">Team Name</th>
+                        <th class="width10">Sex</th>
+                        <th class="width20">Number of Volunteers</th>
+                        <th class="width20">Volunteer Hours</th> 
+                        <th class="width5">View</th>
+                        <th class="width5">Delete</th> 
                     </tr>
                 </table>
             </div>
@@ -105,62 +74,61 @@
 
         <!-- View Team Page -->
         <div id="viewTeamPage" style="display:none">
+            <div class="paddingBottom25" style="height:75px"> 
+                <div class="col_50p row_100p paddingLeft25">
+                    <button class="button width25" id="returnToAllTeams">Return</button>
+                </div>
+                <div class="col_50p row_100p">
+                    <button id="editTeam" class="button width25">Edit</button>
+                </div>
+            </div>
 
-            <div style="height:125px; margin-left:10%;">
-                <div class="row_60p">
-                    <div class="col_50p">
-                        <div class="col_33p subTitle3"  style="padding-top: 2%;">Team Name:</div>
-                        <div class="col_66p">
-                            <div class="blackDisplayField" id="teamInfo-name"></div>
+            <div style="height:75px;">
+                <div class="row_100p">
+                    <div class="col_33p row_100p">
+                        <div class="col_40p subTitle3"  style="padding-top: 2%;">Team:</div>
+                        <div class="col_60p">
+                            <input class="textInput" type="text" placeholder="Team Name" id="viewTeam-name" readonly>
                         </div>
                     </div>
-                    <div class="col_50p">
-                        <div class="col_30p subTitle3" style="padding-top: 2%;">Sex:</div>
-                        <div class="col_50p">
-                            <div class="sliderLabel textColor-black" id="teamInfoSexLabel">Male</div>
-                            <div class="sliderContainer sliderWidth">
-                                <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoSex">
+                    <div class="col_33p row_100p">
+                        <div class="col_40p subTitle3" style="padding-top: 2%;">Gender:</div>
+                        <div class="col_60p">
+                            <div class="dropdown" style="width:95% !important">
+                                <button id="viewTeamSex" class="dropdown-button"><span id="dropdown-title-viewTeamSex">Men</span><i class="fa fa-angle-right" id="dropdown-arrow-viewTeamSex"></i></button>
+                                <div id="viewTeamSexOptions" class="dropdown-content">
+                                    <a id="viewTeamSexOptions_option_1" class="dropdown-option">Men</a>
+                                    <a id="viewTeamSexOptions_option_2" class="dropdown-option">Women</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="col_20p"><!--For Spacing--></div>
                     </div>
-                </div>
-                <div class="row_40p">
-                    <div class="col_30p subTitle3">   Include In Leaderboards:</div>
-                    <div class="col_40p">
-                        <div class="sliderLabel textColor-black" id="teamInfoIncludeLeaderboardsLabel">Yes</div>
-                        <div class="sliderContainer sliderWidth">
-                            <input type="range" min="0" max="1" value="0" class="slider" id="teamInfoIncludeLeaderboards">
+                    <div class="col_33p row_100p">
+                        <div class="col_60p subTitle3" style="padding-top: 2%;">Leaderboards:</div>
+                        <div class="col_40p">
+                            <div class="dropdown" style="width:95% !important">
+                                <button id="viewTeamLeaderboards" class="dropdown-button"><span id="dropdown-title-viewTeamLeaderboards">Yes</span><i class="fa fa-angle-right" id="dropdown-arrow-viewTeamLeaderboards"></i></button>
+                                <div id="viewTeamLeaderboardsOptions" class="dropdown-content">
+                                    <a id="viewTeamLeaderboardsOptions_option_1" class="dropdown-option">Yes</a>
+                                    <a id="viewTeamLeaderboardsOptions_option_2" class="dropdown-option">No</a>
+                                </div>
+                            </div>
                         </div>
-                        </div>
-                    <div class="col_30p"><!--For Spacing--></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Will display all of the members for the specific team selected -->
             <div class="table"> 
                 <span class="table-title">Team Members:</span>
-                <table id="teamMembersTable"> 
-                <tr class="table-top">
-                    <th class="width25">Name</th>
-                    <th class="width25">Email</th>
-                    <th class="width25">Teams</th>
-                    <th class="width20">Volunteer Hours</th> 
-                    <th class="width5">View</th>          
-                </tr>
-                <tr>
-                    <td>Ryan Stolys</td>
-                    <td>rstolys@sfu.ca</td> 
-                    <td>M - Golf</td>
-                    <td>23</td>
-                    <td><i id="viewVolunteerInfo" class="fas fa-eye table-view"></i></td> 
-                </tr>
+                <table id="teamMembersTable" class="width100"> 
+                    <tr class="table-top">
+                        <th class="width25">Name</th>
+                        <th class="width25">Email</th>
+                        <th class="width25">Teams</th>
+                        <th class="width25">Volunteer Hours</th>     
+                    </tr>
                 </table>
-            </div>
-
-            <!-- Button to go back to all teams view -->
-            <div class="popup-buttons">
-                <div class="popup-buttons-cancel"><button class="button" id="backToAllTeamsButton">Back to all teams</button></div>
             </div>
         </div>
 
@@ -171,43 +139,34 @@
                 <div class="popup-title">
                     <h1>Add Team</h1>
                 </div>
-                <div class="popup-content" style="height:250px">
+                <div class="popup-content" style="height:200px">
 
-                    <div class="row_25p">
-                    <div class="col_60p subTitle3"> Team Name</div>
-                    <div class="col_40p">
-                        <input class="textInput" type="text" placeholder="Team Name" id="addTeam-name">
-                    </div>
-                    </div>
-
-                    <div class="row_25p">
-                    <div class="col_60p subTitle3">  Team Sex</div>
-                    <div class="col_40p">
-                        <div class="sliderLabel" id="teamSexLabel">Male</div>
-                        <div class="sliderContainer sliderWidth">
-                        <input type="range" min="0" max="1" value="0" class="slider" id="teamSex">
+                    <div class="row_33p">
+                        <div class="col_60p subTitle3"> Team Name</div>
+                        <div class="col_40p">
+                            <input class="textInput" type="text" placeholder="Team Name" id="addTeam-name">
                         </div>
                     </div>
-                    </div>
 
-                    <div class="row_25p">
-                    <div class="col_60p subTitle3"> Include in Leaderboards</div>
-                    <div class="col_40p">
-                        <div class="sliderLabel" id="includeLeaderboardsLabel">Yes</div>
-                        <div class="sliderContainer sliderWidth">
-                        <input type="range" min="0" max="1" value="0" class="slider" id="includeLeaderboards">
+                    <div class="row_33p">
+                        <div class="col_60p subTitle3">  Team Sex</div>
+                        <div class="col_40p">
+                            <div class="sliderLabel" id="teamSexLabel">Male</div>
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="1" value="0" class="slider" id="teamSex">
+                            </div>
                         </div>
                     </div>
-                    </div>
 
-                    <div class="row_25p">
-                    <div class="col_60p subTitle3">  Upload Team Roster</div>
-                    <div class="col_40p">
-                        <button class="button" type="button"> Choose File</button>
+                    <div class="row_33p">
+                        <div class="col_60p subTitle3"> Include in Leaderboards</div>
+                        <div class="col_40p">
+                            <div class="sliderLabel" id="includeLeaderboardsLabel">Yes</div>
+                            <div class="sliderContainer sliderWidth">
+                                <input type="range" min="0" max="1" value="0" class="slider" id="includeLeaderboards">
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    
-
                 </div>
                 <div class="popup-buttons">
                     <div class="popup-buttons-cancel"><button class="button" id="cancelTeamChoice">Cancel</button></div>
@@ -216,7 +175,8 @@
             </div>
         </div>
 
-        <!-- Pop up box for viewing Volunteers on Teams -->
+        <!-- Pop up box for viewing Volunteers on Teams 
+            **We will not offer this functionality on the teams page ** (for now)
         <div id="viewVolunteerPopup" class="popup-greyOut" style="display:none">
             <div class="popup-box">
                 <div class="popup-title" >
@@ -251,7 +211,7 @@
                                     <div class="dropdown">
                                         <button class="dropdown-button"><span id="viewVolunteer-team">  Team</span><i class="fa fa-angle-right" id="dropdown-arrow-viewVolunteerTeam"></i></button>
                                         <div id="viewVolunteerTeamButton" class="dropdown-content">
-                                            <!--Will not add any options since we are only using this as a place to show what value is-->
+                                            <--Will not add any options since we are only using this as a place to show what value is--
                                         </div>
                                     </div>
                                 </div>
@@ -263,7 +223,7 @@
                                 <div class="dropdown">
                                     <button class="dropdown-button"><span id="viewVolunteer-role">  Role</span><i class="fa fa-angle-right" id="dropdown-arrow-viewVolunteerRole"></i></button>
                                     <div id="viewVolunteerRoleButton" class="dropdown-content">
-                                        <!--Will not add any options since we are only using this as a place to show what value is-->
+                                        <--Will not add any options since we are only using this as a place to show what value is--
                                     </div>
                                 </div>
                             </div>
@@ -278,6 +238,7 @@
                 </div>
             </div>
         </div>
+        -->
 
         <div id="logout" style="display:none"></div>
 

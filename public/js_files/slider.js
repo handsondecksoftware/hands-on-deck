@@ -52,8 +52,6 @@ function initSlider(pageName)
             {
             document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
             document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('teamInfoSex').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('teamInfoIncludeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
 
             break;
             } 

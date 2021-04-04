@@ -81,7 +81,7 @@ exports.getTeamInfo = async (user, teamID) =>
 ////////////////////////////////////////////////////////////
 exports.getTeamData = async (user, teamID) => 
     {
-    var response = {success: false, errorcode: -1, teamData: []};
+    var response = {success: false, errorcode: -1, teamData: null};
 
     try 
         {
@@ -95,7 +95,7 @@ exports.getTeamData = async (user, teamID) =>
                 name: "Ryan Stolys",
                 email: "rstolys@sfu.ca",
                 leaderboards: true, 
-                teammame: "M - Golf", 
+                teamname: "M - Golf", 
                 team_id: 1,
                 numhours: 23, 
                 };
@@ -106,7 +106,7 @@ exports.getTeamData = async (user, teamID) =>
                 name: "Jayden Cole",
                 email: "jcole@sfu.ca",
                 leaderboards: true, 
-                teammame: "M - Swim", 
+                teamname: "M - Swim", 
                 team_id: 1,
                 numhours: 34, 
                 };
@@ -116,14 +116,15 @@ exports.getTeamData = async (user, teamID) =>
             {
             id: 1, 
             name: "Golf", 
-            sex: MALE, 
+            sex: "Men", 
             numvolunteers: 1, 
-            numhours: 23, 
+            numhours: 23,
+            leaderboard: true, 
             volunteers: [volunteerElement, volunteerElement2],
             };
             
 
-        response.teamData.push(teamElement);
+        response.teamData = teamElement;
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
 
         response.errorcode = error.NOERROR;
@@ -257,6 +258,45 @@ exports.addTeam = async (user, teamData) =>
 
     //Log completion of function
     console.log('Result of addTeam() is: ' + response.success);
+    
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
+// Will add the team to database
+//
+// @param[in]  user                     user information
+// @param[in]  teamData                 Data of team to be added
+//
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
+//
+////////////////////////////////////////////////////////////
+exports.deleteTeam = async (user, teamID) => 
+    {
+    var response = {success: false, errorcode: -1};
+
+    try 
+        {
+        console.log('deleteTeam() called by: ' + user.volunteer_id + ' for team: ' + teamID);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+          
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+    
+        response.errorcode = error.NOERROR;
+        response.success = true;
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of deleteTeam() is: ' + response.success);
     
     return response;
     }

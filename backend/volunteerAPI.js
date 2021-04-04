@@ -41,7 +41,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             //Set the query
             var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
             query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
             query += " ON vd_data.volunteer_id = V.volunteer_id";
             query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
             query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + ";";
@@ -51,7 +51,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             //Set the query
             var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
             query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
             query += " ON vd_data.volunteer_id = V.volunteer_id";
             query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
             query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + user.volunteer_id + ";";
@@ -62,7 +62,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             //Set the query
             var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
             query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
+            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
             query += " ON vd_data.volunteer_id = V.volunteer_id";
             query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
             query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + volunteerID + ";";
@@ -75,9 +75,6 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             goodQuery = false;
             }
 
-            "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours FROM volunteer AS V INNER JOIN (SELECT VD.volunteer_id, SUM(age(VD.endtime, VD.starttime)) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data ON vd_data.volunteer_id = V.volunteer_id INNER JOIN team AS T ON T.team_id = V.team_id WHERE V.volunteer_type != 'Volunteer' AND V.institution_id = 1;"
-
-                //, SUM(age(VD.endtime, VD.starttime)) AS numhour
         //Run query if query is valid
         if(goodQuery)
             {
@@ -96,9 +93,6 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
                     response.errorcode = error.NOERROR;
                     response.success = true;
                     }
-
-                //Set some default values to use for now
-                response.volunteerInfo['numhours'] = 5;
                 });
             }
         }

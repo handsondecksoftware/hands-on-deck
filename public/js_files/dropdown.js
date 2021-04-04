@@ -15,43 +15,49 @@
 //		
 ////////////////////////////////////////////////////////////
 function initDropdowns(pageID)
-  {
-  switch(pageID)
     {
-    case 'Opportunties':
+    switch(pageID)
         {
-        document.getElementById('addOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('addOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('addOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-        addTimeDropdownOptions("add", "Start");
+        case 'Opportunties':
+            {
+            getRef('addOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('addOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('addOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+            addTimeDropdownOptions("add", "Start");
 
-        document.getElementById('addOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('addOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('addOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-        addTimeDropdownOptions("add", "End");
+            getRef('addOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('addOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('addOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+            addTimeDropdownOptions("add", "End");
 
-        document.getElementById('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
-        fillOpportunityTypeOptions('addOpportunityTypeOptions');
+            getRef('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
+            fillOpportunityTypeOptions('addOpportunityTypeOptions');
 
-        //document.getElementById('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-        //fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
-        break;
-        } 
-    case 'Teams':
-      {
-        
-      break;
-      } 
-    case 'Volunteers':
-      {
-      
-      break;
-      } 
-    default:
-      //do nothing
-      break;
+            //getRef('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
+            //fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
+            break;
+            } 
+        case 'Teams':
+            {
+            getRef('viewTeamSex').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('viewTeamSexOptions_option_1').onclick = function(){selectDropdownOption(this.id)};
+            getRef('viewTeamSexOptions_option_2').onclick = function(){selectDropdownOption(this.id)};
+
+            getRef('viewTeamLeaderboards').onclick = function(){toggleDropdownMenu(this.id)};
+            getRef('viewTeamLeaderboardsOptions_option_1').onclick = function(){selectDropdownOption(this.id)};
+            getRef('viewTeamLeaderboardsOptions_option_2').onclick = function(){selectDropdownOption(this.id)};
+            break;
+            } 
+        case 'Volunteers':
+            {
+            
+            break;
+            } 
+        default:
+            //do nothing
+            break;
+        }
     }
-  }
 
 
 ////////////////////////////////////////////////////////////
@@ -62,17 +68,17 @@ function initDropdowns(pageID)
 function toggleDropdownMenu(dropdownID)
   {
   var contentID = dropdownID + 'Options';
-  var currentState = document.getElementById(contentID).style.display;
+  var currentState = getRef(contentID).style.display;
 
   if(currentState == "none" || currentState == "")
     {
-    document.getElementById(contentID).style.display = "block";
-    document.getElementById('dropdown-arrow-' + dropdownID).classList.add('rotate-90');
+    getRef(contentID).style.display = "block";
+    getRef('dropdown-arrow-' + dropdownID).classList.add('rotate-90');
     }
   else 
     {
-    document.getElementById(contentID).style.display = "none";
-    document.getElementById('dropdown-arrow-' + dropdownID).classList.remove('rotate-90');
+    getRef(contentID).style.display = "none";
+    getRef('dropdown-arrow-' + dropdownID).classList.remove('rotate-90');
     }
   
   return;
@@ -87,7 +93,7 @@ function toggleDropdownMenu(dropdownID)
 function selectDropdownOption(itemID)
   {
   //Get the content of that option 
-  var selection = document.getElementById(itemID).innerHTML; 
+  var selection = getRef(itemID).innerHTML; 
 
   //Get the id of the dropdown option
   var dropdownID = itemID.split("_")[0].slice(0, -7);   
@@ -97,7 +103,7 @@ function selectDropdownOption(itemID)
 
   
   //Add the selection to the button innerHTML for display and close the dropdown menu 
-  document.getElementById("dropdown-title-" + dropdownID).innerHTML = selection; 
+  getRef("dropdown-title-" + dropdownID).innerHTML = selection; 
   toggleDropdownMenu(dropdownID);
   
   return;

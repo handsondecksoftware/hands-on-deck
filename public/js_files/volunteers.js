@@ -17,12 +17,12 @@
 function init()
     {
     //Setup open and close of popup box
-    //document.getElementById('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
-    //document.getElementById('saveAddVolunteer').onclick = function(){addVolunteer()};
-    document.getElementById('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
-    document.getElementById('returnToVolList').onclick = function(){toggleViewVolunteerVisibility()};
-    document.getElementById('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
-    document.getElementById('saveOppourtunityView').onclick = function(){saveOppDetails()};
+    //getRef('cancelAddVolunteer').onclick = function(){toggleAddVolunteerBoxVisibility()};
+    //getRef('saveAddVolunteer').onclick = function(){addVolunteer()};
+    getRef('addVolunteerButton').onclick = function(){toggleAddVolunteerBoxVisibility()};
+    getRef('returnToVolList').onclick = function(){toggleViewVolunteerVisibility()};
+    getRef('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
+    getRef('saveOppourtunityView').onclick = function(){saveOppDetails()};
 
     initSlider('Volunteers');
 
@@ -48,7 +48,7 @@ function loadVolunteers()
             if(response.success)
                 {
                 //Get reference to table 
-                var volunteerTable = document.getElementById('volunteersTable');
+                var volunteerTable = getRef('volunteersTable');
                 var rowNum = 1;
     
                 //Fill in table elements
@@ -69,7 +69,7 @@ function loadVolunteers()
                     name.innerHTML = response.volunteerInfo[volNum].name;
                     email.innerHTML = response.volunteerInfo[volNum].email;
                     team.innerHTML = response.volunteerInfo[volNum].teamname;
-                    volunteerHrs.innerHTML = response.volunteerInfo[volNum].numhours;
+                    volunteerHrs.innerHTML = response.volunteerInfo[volNum].numhours ?? 0;
     
                     view.innerHTML = "<i id=\"view_" + response.volunteerInfo[volNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteer(this.id)\"></i>";
                     remove.innerHTML = "<i id=\"delete_" + response.volunteerInfo[volNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id)\"></i>";
@@ -88,7 +88,6 @@ function loadVolunteers()
         alert("Oops. We ran into an issue loading the page. Please try again");
         setLoaderVisibility(false);
         };
-    */
     }
 
 ////////////////////////////////////////////////////////////////////////
@@ -101,18 +100,16 @@ function toggleAddVolunteerBoxVisibility()
     alert("Volunteers can only be created through the app interface for now.");
     return;
     //Open the add oppourtuntiy popup box
-    var currentState = document.getElementById('addVolunteerPopup').style.display; 
+    var currentState = getRef('addVolunteerPopup').style.display; 
 
     if(currentState === "none")
         {
-        document.getElementById('addVolunteerPopup').style.display = "block"; 
+        getRef('addVolunteerPopup').style.display = "block"; 
         }
     else 
         {
-        document.getElementById('addVolunteerPopup').style.display = "none"; 
+        getRef('addVolunteerPopup').style.display = "none"; 
         }
-
-  return;
     }
 
 
@@ -124,17 +121,17 @@ function toggleAddVolunteerBoxVisibility()
 function toggleViewVolunteerVisibility()
     {
     // Turn on/off a specific volunteers' hours page
-    var currentState = document.getElementById('viewVolunteerPage').style.display;
+    var currentState = getRef('viewVolunteerPage').style.display;
     
     if(currentState === "none")
         {
-        document.getElementById('volunteerMainPage').style.display = "none";
-        document.getElementById('viewVolunteerPage').style.display = "block";
+        getRef('volunteerMainPage').style.display = "none";
+        getRef('viewVolunteerPage').style.display = "block";
         }
     else
         {
-        document.getElementById('viewVolunteerPage').style.display = "none";
-        document.getElementById('volunteerMainPage').style.display = "block";
+        getRef('viewVolunteerPage').style.display = "none";
+        getRef('volunteerMainPage').style.display = "block";
         }
 
     return;
@@ -150,11 +147,11 @@ function addVolunteer()
     {
     //Collect Form Values
     var volunteerData = {
-        firstName: document.getElementById('volunteerInfo-firstName').value,
-        lastName: document.getElementById('volunteerInfo-lastName').value,
-        teamName: document.getElementById('volunteerInfo-teamName').value,
-        email: document.getElementById('volunteerInfo-email').value,
-        type: document.getElementById('volunteerInfo-type').value,
+        firstName: getRef('volunteerInfo-firstName').value,
+        lastName: getRef('volunteerInfo-lastName').value,
+        teamName: getRef('volunteerInfo-teamName').value,
+        email: getRef('volunteerInfo-email').value,
+        type: getRef('volunteerInfo-type').value,
         id: null, 
         teamName: null, 
         teamID: null, 
@@ -203,11 +200,11 @@ function viewVolunteer(buttonID)
             {
             if(response.success)
                 {
-                document.getElementById("volName").innerHTML = response.volunteerData.name;
-                document.getElementById("volTeam").innerHTML = response.volunteerData.teamname;
+                getRef("volName").innerHTML = response.volunteerData.name;
+                getRef("volTeam").innerHTML = response.volunteerData.teamname;
 
                 //Get reference to table 
-                var volunteerHistoryTable = document.getElementById('volunteerHistoryTable');
+                var volunteerHistoryTable = getRef('volunteerHistoryTable');
                 var rowNum = 1;
     
                 var volunteeringData = response.volunteerData.volunteeringdata;
@@ -305,7 +302,7 @@ function showOpportunityDetails(e){
             // Get Name, Team, and Role of Volunteer from the clicked row
             var oppTitle = parent.cells.item(0).innerHTML;
 
-            document.getElementById("opportunityTitle").innerHTML = oppTitle;
+            getRef("opportunityTitle").innerHTML = oppTitle;
             
             // View the popup with these details
             toggleViewOppDetails();
@@ -324,15 +321,15 @@ function showOpportunityDetails(e){
 ////////////////////////////////////////////////////////////////////////
 function toggleViewOppDetails(){
     // Switch visibility on viewing opportunity details
-    var currentState = document.getElementById('viewOppourtunityDetailsPopup').style.display; 
+    var currentState = getRef('viewOppourtunityDetailsPopup').style.display; 
 
     if(currentState == "none")
         {
-        document.getElementById('viewOppourtunityDetailsPopup').style.display = "block"; 
+        getRef('viewOppourtunityDetailsPopup').style.display = "block"; 
         }
     else 
         {
-        document.getElementById('viewOppourtunityDetailsPopup').style.display = "none"; 
+        getRef('viewOppourtunityDetailsPopup').style.display = "none"; 
         }
 
     return;

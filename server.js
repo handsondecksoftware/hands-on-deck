@@ -221,6 +221,11 @@ app.post('/api/addTeam', auth.authcheck, async (request, response) =>
     response.send(await team.addTeam(request.user, request.body.teamData));
     });
 
+app.post('/api/deleteTeam', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.deleteTeam(request.user, request.body.teamID));
+    });
+
 app.post('/api/getTeamsForViewable', auth.authcheck, async (request, response) =>
     {
     response.send(await team.getTeamsForViewable(request.user));
