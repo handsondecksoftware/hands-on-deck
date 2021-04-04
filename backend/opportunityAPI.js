@@ -65,7 +65,7 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
     }
 
 ////////////////////////////////////////////////////////////
-// Will get the oppoutunity info
+// Will get the opportunity info
 //
 // @param[in]  user             user information
 // @param[in]  opportunityID    ID of opp user is looking for detail on
@@ -88,7 +88,7 @@ exports.getOpportunityInfo = async (user, oppID) =>
             {
             id: oppID,
             sequencenum: 1,
-            title: "Your Oppourtunity",
+            title: "Your Opportunity",
             type: "Meetings",
             starttime: 1616617800000,
             endtime: 1616625000000,
@@ -394,42 +394,3 @@ exports.addOpportunityType = async (user, type)  =>
   return response;
   }
 */
-
-
-////////////////////////////////////////////////////////////////////////////////////
-// Will determine what teams are availible to view a specific opportunity
-//
-// @param[in]  user                     user Information
-//
-// @param[out] {success, errorcode}     Values indicating success of add  
-//
-////////////////////////////////////////////////////////////////////////////////////
-exports.getTeamsForViewable = async user => 
-    {
-    var response = {success: false, errorcode: -1, teams: []};
-
-    try 
-        {
-        console.log('getTeamsForViewable() called by: ' + user.volunteer_id);
-
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-        response.teams = [{name: "M - Golf", id: 1}, {name: "W - Golf", id: 3}, {name: "M - Swim", id: 2}, {name: "W - Swim", id: 4}];
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-
-        response.errorcode = error.NOERROR;
-        response.success = true;
-        }
-    catch (err)
-        {
-        console.log("Error Occurred: " + err.message);
-
-        response.errorcode = error.SERVER_ERROR;
-        response.teams = null;
-        response.success = false;
-        }
-
-    //Log completion of function
-    console.log('Result of getTeamsForViewable() is: ' + response.success);
-
-    return response;
-    }

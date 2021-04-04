@@ -88,6 +88,7 @@ function loadVolunteers()
         alert("Oops. We ran into an issue loading the page. Please try again");
         setLoaderVisibility(false);
         };
+    */
     }
 
 ////////////////////////////////////////////////////////////////////////

@@ -230,7 +230,7 @@ function teamCanView(teamID)
 function fillOpportunityTable()
     {
     //Call method to load oppourtunities -- value of -1 will get all oppourtunities for my instituition
-    handleAPIcall({OpportunityID: -1}, '/getOpportunityInfo', response =>
+    handleAPIcall({OpportunityID: -1}, '/api/getAllOpportunityInfo', response =>
         {
         if(response.success)
             {

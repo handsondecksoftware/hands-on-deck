@@ -44,14 +44,13 @@ function setupWelcomePage()
             printUserErrorMessage(response.errorcode);
 
             //Set some default values to use
-            iInfo = 
-                {
+            iInfo = {
                 id: -1, 
                 name: "Could Not Load", 
                 location: "Could Not Load", 
                 numVolunteers: "Unkown",
                 totalHours: "Unkown",
-                }
+                };
             }
 
         getRef("instituionName").innerHTML = iInfo.name;
@@ -59,13 +58,6 @@ function setupWelcomePage()
         getRef("totalHours").innerHTML = iInfo.totalHours;
 
         setLoaderVisibility(false);
-        })
-    .catch(error => 
-        {
-        setLoaderVisibility(false);
-
-        alert("Looks like we ran into an error loading the page. Please try again");
-        console.error(error.message);
         });
     }
 

@@ -123,8 +123,9 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
     data = JSON.stringify(dataInJSON);
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", postName, true);
+    xhr.open("POST", postName, true);
     xhr.setRequestHeader(headerName, headerValue);
+    xhr.setRequestHeader("Authorization", "Bearer " + getCookie("access_token"));
     xhr.onreadystatechange = function()
         {
         if(xhr.readyState == XMLHttpRequest.DONE) 
@@ -133,7 +134,7 @@ function handleAPIcall(dataInJSON, postName, callbackFunction)
             try {response = JSON.parse(xhr.responseText);}
             catch (error) 
                 {
-                console.error(error.message);
+                console.log(error.message);
                 response = {success: false};
                 }
              
@@ -296,6 +297,34 @@ function getMinutesFromISOString(ISOdate)
     return parseInt(new Date(ISOdate).toString().slice(19, 21));      //Convert to format hh:mm
     }
 
+
+//////////////////////////////////////////////////////////////////
+//
+// will get the cookie value specified in the type input value
+//
+//////////////////////////////////////////////////////////////////
+function getCookie(type)
+    {   
+    var rc = "";
+    var cookieContents = document.cookie;
+    var searchFor = type +"=";
+
+    //Find start index
+    var start = cookieContents.indexOf(searchFor);
+
+    //slice string so now it starts at desired location
+    cookieContents = cookieContents.slice(start + searchFor.length);
+
+    //find end of information for cookie info type
+    var end = cookieContents.indexOf(";");
+
+    if(end == -1)
+        rc = cookieContents
+    else 
+        rc = cookieContents.slice(0, end);
+
+    return rc;
+    }
 
 
 //////////////////////////////////////////////////////////////////
