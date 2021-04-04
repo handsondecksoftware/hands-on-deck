@@ -363,6 +363,7 @@ exports.getTeamLeaderboard = async user =>
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Query only the top 10 volunteers in the list
         // Don't send team id value, only the relevant information to display
+        // Should be in DESC order
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         var teamElement = 
             { 

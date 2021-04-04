@@ -299,6 +299,7 @@ exports.getVolunteerLeaderboard = async user =>
         //Query only the top 10 volunteers in the list
         // Don't send any personal information such as email, team_id, user_id, or leaderboards
         // only name, team and number of hours
+        // Should be in DESC order
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         var volunteerElement = 
                 {
