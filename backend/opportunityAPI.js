@@ -38,8 +38,8 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
             sequencenum: 1,
             title: "Testing Opp",
             type: "Meetings",
-            starttime: 1616617800000,
-            endtime: 1616625000000,
+            starttime: "2021-04-07 19:30:00",
+            endtime: "2021-04-07 20:30:00",
             numvolunteers: 2,
             };
 
@@ -143,8 +143,8 @@ exports.getOpportunityData = async (user, oppID) =>
             sequenceNum: 1,
             title: "SAAC Meeting", 
             type: "Meetings", 
-            starttime: 1616617800000, 
-            endtime: 1616625000000,
+            starttime: "2021-04-07 19:30:00",
+            endtime: "2021-04-07 20:30:00",
             location: "Zoom",
             description: "This is a test event that is the next SAAC meeting which we will use to test post method", 
             viewableBy: [{name: 'All Teams', id: 0}],  

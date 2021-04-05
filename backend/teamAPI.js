@@ -321,9 +321,9 @@ exports.getTeamsForViewable = async user =>
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         //Used as default values for now -- we don't need numvolunteers and num hours in response 
         //  will make query faster to exclude them
-        response.teamInfo.push({id: 1, name: "Golf", sex: MALE, numvolunteers: null, numhours: null});
-        response.teamInfo.push({id: 3, name: "Golf", sex: FEMALE, numvolunteers: null, numhours: null});
-        response.teamInfo.push({id: 2, name: "Golf", sex: MALE, numvolunteers: null, numhours: null});
+        response.teamInfo.push({id: 1, name: "Golf", sex: 'Men', numvolunteers: null, numhours: null});
+        response.teamInfo.push({id: 3, name: "Golf", sex: 'Women', numvolunteers: null, numhours: null});
+        response.teamInfo.push({id: 2, name: "Golf", sex: 'Men', numvolunteers: null, numhours: null});
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         
         response.errorcode = error.NOERROR;

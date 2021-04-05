@@ -31,19 +31,18 @@ function init()
     //Fill the oppourtunties table
     fillOpportunityTable();
 
-
     //Setup open and close of popup box
-    document.getElementById('addOpportunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-    document.getElementById('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
-    document.getElementById('addOpportunityChoice').onclick = function(){addOpportunity()};
-    document.getElementById('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
-    document.getElementById('closeVolunteerInvolvement').onclick = function(){toggleViewInvolvementBoxVisibility()};
-    document.getElementById('saveVolunteerInvolvement').onclick = function(){saveVolunteerInvolvement()};
-    document.getElementById('editOpportunity').onclick = function(){editOpportunity()};
+    getRef('addOpportunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
+    getRef('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
+    getRef('addOpportunityChoice').onclick = function(){addOpportunity()};
+    getRef('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
+    getRef('closeVolunteerInvolvement').onclick = function(){toggleViewInvolvementBoxVisibility()};
+    getRef('saveVolunteerInvolvement').onclick = function(){saveVolunteerInvolvement()};
+    getRef('editOpportunity').onclick = function(){editOpportunity()};
 
-    document.getElementById('addOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()}
-    document.getElementById('cancelViewableBy').onclick = function(){toggleViewableByBoxVisibility()};
-    document.getElementById('SelectViewableBy').onclick = function(){setViewableBy()};
+    getRef('addOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()}
+    getRef('cancelViewableBy').onclick = function(){toggleViewableByBoxVisibility()};
+    getRef('SelectViewableBy').onclick = function(){setViewableBy()};
 
 
     initSlider('Opportunties');
@@ -64,17 +63,17 @@ function init()
 function toggleOppourtuntiyBoxVisibility()
     {
     //Change the oppourtuntiy popup box display
-    var currentState = document.getElementById('addOpportunityPopup').style.display; 
+    var currentState = getRef('addOpportunityPopup').style.display; 
 
     if(currentState === "none")
         {
         fillOpportunityTypeOptions('addOpportunityTypeOptions');
         fillOpportunityViewableByOptions();
-        document.getElementById('addOpportunityPopup').style.display = "block";
+        getRef('addOpportunityPopup').style.display = "block";
         }
     else 
         {
-        document.getElementById('addOpportunityPopup').style.display = "none"; 
+        getRef('addOpportunityPopup').style.display = "none"; 
         }
 
     return;
@@ -89,15 +88,15 @@ function toggleOppourtuntiyBoxVisibility()
 function toggleViewInvolvementBoxVisibility()
     {
     //Change the oppourtuntiy popup box display
-    var currentState = document.getElementById('viewVolunteerInvolvementPopup').style.display; 
+    var currentState = getRef('viewVolunteerInvolvementPopup').style.display; 
 
     if(currentState === "none")
         {
-        document.getElementById('viewVolunteerInvolvementPopup').style.display = "block";
+        getRef('viewVolunteerInvolvementPopup').style.display = "block";
         }
     else 
         {
-        document.getElementById('viewVolunteerInvolvementPopup').style.display = "none"; 
+        getRef('viewVolunteerInvolvementPopup').style.display = "none"; 
         }
 
     return;
@@ -112,16 +111,16 @@ function toggleViewInvolvementBoxVisibility()
 function toggleViewableByBoxVisibility()
     {
     //Change the oppourtuntiy popup box display
-    var currentState = document.getElementById('viewableByPopup').style.display; 
+    var currentState = getRef('viewableByPopup').style.display; 
 
     if(currentState === "none")
         {
         fillOpportunityViewableByOptions();
-        document.getElementById('viewableByPopup').style.display = "block";
+        getRef('viewableByPopup').style.display = "block";
         }
     else 
         {
-        document.getElementById('viewableByPopup').style.display = "none";
+        getRef('viewableByPopup').style.display = "none";
         }
 
     }
@@ -137,17 +136,17 @@ function addTimeDropdownOptions(addOrView, startORend)
     for(var i = 1; i <= 12; i++) 
         {
         var elementId = addOrView + "Opportunity" + startORend + "TimeHrsOptions_option_" + i;
-        document.getElementById(elementId).onclick = function(){selectDropdownOption(this.id);}
+        getRef(elementId).onclick = function(){selectDropdownOption(this.id);}
         }
 
     for(var i = 1; i <= 4; i++) 
         {
         var elementId = addOrView + "Opportunity" + startORend + "TimeMinOptions_option_" + i;
-        document.getElementById(elementId).onclick = function(){selectDropdownOption(this.id);}
+        getRef(elementId).onclick = function(){selectDropdownOption(this.id);}
         }
     
-    document.getElementById(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_1").onclick = function(){selectDropdownOption(this.id);}
-    document.getElementById(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_2").onclick = function(){selectDropdownOption(this.id);}
+    getRef(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_1").onclick = function(){selectDropdownOption(this.id);}
+    getRef(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_2").onclick = function(){selectDropdownOption(this.id);}
         
     }
 
@@ -163,13 +162,13 @@ function setViewableBy()
     opportunityViewableBy_gv = [];
 
     //Check if all teams are selected
-    if(document.getElementById('viewableTeam_0').checked)
+    if(getRef('viewableTeam_0').checked)
         {
         opportunityViewableBy_gv.push(0);
 
         //Set label to show all teams
-        document.getElementById('viewOpportunity-viewableByLabel').innerHTML = "All Teams"; 
-        document.getElementById('addOpportunity-viewableByLabel').innerHTML = "All Teams"; 
+        getRef('viewOpportunity-viewableByLabel').innerHTML = "All Teams"; 
+        getRef('addOpportunity-viewableByLabel').innerHTML = "All Teams"; 
         }
     else 
         {
@@ -177,13 +176,13 @@ function setViewableBy()
         for(var option = 0; option < viewableByOptions_gv.length; option++)
             {
             //Check if the CheckBox is checked
-            if(document.getElementById('viewableTeam_' + viewableByOptions_gv[option].id).checked)
+            if(getRef('viewableTeam_' + viewableByOptions_gv[option].id).checked)
                 {
                 opportunityViewableBy_gv.push(viewableByOptions_gv[option].id);
 
                 //Set label to show
-                document.getElementById('viewOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name; 
-                document.getElementById('addOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name;
+                getRef('viewOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name; 
+                getRef('addOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name;
 
                 numSelected++;
                 }
@@ -191,8 +190,8 @@ function setViewableBy()
 
         if(numSelected > 1) 
             {
-            document.getElementById('viewOpportunity-viewableByLabel').innerHTML = "Multiple"; 
-            document.getElementById('addOpportunity-viewableByLabel').innerHTML = "Multiple";  
+            getRef('viewOpportunity-viewableByLabel').innerHTML = "Multiple"; 
+            getRef('addOpportunity-viewableByLabel').innerHTML = "Multiple";  
             }
         }
 
@@ -235,7 +234,7 @@ function fillOpportunityTable()
         if(response.success)
             {
             //Get reference to table 
-            var oppourtuntityRoundTable = document.getElementById('oppourtuntiesTable');
+            var oppourtuntityRoundTable = getRef('oppourtuntiesTable');
             var rowNum = 1;
 
             //Fill in table elements
@@ -256,9 +255,9 @@ function fillOpportunityTable()
                 //Fill in row elements
                 title.innerHTML = response.oppInfo[oppNum].title;
                 type.innerHTML = response.oppInfo[oppNum].type;
-                numVolunteers.innerHTML = response.oppInfo[oppNum].numVolunteers;
-                date.innerHTML = getDayOfYearFromISOString(response.oppInfo[oppNum].startDatetime);
-                startTime.innerHTML = getTimeFromISOString(response.oppInfo[oppNum].startDatetime);
+                numVolunteers.innerHTML = response.oppInfo[oppNum].numvolunteers;
+                date.innerHTML = getDayOfYearFromTimestamp(response.oppInfo[oppNum].starttime);
+                startTime.innerHTML = getTimeFromTimestamp(response.oppInfo[oppNum].starttime);
 
                 view.innerHTML = "<i id=\"view_" + response.oppInfo[oppNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewOpportunity(this.id)\"></i>";
                 remove.innerHTML = "<i id=\"delete_" + response.oppInfo[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id)\"></i>";
@@ -269,7 +268,7 @@ function fillOpportunityTable()
             console.log("Error in retriving oppourtuntiy table data. ErrorCode: " + response.errorCode);
 
             //Add element to table to indicate we could not load the data
-            var oppourtuntityRoundTable = document.getElementById('oppourtuntiesTable');
+            var oppourtuntityRoundTable = getRef('oppourtuntiesTable');
 
             //Create new row
             var row = oppourtuntityRoundTable.insertRow(1);
@@ -306,37 +305,34 @@ function fillOpportunityTable()
 ////////////////////////////////////////////////////////////////////////
 function addOpportunity()
     {
-    //Set the coordinator info 
-    var cordInfo = {name: document.getElementById('addOpportunity-coordinatorName'), 
-                    email: document.getElementById('addOpportunity-coordinatorEmail'), 
-                    phone: document.getElementById('addOpportunity-coordinatorPhoneNumber')};
-
     //Collect start and end date values 
-    var startDate = document.getElementById('addOpportunity-startDate').value;
-    var startAm_Pm = document.getElementById('dropdown-title-addOpportunityStartTimeAmPm').innerHTML;
-    var startHour = parseInt(document.getElementById('dropdown-title-addOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
-    var startMin = parseInt(document.getElementById('dropdown-title-addOpportunityStartTimeMin').innerHTML);
+    var startDate = getRef('addOpportunity-startDate').value;
+    var startAm_Pm = getRef('dropdown-title-addOpportunityStartTimeAmPm').innerHTML;
+    var startHour = parseInt(getRef('dropdown-title-addOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
+    var startMin = parseInt(getRef('dropdown-title-addOpportunityStartTimeMin').innerHTML);
 
-    var endDate = document.getElementById('addOpportunity-endDate').value;
-    var endAm_Pm = document.getElementById('dropdown-title-addOpportunityEndTimeAmPm').innerHTML;
-    var endHour = parseInt(document.getElementById('dropdown-title-addOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
-    var endMin = parseInt(document.getElementById('dropdown-title-addOpportunityEndTimeMin').innerHTML);
+    var endDate = getRef('addOpportunity-endDate').value;
+    var endAm_Pm = getRef('dropdown-title-addOpportunityEndTimeAmPm').innerHTML;
+    var endHour = parseInt(getRef('dropdown-title-addOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
+    var endMin = parseInt(getRef('dropdown-title-addOpportunityEndTimeMin').innerHTML);
 
 
     //Collect Form Values
     var oppData = {
-        title: document.getElementById('addOpportunity-title').value, 
-        startDatetime: convertDateToISO(startDate, startHour, startMin),
-        endDatetime: convertDateToISO(endDate, endHour, endMin),
-        location: document.getElementById('addOpportunity-location').value, 
+        title: getRef('addOpportunity-title').value, 
+        startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
+        endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
+        location: getRef('addOpportunity-location').value, 
         id: null,                                   //Assigned by the backend
         occurred: false,                            //Likely false since we just created the event -- needs to be checked
         type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-        viewableBy: opportunityViewableBy_gv,   //This needs to be set when the option is selected
-        description: document.getElementById('addOpportunity-description').value, 
+        viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected -- currently only can handle all teams
+        description: getRef('addOpportunity-description').value, 
         sequenceNum: 1, 
-        coordinatorInfo: cordInfo,
-        volunteerLimit: document.getElementById('addOpportunityVolunteerLimit').value,
+        coordinatorname: getRef('addOpportunity-coordinatorName'),
+        coordinatoremail: getRef('addOpportunity-coordinatorEmail'),
+        coordinatorphone: getRef('addOpportunity-coordinatorPhone'),
+        volunteerLimit: getRef('addOpportunityVolunteerLimit').value,
         volunteers: null,                           //They have not been set yet
     };
 
@@ -370,51 +366,51 @@ function addOpportunity()
 ////////////////////////////////////////////////////////////////////////
 function editOpportunity() 
     {
-    if(document.getElementById('editOpportunity').innerHTML == "Save")
+    if(getRef('editOpportunity').innerHTML == "Save")
         {
         //Show we are doing something, call function to save opportunity
-        document.getElementById('editOpportunity').innerHTML = "Saving...";
+        getRef('editOpportunity').innerHTML = "Saving...";
         saveEditOpportunity();
         }
     else 
         {
         //Change button display
-        document.getElementById('editOpportunity').innerHTML = "Save"; 
+        getRef('editOpportunity').innerHTML = "Save"; 
 
         //Allow all the fields to be updated
-        document.getElementById('viewOpportunity-title').readOnly = false;
+        getRef('viewOpportunity-title').readOnly = false;
 
         //Initalize datepickers for input fields
         createDatePicker('viewOpportunity-startDate', 'viewOpportunityStartDatePicker', 3);
         createDatePicker('viewOpportunity-endDate', 'viewOpportunityEndDatePicker', 4);
 
         //Activite dropdown menus
-        document.getElementById('viewOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('viewOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('viewOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
         addTimeDropdownOptions("view", "Start");
 
-        document.getElementById('viewOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('viewOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
-        document.getElementById('viewOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
         addTimeDropdownOptions("view", "End");
 
-        document.getElementById('viewOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
+        getRef('viewOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
         fillOpportunityTypeOptions('viewOpportunityTypeOptions');
 
-        document.getElementById('viewOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()};
-        document.getElementById('viewOpportunity-viewableBy').disabled = false;
+        getRef('viewOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()};
+        getRef('viewOpportunity-viewableBy').disabled = false;
         fillOpportunityViewableByOptions();
 
         changeSliderLabel('viewOpportunityVolunteerLimit');       //Call function to update label to match
-        document.getElementById('viewOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
+        getRef('viewOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
 
-        document.getElementById('viewOpportunity-location').readOnly = false;
-        document.getElementById('viewOpportunity-description').readOnly = false;
+        getRef('viewOpportunity-location').readOnly = false;
+        getRef('viewOpportunity-description').readOnly = false;
 
-        document.getElementById('viewOpportunity-coordinatorName').readOnly = false;
-        document.getElementById('viewOpportunity-coordinatorEmail').readOnly = false;
-        document.getElementById('viewOpportunity-coordinatorPhone').readOnly = false;
+        getRef('viewOpportunity-coordinatorName').readOnly = false;
+        getRef('viewOpportunity-coordinatorEmail').readOnly = false;
+        getRef('viewOpportunity-coordinatorPhone').readOnly = false;
         }
     }
 
@@ -426,96 +422,95 @@ function editOpportunity()
 ////////////////////////////////////////////////////////////////////////
 function saveEditOpportunity() 
     {
-    //Collect info
 
-    //Set the coordinator info 
-    var cordInfo = {name: document.getElementById('viewOpportunity-coordinatorName'), 
-                    email: document.getElementById('viewOpportunity-coordinatorEmail'), 
-                    phone: document.getElementById('viewOpportunity-coordinatorPhoneNumber')};
-
-    //Collect start and end date values 
-    var startDate = document.getElementById('viewOpportunity-startDate').value;
-    var startAm_Pm = document.getElementById('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML;
-    var startHour = parseInt(document.getElementById('dropdown-title-viewOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
-    var startMin = parseInt(document.getElementById('dropdown-title-viewOpportunityStartTimeMin').innerHTML);
-
-    var endDate = document.getElementById('viewOpportunity-endDate').value;
-    var endAm_Pm = document.getElementById('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML;
-    var endHour = parseInt(document.getElementById('dropdown-title-viewOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
-    var endMin = parseInt(document.getElementById('dropdown-title-viewOpportunityEndTimeMin').innerHTML);
-
-
-    //Collect Form Values
-    var oppData = {
-        title: document.getElementById('viewOpportunity-title').value, 
-        startDatetime: convertDateToISO(startDate, startHour, startMin),
-        endDatetime: convertDateToISO(endDate, endHour, endMin),
-        location: document.getElementById('viewOpportunity-location').value, 
-        id: currentViewedOpportunity_gv.id,                 
-        occurred: currentViewedOpportunity_gv.occurred,                            //Likely false since we just created the event -- needs to be checked
-        type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-        viewableBy: opportunityViewableBy_gv,   //This needs to be set when the option is selected
-        description: document.getElementById('viewOpportunity-description').value, 
-        sequenceNum: currentViewedOpportunity_gv.sequenceNum, 
-        coordinatorInfo: cordInfo,
-        volunteerLimit: document.getElementById('viewOpportunityVolunteerLimit').value,
-        volunteers: null,                           //Can allow these to be updated
-    };
-
-    //Send post request and handle the response
-    handleAPIcall({oppData: oppData}, "/editOpportunity", response => 
+    try 
         {
-        if(response.success)
+        //Collect start and end date values 
+        var startDate = getRef('viewOpportunity-startDate').value;
+        var startAm_Pm = getRef('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML;
+        var startHour = parseInt(getRef('dropdown-title-viewOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
+        var startMin = parseInt(getRef('dropdown-title-viewOpportunityStartTimeMin').innerHTML);
+
+        var endDate = getRef('viewOpportunity-endDate').value;
+        var endAm_Pm = getRef('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML;
+        var endHour = parseInt(getRef('dropdown-title-viewOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
+        var endMin = parseInt(getRef('dropdown-title-viewOpportunityEndTimeMin').innerHTML);
+
+
+        //Collect Form Values
+        var oppData = {
+            title: getRef('viewOpportunity-title').value, 
+            startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
+            endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
+            location: getRef('viewOpportunity-location').value, 
+            id: currentViewedOpportunity_gv.id,                 
+            occurred: currentViewedOpportunity_gv.occurred,
+            type: addOppourtunityType_gv,               //This needs to be set when the option is selected
+            viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected
+            description: getRef('viewOpportunity-description').value, 
+            sequenceNum: currentViewedOpportunity_gv.sequenceNum, 
+            coordinatorname: getRef('viewOpportunity-coordinatorName').value,
+            coordinatoremail: getRef('viewOpportunity-coordinatorEmail').value,
+            coordinatorphone: getRef('viewOpportunity-coordinatorPhone').value,
+            volunteerLimit: getRef('viewOpportunityVolunteerLimit').value,
+            volunteers: null,                           //Can allow these to be updated
+        };
+
+        //Send post request and handle the response
+        handleAPIcall({oppData: oppData}, "/api/editOpportunity", response => 
             {
-            alert("You successfully updated the opportunity");
+            if(response.success)
+                {
+                alert("You successfully updated the opportunity");
 
-            //Allow all the fields to be updated
-            document.getElementById('viewOpportunity-title').readOnly = true;
+                //Allow all the fields to be updated
+                getRef('viewOpportunity-title').readOnly = true;
 
-            //Initalize datepickers for input fields
-            deleteDatePicker('viewOpportunity-startDate', 'viewOpportunityStartDatePicker', 3);
-            deleteDatePicker('viewOpportunity-endDate', 'viewOpportunityEndDatePicker', 4);
+                //Initalize datepickers for input fields
+                deleteDatePicker('viewOpportunity-startDate', 'viewOpportunityStartDatePicker', 3);
+                deleteDatePicker('viewOpportunity-endDate', 'viewOpportunityEndDatePicker', 4);
 
-            //Activite dropdown menus
-            document.getElementById('viewOpportunityStartTimeHrs').onclick = function(){return};
-            document.getElementById('viewOpportunityStartTimeMin').onclick = function(){return};
-            document.getElementById('viewOpportunityStartTimeAmPm').onclick = function(){return};
-            addTimeDropdownOptions("view", "Start");
+                //Activite dropdown menus
+                getRef('viewOpportunityStartTimeHrs').onclick = function(){return};
+                getRef('viewOpportunityStartTimeMin').onclick = function(){return};
+                getRef('viewOpportunityStartTimeAmPm').onclick = function(){return};
+                addTimeDropdownOptions("view", "Start");
 
-            document.getElementById('viewOpportunityEndTimeHrs').onclick = function(){return};
-            document.getElementById('viewOpportunityEndTimeMin').onclick = function(){return};
-            document.getElementById('viewOpportunityEndTimeAmPm').onclick = function(){return};
-            addTimeDropdownOptions("view", "End");
+                getRef('viewOpportunityEndTimeHrs').onclick = function(){return};
+                getRef('viewOpportunityEndTimeMin').onclick = function(){return};
+                getRef('viewOpportunityEndTimeAmPm').onclick = function(){return};
+                addTimeDropdownOptions("view", "End");
 
-            document.getElementById('viewOpportunityType').onclick = function(){return};
-            document.getElementById('viewOpportunityTypeOptions').innerHTML = "";
+                getRef('viewOpportunityType').onclick = function(){return};
+                getRef('viewOpportunityTypeOptions').innerHTML = "";
 
-            document.getElementById('viewOpportunity-viewableBy').onclick = function(){return};
+                getRef('viewOpportunity-viewableBy').onclick = function(){return};
 
-            document.getElementById('viewOpportunityVolunteerLimit').onchange = function(){return};
+                getRef('viewOpportunityVolunteerLimit').onchange = function(){return};
 
-            document.getElementById('viewOpportunity-location').readOnly = true;
-            document.getElementById('viewOpportunity-description').readOnly = true;
+                getRef('viewOpportunity-location').readOnly = true;
+                getRef('viewOpportunity-description').readOnly = true;
 
-            document.getElementById('viewOpportunity-coordinatorName').readOnly = true;
-            document.getElementById('viewOpportunity-coordinatorEmail').readOnly = true;
-            document.getElementById('viewOpportunity-coordinatorPhone').readOnly = true;
+                getRef('viewOpportunity-coordinatorName').readOnly = true;
+                getRef('viewOpportunity-coordinatorEmail').readOnly = true;
+                getRef('viewOpportunity-coordinatorPhone').readOnly = true;
 
-            //Change button display
-            document.getElementById('editOpportunity').innerHTML = "Edit"; 
+                //Change button display
+                getRef('editOpportunity').innerHTML = "Edit"; 
 
-            //Stay on the current page to allow user to do what they want next
-            }
-        else 
-            {
-            printUserErrorMessage(response.errorCode);
-            }
-        })
-    .catch(error)
+                //Stay on the current page to allow user to do what they want next
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorCode);
+                }
+            });
+        }
+    catch(error)
         {
         console.log(error.message);
-        alert("Error saving opportunity. Please try again");
-        };
+        alert("Something unexpected happened. Please try saving the opportunity again");
+        }
     
     return;
     }
@@ -529,23 +524,23 @@ function saveEditOpportunity()
 function fillOpportunityTypeOptions(dropdownID)
     {
     //Get the Opportunity Type options 
-    handleAPIcall(null, '/getOpportunityTypes', response =>
+    handleAPIcall(null, '/api/getOpportunityTypes', response =>
         {
         if(response.success)
             { 
             //Get reference to div to add  types to it 
-            var dropdownDiv = document.getElementById(dropdownID);
+            var dropdownDiv = getRef(dropdownID);
             
-            for(var i = 0; i < response.opportunityTypes.length; i++)
+            for(var i = 0; i < response.oppTypes.length; i++)
                 {
                 var dropdownOption = document.createElement('a');
                 dropdownOption.id = dropdownID + '_option_' + i;    //must be unique across page
                 dropdownOption.classList = "dropdown-option";
-                dropdownOption.innerHTML = response.opportunityTypes[i];
+                dropdownOption.innerHTML = response.oppTypes[i];
                 dropdownDiv.appendChild(dropdownOption);
 
                 //create dom function call 
-                document.getElementById(dropdownID + '_option_' + i).onclick = function(){selectDropdownOption(this.id)};
+                getRef(dropdownID + '_option_' + i).onclick = function(){selectDropdownOption(this.id)};
                 }
             }
         else 
@@ -566,12 +561,12 @@ function fillOpportunityTypeOptions(dropdownID)
 function fillOpportunityViewableByOptions() 
     {
     //Get the teams Type options 
-    handleAPIcall(null, '/getTeamsForViewable', response =>
+    handleAPIcall(null, '/api/getTeamsForViewable', response =>
         {
         if(response.success)
             {
             //Get table id
-            var viewableByTable = document.getElementById("viewableByTable");
+            var viewableByTable = getRef("viewableByTable");
 
             //Remove the current elements if any 
             for(var i = viewableByTable.rows.length - 1 ; i > 1; i--)
@@ -583,7 +578,7 @@ function fillOpportunityViewableByOptions()
             var rowNum = 2;
 
             //Add volunteers to the table
-            for(var option = 0; option < response.teams.length; option++)
+            for(var option = 0; option < response.teamInfo.length; option++)
                 {
                 //Create new row
                 var row = viewableByTable.insertRow(rowNum++);
@@ -595,18 +590,18 @@ function fillOpportunityViewableByOptions()
                 //Fill in row elements
                 if(opportunityViewableBy_gv.length > 0)
                     {
-                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teams[option].id +"\"" + (teamCanView(response.teams[option].id) ? "checked" : "") + ">";
+                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teamInfo[option].id +"\"" + (teamCanView(response.teamInfo[option].id) ? "checked" : "") + ">";
                     }
                 else 
                     {
-                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teams[option].id +"\">";
+                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teamInfo[option].id +"\">";
                     }
                 
-                teamName.innerHTML = response.teams[option].name;
+                teamName.innerHTML = (response.teamInfo[option].sex == 'Men' ? 'M - ' : 'W - ') + response.teamInfo[option].name;
                 }
 
             //Set the global varaible of the values 
-            viewableByOptions_gv = response.teams;
+            viewableByOptions_gv = response.teamInfo;
             }
         else 
             {
@@ -631,7 +626,7 @@ function deleteOpportunity(elementID)
     if(confirm("Are you sure you want to delete this entry?"))
         {
         //Delete the selected Opportunity
-        handleAPIcall({OpportunityID: OpportunityID}, '/deleteOpportunity', response =>
+        handleAPIcall({OpportunityID: OpportunityID}, '/api/deleteOpportunity', response =>
             {
             if(response.success)
                 {
@@ -666,45 +661,45 @@ function viewOpportunity(elementID)
         {
         setLoaderVisibility(true);
         //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
-        handleAPIcall({OpportunityID: OpportunityID}, '/getOpportunityData', response =>
+        handleAPIcall({OpportunityID: OpportunityID}, '/api/getOpportunityData', response =>
             {
             if(response.success)
                 {
                 currentViewedOpportunity_gv = response.oppData[0];      //Set the current Opportunity
 
                 //Fill in the data for the view screen -- our request will only return 1 element in the array
-                document.getElementById('viewOpportunity-title').value = response.oppData[0].title;
+                getRef('viewOpportunity-title').value = response.oppData[0].title;
 
-                document.getElementById('viewOpportunity-startDate').value = getUTCFormatFromISOString(response.oppData[0].startDatetime);
-                document.getElementById('viewOpportunity-endDate').value = getUTCFormatFromISOString(response.oppData[0].endDatetime);
+                getRef('viewOpportunity-startDate').value = getUTCFormatFromTimestamp(response.oppData[0].starttime);
+                getRef('viewOpportunity-endDate').value = getUTCFormatFromTimestamp(response.oppData[0].endtime);
 
-                var startTimeHrs = getHoursFromISOString(response.oppData[0].startDatetime);
-                var startTimeMin = getMinutesFromISOString(response.oppData[0].startDatetime);
-                document.getElementById('dropdown-title-viewOpportunityStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
-                document.getElementById('dropdown-title-viewOpportunityStartTimeMin').innerHTML = startTimeMin;
-                document.getElementById('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
+                var startTimeHrs = getHoursFromTimestamp(response.oppData[0].starttime);
+                var startTimeMin = getMinutesFromTimestamp(response.oppData[0].starttime);
+                getRef('dropdown-title-viewOpportunityStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
+                getRef('dropdown-title-viewOpportunityStartTimeMin').innerHTML = startTimeMin;
+                getRef('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
 
-                var endTimeHrs = getHoursFromISOString(response.oppData[0].endDatetime);
-                var endTimeMin = getMinutesFromISOString(response.oppData[0].endDatetime);
-                document.getElementById('dropdown-title-viewOpportunityEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
-                document.getElementById('dropdown-title-viewOpportunityEndTimeMin').innerHTML = endTimeMin;
-                document.getElementById('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
+                var endTimeHrs = getHoursFromTimestamp(response.oppData[0].endtime);
+                var endTimeMin = getMinutesFromTimestamp(response.oppData[0].endtime);
+                getRef('dropdown-title-viewOpportunityEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
+                getRef('dropdown-title-viewOpportunityEndTimeMin').innerHTML = endTimeMin;
+                getRef('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
 
-                document.getElementById('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
-                document.getElementById('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
+                getRef('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
+                getRef('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
                 changeSliderLabel('viewOpportunityVolunteerLimit');
-                document.getElementById('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
+                getRef('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
                 opportunityViewableBy_gv = response.oppData[0].viewableBy;
 
-                document.getElementById('viewOpportunity-location').value = response.oppData[0].location;
-                document.getElementById('viewOpportunity-description').value = response.oppData[0].description;
+                getRef('viewOpportunity-location').value = response.oppData[0].location;
+                getRef('viewOpportunity-description').value = response.oppData[0].description;
 
-                document.getElementById('viewOpportunity-coordinatorName').value = response.oppData[0].coordinatorInfo.name;
-                document.getElementById('viewOpportunity-coordinatorEmail').value = response.oppData[0].coordinatorInfo.email;
-                document.getElementById('viewOpportunity-coordinatorPhone').value = response.oppData[0].coordinatorInfo.phone;
+                getRef('viewOpportunity-coordinatorName').value = response.oppData[0].cordinatorname;
+                getRef('viewOpportunity-coordinatorEmail').value = response.oppData[0].cordinatoremail;
+                getRef('viewOpportunity-coordinatorPhone').value = response.oppData[0].cordinatorphone;
 
                 //Get table id
-                var viewOpp_VolunteerTable = document.getElementById('viewVolunteersForOpportunityTable');
+                var viewOpp_VolunteerTable = getRef('viewVolunteersForOpportunityTable');
                 var rowNum = 1;
 
                 //Add volunteers to the table
@@ -731,8 +726,8 @@ function viewOpportunity(elementID)
 
 
                 //Show the content to the user
-                document.getElementById("opportunitiesMainPage").style.display = "none";
-                document.getElementById("viewOpportunityPage").style.display = "block";
+                getRef("opportunitiesMainPage").style.display = "none";
+                getRef("viewOpportunityPage").style.display = "block";
                 }
             else 
                 {
@@ -806,8 +801,8 @@ function saveVolunteerInvolvement()
 function retToOpportunityMainPage()
     {
     //Change page state back to main page
-    document.getElementById("viewOpportunityPage").style.display = "none";
-    document.getElementById("opportunitiesMainPage").style.display = "block";
+    getRef("viewOpportunityPage").style.display = "none";
+    getRef("opportunitiesMainPage").style.display = "block";
     }
 
 

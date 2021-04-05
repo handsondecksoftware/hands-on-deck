@@ -31,7 +31,6 @@ function initDropdowns(pageID)
             addTimeDropdownOptions("add", "End");
 
             getRef('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
-            fillOpportunityTypeOptions('addOpportunityTypeOptions');
 
             //getRef('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
             //fillOpportunityViewableByOptions('addOpportunityViewableByOptions');

@@ -8,7 +8,6 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-
 //Error code constants
 const NOERROR = 0;
 const DATABASE_ACCESS_ERROR = 1;
@@ -195,20 +194,12 @@ function getCurrentDateISO()
 
 //////////////////////////////////////////////////////////////////
 //
-// Convert date to ISO format
-//  Accepts day of year, hours and minutes. Don't need seconds or ms
+// Convert date to postgres timestamp format
 //
 //////////////////////////////////////////////////////////////////
-function convertDateToISO(dayOfYearISO, hours, minutes)
+function convertDateToTimestamp(dayOfYearISO, hours, minutes)
     {
-    var year = dayOfYearISO.slice(0,4);
-    var month = dayOfYearISO.slice(5,7);
-    var day = dayOfYearISO.slice(8,10);
-
-    var timezoneOffsetInHours = new Date().getTimezoneOffset() * HOUR_IN_MIN;
-
-    //january starts at month 0
-    return new Date(year, month - 1, day, hours - timezoneOffsetInHours, minutes, 0, 0).toISOString().slice(0, -1);      //Convert to format YYYY-MM-DDThh:mm:ss.sss
+    return dayOfYearISO + " " + hours + ":" + minutes + ":00";      //Convert to format YYYY-MM-DD hh:mm:ss
     }
 
 
@@ -240,49 +231,62 @@ function getCurrentDayOfYear()
 
 //////////////////////////////////////////////////////////////////
 //
-// get human readable date in format DOW MMM DD YYYY from ISO date
+// get human readable date in format DOW MMM DD YYYY 
+//      incoming format YYYY-MM-DD HH:MM:SS
 //
 //////////////////////////////////////////////////////////////////
-function getUTCFormatFromISOString(ISOdate)
+function getUTCFormatFromTimestamp(date)
     {
     //january starts at month 0
-    return ISOdate.slice(0, 10);      //Convert to format YYYY-MM-DD
+    return date.slice(0, 10);      //Convert to format YYYY-MM-DD
     }
 
 
 //////////////////////////////////////////////////////////////////
 //
-// get human readable date in format DOW MMM DD YYYY from ISO date
+// get human readable date in format DOW MMM DD YYYY 
+//      incoming format YYYY-MM-DD HH:MM:SS
 //
 //////////////////////////////////////////////////////////////////
-function getDayOfYearFromISOString(ISOdate)
+function getDayOfYearFromTimestamp(date)
     {
-    //january starts at month 0
-    return new Date(ISOdate).toString().slice(0, 15);      //Convert to format DOW MMM DD YYYY
+    var target = new Date(date.slice(0,10));
+    var machineDate = target.getTime() + (new Date().getTimezoneOffset())*MS_IN_MIN;
+    return new Date(machineDate).toString().slice(0, 15);
     }
 
 
 //////////////////////////////////////////////////////////////////
 //
-// get human readable time in format hh:mm from ISO date
+// get human readable time from postgres timestamp format
+//      format YYYY-MM-DD HH:MM:SS
 //
 //////////////////////////////////////////////////////////////////
-function getTimeFromISOString(ISOdate)
+function getTimeFromTimestamp(date)
     {
-    //january starts at month 0
-    return new Date(ISOdate).toString().slice(16, 21);      //Convert to format hh:mm
+    var hrs = Number(date.slice(11, 13));
+    var min = date.slice(14, 16);
+    var time = "";
+
+    if(hrs > 12)
+        time = (hrs - 12) + ":" + min + "pm";
+    else if(hrs == 12)
+        time = hrs + ":" + min + "pm";
+    else 
+        time = hrs + ":" + min + "am";
+        
+    return time;
     }
 
 
 //////////////////////////////////////////////////////////////////
 //
-// get hours from ISO date
+// get hours from postgres timestamp
 //
 //////////////////////////////////////////////////////////////////
-function getHoursFromISOString(ISOdate)
+function getHoursFromTimestamp(date)
     {
-    //january starts at month 0
-    return parseInt(new Date(ISOdate).toString().slice(16, 18));      //Convert to format hh:mm
+    return Number(date.slice(11, 13));
     }
 
 
@@ -291,10 +295,10 @@ function getHoursFromISOString(ISOdate)
 // get minutes from ISO date
 //
 //////////////////////////////////////////////////////////////////
-function getMinutesFromISOString(ISOdate)
+function getMinutesFromTimestamp(date)
     {
     //january starts at month 0
-    return parseInt(new Date(ISOdate).toString().slice(19, 21));      //Convert to format hh:mm
+    return Number(date.slice(14, 16));
     }
 
 
