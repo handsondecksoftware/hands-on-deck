@@ -42,29 +42,28 @@ function initSlider(pageName)
         {
         case 'Opportunties':
             {
-            document.getElementById('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('addOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('viewInvolvement-validated').onchange = function(){changeSliderLabel(this.id)};
+            getRef('oppTimeFrame').onchange = function(){changeSliderLabel(this.id)};
+            getRef('addOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
 
             break;
             } 
         case 'Teams':
             {
-            document.getElementById('teamSex').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+            getRef('teamSex').onchange = function(){changeSliderLabel(this.id)};
+            getRef('includeLeaderboards').onchange = function(){changeSliderLabel(this.id)};
 
             break;
             } 
         case 'Volunteers':
             {
-            document.getElementById('oppValidated').onchange = function(){changeSliderLabel(this.id)};
-            document.getElementById('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
+            getRef('oppValidated').onchange = function(){changeSliderLabel(this.id)};
+            getRef('oppOccurred').onchange = function(){changeSliderLabel(this.id)};
 
             break;
             } 
         case 'Settings':
             {
-            document.getElementById('settingLeaderboards').onchange = function(){changeSliderLabel(this.id)};
+            getRef('settingLeaderboards').onchange = function(){changeSliderLabel(this.id)};
             break;
             }
         default:
@@ -87,7 +86,7 @@ function changeSliderLabel(sliderID)
     {
     //Get label ID
     var labelID = sliderID + "Label";
-    var currentValue = document.getElementById(sliderID).value;
+    var currentValue = getRef(sliderID).value;
 
     var sliderOptions;
 
@@ -136,7 +135,7 @@ function changeSliderLabel(sliderID)
         }
 
     //Change slider label value
-    document.getElementById(labelID).innerHTML = sliderOptions[currentValue];
+    getRef(labelID).innerHTML = sliderOptions[currentValue];
 
     return;
     }

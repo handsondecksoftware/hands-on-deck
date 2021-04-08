@@ -305,53 +305,57 @@ function fillOpportunityTable()
 ////////////////////////////////////////////////////////////////////////
 function addOpportunity()
     {
-    //Collect start and end date values 
-    var startDate = getRef('addOpportunity-startDate').value;
-    var startAm_Pm = getRef('dropdown-title-addOpportunityStartTimeAmPm').innerHTML;
-    var startHour = parseInt(getRef('dropdown-title-addOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
-    var startMin = parseInt(getRef('dropdown-title-addOpportunityStartTimeMin').innerHTML);
-
-    var endDate = getRef('addOpportunity-endDate').value;
-    var endAm_Pm = getRef('dropdown-title-addOpportunityEndTimeAmPm').innerHTML;
-    var endHour = parseInt(getRef('dropdown-title-addOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
-    var endMin = parseInt(getRef('dropdown-title-addOpportunityEndTimeMin').innerHTML);
-
-
-    //Collect Form Values
-    var oppData = {
-        title: getRef('addOpportunity-title').value, 
-        startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
-        endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
-        location: getRef('addOpportunity-location').value, 
-        id: null,                                   //Assigned by the backend
-        occurred: false,                            //Likely false since we just created the event -- needs to be checked
-        type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-        viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected -- currently only can handle all teams
-        description: getRef('addOpportunity-description').value, 
-        sequenceNum: 1, 
-        coordinatorname: getRef('addOpportunity-coordinatorName'),
-        coordinatoremail: getRef('addOpportunity-coordinatorEmail'),
-        coordinatorphone: getRef('addOpportunity-coordinatorPhone'),
-        volunteerLimit: getRef('addOpportunityVolunteerLimit').value,
-        volunteers: null,                           //They have not been set yet
-    };
-
-    handleAPIcall({oppData: oppData}, "/addOpportunity", response => 
+    try 
         {
-        if(response.success)
+        //Collect start and end date values 
+        var startDate = getRef('addOpportunity-startDate').value;
+        var startAm_Pm = getRef('dropdown-title-addOpportunityStartTimeAmPm').innerHTML;
+        var startHour = parseInt(getRef('dropdown-title-addOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
+        var startMin = parseInt(getRef('dropdown-title-addOpportunityStartTimeMin').innerHTML);
+
+        var endDate = getRef('addOpportunity-endDate').value;
+        var endAm_Pm = getRef('dropdown-title-addOpportunityEndTimeAmPm').innerHTML;
+        var endHour = parseInt(getRef('dropdown-title-addOpportunityEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
+        var endMin = parseInt(getRef('dropdown-title-addOpportunityEndTimeMin').innerHTML);
+
+
+        //Collect Form Values
+        var oppData = {
+            title: getRef('addOpportunity-title').value, 
+            startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
+            endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
+            location: getRef('addOpportunity-location').value, 
+            id: null,                                   //Assigned by the backend
+            occurred: false,                            //Likely false since we just created the event -- needs to be checked
+            type: addOppourtunityType_gv,               //This needs to be set when the option is selected
+            viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected -- currently only can handle all teams
+            description: getRef('addOpportunity-description').value, 
+            sequenceNum: 1, 
+            coordinatorname: getRef('addOpportunity-coordinatorName'),
+            coordinatoremail: getRef('addOpportunity-coordinatorEmail'),
+            coordinatorphone: getRef('addOpportunity-coordinatorPhone'),
+            volunteerLimit: getRef('addOpportunityVolunteerLimit').value,
+            volunteers: null,                           //They have not been set yet
+        };
+
+        handleAPIcall({oppData: oppData}, "/api/addOpportunity", response => 
             {
-            alert("You successfully added the opportunity");
-            
-            //Close the Oppourtunity Box
-            toggleOppourtuntiyBoxVisibility();
-            }
-        else 
-            {
-            printUserErrorMessage(response.errorCode);
-            }
-        })
-    .catch(error)
+            if(response.success)
+                {
+                alert("You successfully added the opportunity");
+                
+                //Close the Oppourtunity Box
+                toggleOppourtuntiyBoxVisibility();
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorCode);
+                }
+            });
+        }
+    catch(error)
         {
+        console.log(error.message);
         alert("Error adding opportunity. Please try again");
         };
 
@@ -631,6 +635,7 @@ function deleteOpportunity(elementID)
             if(response.success)
                 {
                 alert('Opportunity Successfully Deleted');
+                location.reload();  //Reload the page
                 }
             else 
                 {
