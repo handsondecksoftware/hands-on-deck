@@ -18,7 +18,7 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "10m";
+const WEB_EXPIRY = "1m";
 const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
@@ -297,6 +297,12 @@ app.post('/api/createAccount', async (request, response) =>
     {
     //Temp response until we implement this funtionality
     response.send({success: false, errormessage: " Request Recieved. Not yet implemented."});
+    });
+
+app.post('/api/isTokenValid',  auth.authcheck, async (request, response) =>
+    {
+    //if authcheck passes the token is valid
+    response.send({success: true, errorcode: null});
     });
 
 

@@ -30,35 +30,44 @@ function init()
 //////////////////////////////////////////////////////////////////////// 
 function setupWelcomePage()
     {
-    setLoaderVisibility(true);
-    handleAPIcall(null, "/api/getInstitutionInfo", response =>
+    try 
         {
-        var iInfo;
-
-        if(response.success)
+        setLoaderVisibility(true);
+        handleAPIcall(null, "/api/getInstitutionInfo", response =>
             {
-            iInfo = response.iInfo;
-            }
-        else 
-            {
-            printUserErrorMessage(response.errorcode);
-
-            //Set some default values to use
-            iInfo = {
-                id: -1, 
-                name: "Could Not Load", 
-                location: "Could Not Load", 
-                numVolunteers: "Unkown",
-                totalHours: "Unkown",
-                };
-            }
-
-        getRef("instituionName").innerHTML = iInfo.name;
-        getRef("numVolunteers").innerHTML = iInfo.numVolunteers;
-        getRef("totalHours").innerHTML = iInfo.totalHours;
-
+            var iInfo;
+    
+            if(response.success)
+                {
+                iInfo = response.iInfo;
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+    
+                //Set some default values to use
+                iInfo = {
+                    id: -1, 
+                    name: "Could Not Load", 
+                    location: "Could Not Load", 
+                    numvolunteers: "Unkown",
+                    totalhours: "Unkown",
+                    };
+                }
+    
+            getRef("instituionName").innerHTML = iInfo.name;
+            getRef("numVolunteers").innerHTML = iInfo.numvolunteers;
+            getRef("totalHours").innerHTML = iInfo.totalhours;
+    
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
+        {
+        console.log(error.message);
+        alert("An unexpected issue occured loading the page. Please try again");
         setLoaderVisibility(false);
-        });
+        }
     }
 
 

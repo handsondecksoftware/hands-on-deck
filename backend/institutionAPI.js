@@ -49,8 +49,8 @@ exports.getInstitutionInfo = async user =>
                 });
     
             //Set some default values to use for now
-            response.iInfo['numVolunteers'] = 2;
-            response.iInfo['totalHours'] = 5;
+            response.iInfo['numvolunteers'] = 2;
+            response.iInfo['totalhours'] = 5;
             }
         else 
             {
