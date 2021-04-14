@@ -54,6 +54,16 @@ exports.getTeamInfo = async (user, teamID) =>
                 }
             });
 
+        var teamElement = 
+            {
+            id: 1, 
+            name: "Golf", 
+            sex: MALE, 
+            numvolunteers: 1, 
+            numhours: 23, 
+            };
+                
+        response.teamInfo.push(teamElement);
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
 
         response.errorcode = error.NOERROR;
