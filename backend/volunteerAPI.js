@@ -39,20 +39,18 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
             //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
-            query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
-            query += " ON vd_data.volunteer_id = V.volunteer_id";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
-            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + ";";
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
+            query += " FROM volunteer AS V";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
+            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id;
             }
         else if(volunteerID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
             {
             //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
-            query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
-            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.numhours"; 
+            query += " FROM volunteer AS V";
+            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
             query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
             query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + user.volunteer_id + ";";
             }
@@ -60,10 +58,9 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         else if(volunteerID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
             //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours"; 
-            query += " FROM volunteer AS V LEFT JOIN";
-            query += " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data";
-            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.numhours"; 
+            query += " FROM volunteer AS V";
+            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
             query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
             query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + volunteerID + ";";
             }
@@ -117,58 +114,119 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
 //
 // @param[in]  user             user information
 // @param[in]  volunteerID      ID of volunteer client is looking for detail on
-//                              value of -1 means all values are of interest
+//                              value of 0 means current volunteer
 //
 // @param[out] volunteerData    Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
 exports.getVolunteerData = async (user, vol_ID) => 
     {
-    var response = {success: false, errorcode: -1, volunteerData: []};
+    var response = {success: false, errorcode: -1, volunteerData: null};
+    var goodQuery = true;
+    var query = "";
+    var query2 = "";
 
     try 
         {
         console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        if(vol_ID == 1)
+        //Determine Correct Query to run
+        if(vol_ID == 0)
             {
-            var volunteerElement = 
-                {
-                id: 1,
-                name: "Ryan Stolys",
-                email: "rstolys@sfu.ca",
-                leaderboards: true, 
-                teamname: "M - Golf", 
-                team_id: 1,
-                numhours: 23,
-                volunteeringData: null
-                };
-                
-            
-            response.volunteerData.push(volunteerElement);
+            //Query for call from user themselves
+            //Set the query
+            query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
+            query += " FROM volunteer AS V";
+            query += " LEFT JOIN";
+            query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
+            query +=    " FROM volunteeringdata AS VD";
+            query +=    " GROUP BY VD.volunteer_id) vd_data";
+            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+            query += " WHERE V.volunteer_id = " + vol_ID + ";";
             }
-        else if(vol_ID == 2)
+        else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
-            var volunteerElement = 
-                {
-                id: 2,
-                name: "Jayden Cole",
-                email: "jcole@sfu.ca",
-                leaderboards: true, 
-                teamname: "M - Swim", 
-                team_id: 1,
-                numhours: 34, 
-                volunteeringData: null
-                };
-                
-            response.volunteerData.push(volunteerElement);
+            //Set the query
+            query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
+            query += " FROM volunteer AS V";
+            query += " LEFT JOIN";
+            query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
+            query +=    " FROM volunteeringdata AS VD";
+            query +=    " GROUP BY VD.volunteer_id) vd_data";
+            query += " ON vd_data.volunteer_id = V.volunteer_id";
+            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+            query += " WHERE V.volunteer_id = " + user.volunteer_id + ";";
             }
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
+        else 
+            {
+            response.volunteerInfo = null;
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            goodQuery = false;
+            }
+
+
+        //Run query #1 if query is valid
+        if(goodQuery)
+            {
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.volunteerData = null;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.volunteerData = res.rows[0];
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+
+
+            //Get the volunteering data in seperate query 
+            //      Is it possible to get the nested query in one? 
+            //      Will have to learn this, currently don't think it is
+            if(vol_ID == 0)
+                {
+                //Query for call from user themselves
+                //Set the query
+                query2 =  "SELECT VD.volunteeringdata_id AS id, VD.volunteer_id AS vol_id, VD.opp_id, oInfo.title, oInfo.type, VD.starttime, VD.endtime, VD.validated"; 
+                query2 += " FROM volunteeringdata AS VD";
+                query2 += " LEFT JOIN (SELECT opp_id AS oID, title, opportunity_type AS type FROM opportunity AS O) oInfo";
+                query2 += " ON oInfo.oID = VD.opp_id";
+                query2 += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
+                }
+            else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
+                {
+                //Set the query
+                query2 =  "SELECT VD.volunteeringdata_id AS id, VD.volunteer_id AS vol_id, VD.opp_id, oInfo.title, oInfo.type, VD.starttime, VD.endtime, VD.validated"; 
+                query2 += " FROM volunteeringdata AS VD";
+                query2 += " LEFT JOIN (SELECT opp_id AS oID, title, opportunity_type AS type FROM opportunity AS O) oInfo";
+                query2 += " ON oInfo.oID = VD.opp_id";
+                query2 += " WHERE VD.volunteer_id = " + vol_ID + ";";
+                }
+            //We already know the vol_ID is valid at this point since it has been checked
+
+            await database.queryDB(query2, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.volunteerData = null;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.volunteerData['volunteeringdata'] = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            }
         }
     catch (err)
         {
@@ -237,6 +295,7 @@ exports.editVolunteer = async (user, volunteerData) =>
     
     return response;
     }
+
 
 
 ////////////////////////////////////////////////////////////

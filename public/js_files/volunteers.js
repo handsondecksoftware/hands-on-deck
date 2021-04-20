@@ -159,7 +159,10 @@ function addVolunteer()
         volunteeringData: null,
     };
 
-    handleAPIcall({volunteerData: volunteerData}, "/addVolunteer", response => 
+    alert("Volunteers can only be created through the app interface...");
+    return;
+
+    handleAPIcall({volunteerData: volunteerData}, "/api/addVolunteer", response => 
         {
         if(response.success)
             {
@@ -185,13 +188,10 @@ function addVolunteer()
 ////////////////////////////////////////////////////////////////////////
 function viewVolunteer(buttonID)
     {
-    //Get the volunteer ID
-    var vol_ID = buttonID.slice(5);      //Remove "view_"
-
-    //alert("vol_ID is: " + vol_ID);
-
     try
         {
+        var vol_ID = buttonID.slice(5);      //Remove "view_"
+
         // Show the new page while the user waits for the content to load
         toggleViewVolunteerVisibility();
 
@@ -210,27 +210,33 @@ function viewVolunteer(buttonID)
                 var volunteeringData = response.volunteerData.volunteeringdata;
 
                 //Fill in table elements
-                for(var vData = 0; vData < volunteeringData.length; vData++)
+                if(volunteeringData != null)
                     {
-                    //Create new row
-                    var row = volunteerHistoryTable.insertRow(rowNum++);
-    
-                    //Create row elements 
-                    var title = row.insertCell(0);
-                    var type = row.insertCell(1);
-                    var duration = row.insertCell(2);
-                    var date = row.insertCell(3);
-                    var time = row.insertCell(4);
-                    var view = row.insertCell(5);
-                    
-                    //Fill in row elements
-                    title.innerHTML = volunteeringData.title;
-                    type.innerHTML = volunteeringData.type;
-                    duration.innerHTML = "TBD"; //volunteeringData.name;
-                    date.innerHTML = "TBD"; //volunteeringData.name;
-                    time.innerHTML = "TBD"; //volunteeringData.name;
-                    
-                    view.innerHTML = "<i id=\"view_" + volunteeringData.id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id)\"></i>";
+                    for(var vData = 0; vData < volunteeringData.length; vData++)
+                        {
+                        //Create new row
+                        var row = volunteerHistoryTable.insertRow(rowNum++);
+        
+                        //Create row elements 
+                        var title = row.insertCell(0);
+                        var type = row.insertCell(1);
+                        var duration = row.insertCell(2);
+                        var date = row.insertCell(3);
+                        var time = row.insertCell(4);
+                        var validate = row.insertCell(5);
+                        var remove = row.insertCell(6);
+                        
+                        //Fill in row elements
+                        title.innerHTML = volunteeringData[vData].title;
+                        type.innerHTML = volunteeringData[vData].type;
+                        duration.innerHTML = "TBD"; //volunteeringData.name;
+                        date.innerHTML = "TBD"; //volunteeringData.name;
+                        time.innerHTML = "TBD"; //volunteeringData.name;
+                        
+                        var validateSymbol = volunteeringData[vData].validated ? "fas fa-check" : "fas fa-times"
+                        validate.innerHTML = "<i id=\"validate_" + volunteeringData.id + "\"class=\"" + validateSymbol + "\" onclick=\"validateInstance(this.id)\"></i>";
+                        remove.innerHTML = "<i id=\"delete_" + volunteeringData.id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteInstance(this.id, " + volunteeringData[vData].title + ", " + response.volunteerData.id + ")\"></i>";
+                        }
                     }
                 }
             else 
@@ -251,120 +257,78 @@ function viewVolunteer(buttonID)
 
 ////////////////////////////////////////////////////////////////////////
 //
-// Deletes the volunteer
+// Deletes the volunteer instance
 //
 ////////////////////////////////////////////////////////////////////////
-function deleteVolunteer(e){
+function deleteInstance(buttonID, instanceName, vol_ID)
+    {
+    try 
+        {
+        if(confirm("Are you sure you want to delete the volunteer instance at the opportunity: " + instanceName + " ?"))
+            {
+            var vol_ID = buttonID.slice(7);       //Remove "delete_"
 
-    if(confirm("Are you sure you want to delete this entry?")){
-        // Finds the row of the delete button clicked
-        e = e || event;
-        var eventEl = e.srcElement || e.target, 
-        parent = eventEl.parentNode,
-        isRow = function(el) {
-                    return el.tagName.match(/tr/i);
-                };
+            setLoaderVisibility(true);
 
-        // Move up the DOM until tr is reached
-        while (parent = parent.parentNode) {
-            if (isRow(parent)) {
-                // Delete the row visually
-                parent.remove()
+            handleAPIcall({vol_ID: vol_ID}, "/api/getVolunteerData", response => 
+                {
+                if(response.success)
+                    {
+                    alert("Deletion was successful!");
+                    
+                    //Reload the volunteer table
+                    viewVolunteer("view_" + vol_ID);
+                    }
+                else 
+                    {
+                    printUserErrorMessage(response.errorcode);
+                    }
 
-                //TODO: Delete the volunteer from the back end
-
-                return true;
+                setLoaderVisibility(false);
+                });
             }
         }
-    }
-    return false;
-}
-
-
-////////////////////////////////////////////////////////////////////////
-//
-// Populates a specific opportunity's details from a Volunteer's list of 
-// attended opportunities
-//
-////////////////////////////////////////////////////////////////////////
-function showOpportunityDetails(e){
-    e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
-
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            //TODO: Get the below data from the database
-            // Get Name, Team, and Role of Volunteer from the clicked row
-            var oppTitle = parent.cells.item(0).innerHTML;
-
-            getRef("opportunityTitle").innerHTML = oppTitle;
-            
-            // View the popup with these details
-            toggleViewOppDetails();
-
-           return true;
+    catch (error)
+        {
+        alert("Oops, something unexpected happened. Please try again");
+        setLoaderVisibility(false);
+        console.log(error.message);
         }
     }
-    return false;
-}
 
 
 ////////////////////////////////////////////////////////////////////////
 //
-// Will display or hide opportunity details that a volunteer attended
+// Validates the volunteer instance
 //
 ////////////////////////////////////////////////////////////////////////
-function toggleViewOppDetails(){
-    // Switch visibility on viewing opportunity details
-    var currentState = getRef('viewOppourtunityDetailsPopup').style.display; 
-
-    if(currentState == "none")
-        {
-        getRef('viewOppourtunityDetailsPopup').style.display = "block"; 
-        }
-    else 
-        {
-        getRef('viewOppourtunityDetailsPopup').style.display = "none"; 
-        }
-
-    return;
-}
-
-
-////////////////////////////////////////////////////////////////////////
-//
-// Will save the opportunity details that a volunteer attended
-//
-////////////////////////////////////////////////////////////////////////
-function saveOppDetails() 
+function validateInstance(buttonID)
     {
-    // TODO: Save opportunity details to database
-    
-    // Now toggle visibility of pop up box
-    toggleViewOppDetails();
-    return;
+    try 
+        {
+        var vdata_ID = buttonID.slice(9);       //Remove "validate_"
+
+        setLoaderVisibility(true);
+
+        handleAPIcall({vdata_ID: vdata_ID}, "/api/validateVolunteeringData", response => 
+            {
+            if(response.success)
+                {
+                //Reload the volunteer table
+                viewVolunteer("view_" + vol_ID);
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
+        {
+        alert("Oops, something unexpected happened. Please try again");
+        setLoaderVisibility(false);
+        console.log(error.message);
+        }
     }
-
-
-/*
-Could be useful code for the search functionality
-  e = e || event;
-    var eventEl = e.srcElement || e.target, 
-    parent = eventEl.parentNode,
-    isRow = function(el) {
-                return el.tagName.match(/tr/i);
-            };
-
-    // Move up the DOM until tr is reached
-    while (parent = parent.parentNode) {
-        if (isRow(parent)) {
-            // Get Name, Team, and Role of Volunteer from the clicked row
-            var volName = parent.cells.item(0).innerHTML;
-            var volTeam = parent.cells.item(2).innerHTML;
-
-*/

@@ -37,6 +37,10 @@
   font-weight: 700;
 }
 
+.volunteerHistoryTitle{
+    height: 50px;
+}
+
 #viewVolunteerPage{
   display: none;
 }

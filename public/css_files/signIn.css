@@ -22,7 +22,7 @@ body, html {
 
 .signIn-prompt {
   position:absolute;
-  top:50%;
+  top:55%;
   left:50%;
   width: 40%;
   transform:translate(-50%,-50%);
@@ -56,7 +56,6 @@ body, html {
 	color: white;
 	background-color: #d22d2d;
 	margin: 0 auto;
-	width: 50%;
 	height: 30px;
 	border-radius: 5px;
 }

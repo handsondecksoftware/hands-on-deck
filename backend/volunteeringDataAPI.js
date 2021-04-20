@@ -149,3 +149,42 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
 
     return response;
     }
+
+
+////////////////////////////////////////////////////////////
+// Will edit the volunteering data
+//
+// @param[in]  user                 user information 
+// @param[in]  volunteeringData     Volunteering data to be added to database                 
+//
+// @param[out] volunteerData        Array of data JSONs for client  
+//
+////////////////////////////////////////////////////////////
+exports.validateVolunteeringData = async (user, vdata_ID) => 
+    {
+    var response = {success: false, errorCode: -1};
+
+    try 
+        {
+        console.log('validateVolunteeringData() called by: ' + user.volunteer_id);
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+
+        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+
+        response.errorcode = error.NOERROR;
+        response.success = true;
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of validateVolunteeringData() is: ' + response.success);
+
+    return response;
+    }

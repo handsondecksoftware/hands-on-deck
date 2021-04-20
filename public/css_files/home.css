@@ -21,15 +21,27 @@
     padding: 15px;
 }
 
-.info-title{
+.info-title-name{
     float: left;
     width: 40%;
     height: 100%;
 }
 
-.info-value{
+.info-value-name{
     float: left;
     width: 60%;
+    height: 100%;
+}
+
+.info-title-num{
+    float: left;
+    width: 60%;
+    height: 100%;
+}
+
+.info-value-num{
+    float: left;
+    width: 40%;
     height: 100%;
 }
 

@@ -198,6 +198,11 @@ app.post('/api/editVolunteeringData', auth.authcheck, async (request, response) 
     response.send(await volunteerData.editVolunteeringData(request.user, request.body.volunteeringData));
     });
 
+app.post('/api/validateVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.validateVolunteeringData(request.user, request.body.vdata_ID));
+    });
+
 
 
 /////////TEAM API CALLS//////////////////////////////////////////////////

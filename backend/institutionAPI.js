@@ -25,9 +25,11 @@ exports.getInstitutionInfo = async user =>
         console.log('getInstitutionInfo() called by: ' + user.volunteer_id);
 
         //Set the query
-        var query = "SELECT institution_id AS id, name, location ";
-        query += "FROM institution";
-        query += " WHERE institution_id = " + user.institution_id + ";"
+        var query = "SELECT institution_id AS id, name, location, numvolunteers, totalhours";
+        query += " FROM institution AS i";
+        query += " LEFT JOIN (SELECT institution_id AS id, COUNT(*) AS numvolunteers, SUM(num_hours) AS totalhours FROM volunteer_stats GROUP BY institution_id) i_stats";
+        query += " ON i_stats.id = i. institution_id";
+        query += " WHERE i.institution_id = " + user.institution_id + ";"
 
         if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
@@ -35,7 +37,7 @@ exports.getInstitutionInfo = async user =>
                 { 
                 if(e) 
                     {
-                    console.log("error occured")
+                    console.log("error occured");
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                     }
@@ -47,10 +49,6 @@ exports.getInstitutionInfo = async user =>
                     response.success = true;
                     }
                 });
-    
-            //Set some default values to use for now
-            response.iInfo['numvolunteers'] = 2;
-            response.iInfo['totalhours'] = 5;
             }
         else 
             {
