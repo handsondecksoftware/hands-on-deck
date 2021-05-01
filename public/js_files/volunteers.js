@@ -190,7 +190,7 @@ function viewVolunteer(buttonID)
     {
     try
         {
-        var vol_ID = buttonID.slice(5);      //Remove "view_"
+        var vol_ID = Number(buttonID.slice(5));      //Remove "view_"
 
         // Show the new page while the user waits for the content to load
         toggleViewVolunteerVisibility();
@@ -206,6 +206,9 @@ function viewVolunteer(buttonID)
                 //Get reference to table 
                 var volunteerHistoryTable = getRef('volunteerHistoryTable');
                 var rowNum = 1;
+
+                //Remove the current elements if any 
+                for(var i = volunteerHistoryTable.rows.length - 1; i >= 1; i--) { volunteerHistoryTable.deleteRow(i); }
     
                 var volunteeringData = response.volunteerData.volunteeringdata;
 
@@ -229,13 +232,13 @@ function viewVolunteer(buttonID)
                         //Fill in row elements
                         title.innerHTML = volunteeringData[vData].title;
                         type.innerHTML = volunteeringData[vData].type;
-                        duration.innerHTML = "TBD"; //volunteeringData.name;
-                        date.innerHTML = "TBD"; //volunteeringData.name;
-                        time.innerHTML = "TBD"; //volunteeringData.name;
+                        duration.innerHTML = getDurationFromTimestamps(volunteeringData[vData].endtime, volunteeringData[vData].starttime);
+                        date.innerHTML = getDayOfYearFromTimestamp(volunteeringData[vData].starttime);
+                        time.innerHTML = getTimeFromTimestamp(volunteeringData[vData].starttime);
                         
                         var validateSymbol = volunteeringData[vData].validated ? "fas fa-check" : "fas fa-times"
-                        validate.innerHTML = "<i id=\"validate_" + volunteeringData.id + "\"class=\"" + validateSymbol + "\" onclick=\"validateInstance(this.id)\"></i>";
-                        remove.innerHTML = "<i id=\"delete_" + volunteeringData.id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteInstance(this.id, " + volunteeringData[vData].title + ", " + response.volunteerData.id + ")\"></i>";
+                        validate.innerHTML = "<i id=\"validate_" + volunteeringData[vData].id + "\"class=\"" + validateSymbol + "\" onclick=\"validateInstance(this.id)\"></i>";
+                        remove.innerHTML = "<i id=\"delete_" + volunteeringData[vData].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteInstance(this.id, '" + volunteeringData[vData].title + "' , " + response.volunteerData.id + ")\"></i>";
                         }
                     }
                 }
@@ -266,11 +269,11 @@ function deleteInstance(buttonID, instanceName, vol_ID)
         {
         if(confirm("Are you sure you want to delete the volunteer instance at the opportunity: " + instanceName + " ?"))
             {
-            var vol_ID = buttonID.slice(7);       //Remove "delete_"
+            var vol_ID = Number(buttonID.slice(7));       //Remove "delete_"
 
             setLoaderVisibility(true);
 
-            handleAPIcall({vol_ID: vol_ID}, "/api/getVolunteerData", response => 
+            handleAPIcall({vdata_ID: vol_ID}, "/api/deleteVolunteeringData", response => 
                 {
                 if(response.success)
                     {

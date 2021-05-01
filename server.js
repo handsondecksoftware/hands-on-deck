@@ -18,7 +18,7 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "1m";
+const WEB_EXPIRY = "15m";
 const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
@@ -198,9 +198,14 @@ app.post('/api/editVolunteeringData', auth.authcheck, async (request, response) 
     response.send(await volunteerData.editVolunteeringData(request.user, request.body.volunteeringData));
     });
 
+app.post('/api/deleteVolunteeringData', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.deleteVolunteeringData(request.user, request.body.vdata_ID));
+    });
+
 app.post('/api/validateVolunteeringData', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteerData.validateVolunteeringData(request.user, request.body.vdata_ID));
+    response.send(await volunteerData.validateVolunteeringData(request.user, request.body.vdata_ID, request.body.validated));
     });
 
 

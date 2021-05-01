@@ -38,8 +38,8 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
             sequencenum: 1,
             title: "Testing Opp",
             type: "Meetings",
-            starttime: "2021-04-07 19:30:00",
-            endtime: "2021-04-07 20:30:00",
+            starttime: "2021-04-07T19:30:00Z",
+            endtime: "2021-04-07T20:30:00Z",
             numvolunteers: 2,
             };
 
@@ -90,8 +90,8 @@ exports.getOpportunityInfo = async (user, oppID) =>
             sequencenum: 1,
             title: "Your Opportunity",
             type: "Meetings",
-            starttime: 1616617800000,
-            endtime: 1616625000000,
+            starttime: "2021-04-07T19:30:00Z",
+            endtime: "2021-04-07T20:30:00Z",
             numvolunteers: 2,
             };
 

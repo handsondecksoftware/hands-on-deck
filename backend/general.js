@@ -62,3 +62,31 @@ exports.generatePassword = () => {
 
     return randomstring;
 }
+
+
+////////////////////////////////////////////////////////////
+//
+// Will check that input will not contain SQL injection attack
+//
+////////////////////////////////////////////////////////////
+exports.verifyInput = input => {
+    var valid = true;
+
+    //If the input is a number then it will be ok, check if it is not
+    if(isNaN(input))
+        {
+        if(input.includes(';'))
+            valid = false;
+        else if(input.includes('OR'))
+            valid = false;
+        else if(input.includes('='))
+    
+        //Add more checks for sql injection attacks
+    
+        if(!valid)
+            console.log("Input was invalid, may be SQL injection attack... INPUT: " + input);
+        }
+   
+
+    return valid;
+}

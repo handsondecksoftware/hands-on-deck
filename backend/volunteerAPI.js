@@ -30,39 +30,32 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
     {
     var response = {success: false, errorcode: -1, volunteerInfo: []};
     var goodQuery = true;
+    var query = "";
 
     try 
         {
         console.log('getVolunteerInfo() called by: ' + user.volunteer_id);
 
+        //Set the query
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
+        query += " FROM volunteer AS V";
+        query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+        query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
+        query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id;
+
         //Determine Correct Query to run
         if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
-            query += " FROM volunteer AS V";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
-            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
-            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id;
+            query += ";";
             }
         else if(volunteerID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
             {
-            //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.numhours"; 
-            query += " FROM volunteer AS V";
-            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
-            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + user.volunteer_id + ";";
+            query += " AND V.volunteer_id = " + user.volunteer_id + ";";
             }
         //To access specific volunteer that is not that user they must have admin or dev privileges
         else if(volunteerID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
-            //Set the query
-            var query = "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.numhours"; 
-            query += " FROM volunteer AS V";
-            query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id"
-            query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id + " AND V.volunteer_id = " + volunteerID + ";";
+            query += " AND V.volunteer_id = " + user.volunteer_id + ";";
             }
         else 
             {
@@ -79,6 +72,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
                 { 
                 if(e) 
                     {
+                    console.log("DATABASE ERROR: " + e.message);
                     response.volunteerInfo = null;
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
@@ -130,33 +124,24 @@ exports.getVolunteerData = async (user, vol_ID) =>
         {
         console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
 
-        //Determine Correct Query to run
-        if(vol_ID == 0)
+        //Set the default query
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
+        query += " FROM volunteer AS V";
+        query += " LEFT JOIN";
+        query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
+        query +=    " FROM volunteeringdata AS VD";
+        query +=    " GROUP BY VD.volunteer_id) vd_data";
+        query += " ON vd_data.volunteer_id = V.volunteer_id";
+        query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+
+        //Set the query condition
+        if(vol_ID == 0)     //Query from volunteer themself
             {
-            //Query for call from user themselves
-            //Set the query
-            query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
-            query += " FROM volunteer AS V";
-            query += " LEFT JOIN";
-            query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
-            query +=    " FROM volunteeringdata AS VD";
-            query +=    " GROUP BY VD.volunteer_id) vd_data";
-            query += " ON vd_data.volunteer_id = V.volunteer_id";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
-            query += " WHERE V.volunteer_id = " + vol_ID + ";";
+            query += " WHERE V.volunteer_id = " + user.volunteer_id + ";";
             }
         else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
-            //Set the query
-            query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
-            query += " FROM volunteer AS V";
-            query += " LEFT JOIN";
-            query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
-            query +=    " FROM volunteeringdata AS VD";
-            query +=    " GROUP BY VD.volunteer_id) vd_data";
-            query += " ON vd_data.volunteer_id = V.volunteer_id";
-            query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
-            query += " WHERE V.volunteer_id = " + user.volunteer_id + ";";
+            query += " WHERE V.volunteer_id = " + vol_ID + ";";
             }
         else 
             {
@@ -174,6 +159,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 { 
                 if(e) 
                     {
+                    console.log("DATABASE ERROR: " + e.message);
                     response.volunteerData = null;
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
@@ -187,45 +173,47 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 });
 
 
-            //Get the volunteering data in seperate query 
-            //      Is it possible to get the nested query in one? 
-            //      Will have to learn this, currently don't think it is
-            if(vol_ID == 0)
+            //Make sure the original query worked properly
+            if(response.success)
                 {
-                //Query for call from user themselves
-                //Set the query
-                query2 =  "SELECT VD.volunteeringdata_id AS id, VD.volunteer_id AS vol_id, VD.opp_id, oInfo.title, oInfo.type, VD.starttime, VD.endtime, VD.validated"; 
-                query2 += " FROM volunteeringdata AS VD";
-                query2 += " LEFT JOIN (SELECT opp_id AS oID, title, opportunity_type AS type FROM opportunity AS O) oInfo";
-                query2 += " ON oInfo.oID = VD.opp_id";
-                query2 += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
-                }
-            else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
-                {
-                //Set the query
-                query2 =  "SELECT VD.volunteeringdata_id AS id, VD.volunteer_id AS vol_id, VD.opp_id, oInfo.title, oInfo.type, VD.starttime, VD.endtime, VD.validated"; 
-                query2 += " FROM volunteeringdata AS VD";
-                query2 += " LEFT JOIN (SELECT opp_id AS oID, title, opportunity_type AS type FROM opportunity AS O) oInfo";
-                query2 += " ON oInfo.oID = VD.opp_id";
-                query2 += " WHERE VD.volunteer_id = " + vol_ID + ";";
-                }
-            //We already know the vol_ID is valid at this point since it has been checked
+                //Get the volunteering data in seperate query 
+                //      Is it possible to get the nested query in one? 
+                //      Will have to learn this, currently don't think it is
 
-            await database.queryDB(query2, (res, e) => 
-                { 
-                if(e) 
+                //Set the default query
+                query2 =  "SELECT VD.volunteeringdata_id AS id, VD.volunteer_id AS vol_id, VD.opp_id, oInfo.title, oInfo.type, VD.starttime, VD.endtime, VD.validated"; 
+                query2 += " FROM volunteeringdata AS VD";
+                query2 += " LEFT JOIN (SELECT opp_id AS oID, title, opportunity_type AS type FROM opportunity AS O) oInfo";
+                query2 += " ON oInfo.oID = VD.opp_id";
+
+                //Set the query condition
+                if(vol_ID == 0)     //Query by volunteer
                     {
-                    response.volunteerData = null;
-                    response.errorcode = error.DATABASE_ACCESS_ERROR;
-                    response.success = false;
+                    query2 += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
                     }
-                else 
+                else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
                     {
-                    response.volunteerData['volunteeringdata'] = res.rows;
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
+                    query2 += " WHERE VD.volunteer_id = " + vol_ID + ";";
                     }
-                });
+                //We already know the vol_ID is valid at this point since it has been checked
+
+                await database.queryDB(query2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.volunteerData = null;
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.volunteerData['volunteeringdata'] = res.rows;
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
             }
         }
     catch (err)
@@ -256,31 +244,71 @@ exports.getVolunteerData = async (user, vol_ID) =>
 exports.editVolunteer = async (user, volunteerData) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
+    var tempResult = {content: true};      //Will be overwritten
+    var query2 = "";
 
     try 
         {
         console.log('editVolunteer() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //JSON element is in form
-        /*
-        var volunteerElement = 
+        //Verify all the inputs from the volunteerData element that will be placed in SQL query
+        if(general.verifyInput(volunteerData.name) && general.verifyInput(volunteerData.username) &&
+            general.verifyInput(volunteerData.email) && general.verifyInput(volunteerData.teammame))
             {
-            id:
-            name:
-            email:
-            leaderboards: 
-            teammame: 
-            team_id:
-            numhours:
-            volunteeringData:
-            };
-        */
-              
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            //The inputs are valid
+
+            //Ensure the email provided is not used by anyone else 
+            query = "SELECT * FROM volunteer";
+            query += " WHERE email = '" + volunteerData.email + "' AND volunteer_id != " + user.volunteer_id;
+
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    tempResult = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+
+            //if the email is not duplicated
+            if(tempResult == null || tempResult == undefined)
+                {
+                //Update the volunteers information
+                query2 =  "UPDATE volunteer SET";
+                query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[0];
+                query2 += "', email = '" + volunteerData.email + "', username = '" + volunteerData.username;
+                query2 += "', leaderboards = " + volunteerData.leaderboards;
+                query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
+    
+                await database.queryDB(query2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                }
+            }
         }
     catch (err)
         {
@@ -310,18 +338,50 @@ exports.editVolunteer = async (user, volunteerData) =>
 exports.changePassword = async (user, oldPassword, newPassword) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
+    var query2 = "";
 
     try 
         {
         console.log('changePassword() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Will need to hash oldPassword to compare it
-        //The hash new password and store that 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
+        //Validate the inputs from the passwords 
+        if(general.verifyInput(oldPassword) && general.verifyInput(newPassword))
+            {
+            //Can assume inputs are now valid, check that the old password is valid
+            query = "SELECT password FROM volunteer WHERE volunteer_id = " + user.volunteer_id;
+
+            await database.queryDB(query2, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else if(bcrypt.compareSync(oldPassword, res.rows[0].password))
+                    {
+                    query2 =  "UPDATE volunteer SET";
+                    query2 += " password = " + bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
+                    query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
+
+                    await database.queryDB(query2, (res, e) => 
+                        { 
+                        if(e) 
+                            {
+                            console.log("DATABASE ERROR: " + e.message);
+                            response.errorcode = error.DATABASE_ACCESS_ERROR;
+                            response.success = false;
+                            }
+                        else 
+                            {
+                            response.errorcode = error.NOERROR;
+                            response.success = true;
+                            }
+                        });
+                    }
+                });
+            }
         }
     catch (err)
         {
@@ -362,20 +422,16 @@ exports.getVolunteerLeaderboard = async user =>
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         var volunteerElement = 
             {
-            id: null,
+            rank: 1,
             name: "Ryan Stolys",
-            email: null,
-            leaderboards: null, 
             teammame: "M - Golf", 
             numhours: 23,
             };
 
         var volunteerElement2 = 
             {
-            id: null,
+            rank: 1,
             name: "Jayden Cole",
-            email: null,
-            leaderboards: null, 
             teammame: "M - Swim", 
             numhours: 3,
             };

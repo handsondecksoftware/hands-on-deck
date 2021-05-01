@@ -9,6 +9,7 @@
 const database = require('./databaseSetup');
 const error = require('./errorCodes');
 const enumType = require('./enumTypes');
+const general = require('./general');
 
 
 ////////////////////////////////////////////////////////////
@@ -37,14 +38,12 @@ exports.getInstitutionInfo = async user =>
                 { 
                 if(e) 
                     {
-                    console.log("error occured");
+                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                     }
                 else 
                     {
-                    //Send the user an email with their account info 
-                    response.iInfo = res.rows[0];
                     response.errorcode = error.NOERROR;
                     response.success = true;
                     }
@@ -52,7 +51,6 @@ exports.getInstitutionInfo = async user =>
             }
         else 
             {
-            response.iInfo = null;
             response.errorcode = error.PERMISSION_ERROR;
             response.success = false;
             }
@@ -81,19 +79,31 @@ exports.getInstitutionInfo = async user =>
 exports.editInstitutionInfo = async (user, iInfo) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
 
     try 
         {
         console.log('editInstitutionInfo() called by: ' + user.volunteer_id);
 
+        //Validate the inputs from iInfo
+        if(general.verifyInput(iInfo.name) && general.verifyInput(iInfo.location))
+            {
+            //Inputs are valid, Make sure the volunteer is of proper type
+            if(user.volunteer_type == DEV || user.volunteer_type == ADMIN)
+                {
+                query =  "UPDATE institution SET";
+                query += " name = '" + iInfo.name + "', location = '" + iInfo.location;
+                query += "' WHERE institution_id = " + user.institution_id + ";";
+                }
+            }
+
         if(user.volunteer_type == DEV || user.volunteer_type == ADMIN)
             {
-            await database.queryDB("UPDATE institution SET name = '" + iInfo.name + "', location = '" + iInfo.location + "' WHERE institution_id = '" + user.institution_id + "';",
-            (res, e) => 
+            await database.queryDB(query, (res, e) => 
                 { 
                 if(e) 
                     {
-                    console.log("error occured")
+                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                     }

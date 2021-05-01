@@ -188,7 +188,7 @@ function getCurrentDateISO()
     {
     var currentDateInMs = new Date().getTime();
     var timezoneOffsetInMs = new Date().getTimezoneOffset() * MS_IN_MIN;
-    return new Date(currentDateInMs - timezoneOffsetInMs).toISOString().slice(0,-1);        //Remove timezone indictor. We adjust for timezone ourselves
+    return new Date(currentDateInMs - timezoneOffsetInMs).toISOString();
     }
 
 
@@ -259,7 +259,7 @@ function getDayOfYearFromTimestamp(date)
 //////////////////////////////////////////////////////////////////
 //
 // get human readable time from postgres timestamp format
-//      format YYYY-MM-DD HH:MM:SS
+//      format YYYY-MM-DDTHH:MM:SSZ
 //
 //////////////////////////////////////////////////////////////////
 function getTimeFromTimestamp(date)
@@ -292,13 +292,27 @@ function getHoursFromTimestamp(date)
 
 //////////////////////////////////////////////////////////////////
 //
-// get minutes from ISO date
+// get minutes from postgres timestamp
 //
 //////////////////////////////////////////////////////////////////
 function getMinutesFromTimestamp(date)
     {
     //january starts at month 0
     return Number(date.slice(14, 16));
+    }
+
+
+//////////////////////////////////////////////////////////////////
+//
+// get duration from two timestamps
+//
+//////////////////////////////////////////////////////////////////
+function getDurationFromTimestamps(endDate, startDate)
+    {
+    var dur = getHoursFromTimestamp(endDate) - getHoursFromTimestamp(startDate);
+    dur += (getMinutesFromTimestamp(endDate) - getMinutesFromTimestamp(startDate)) / 60;
+
+    return dur;
     }
 
 

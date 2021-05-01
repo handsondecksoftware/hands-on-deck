@@ -367,19 +367,15 @@ exports.getTeamLeaderboard = async user =>
         ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
         var teamElement = 
             { 
-            id: null,
-            name: "Golf", 
-            sex: MALE, 
-            numvolunteers: 1, 
+            rank: 1,
+            name: "M - Golf", 
             numhours: 23, 
             };
 
         var teamElement2 = 
-            {
-            id: null, 
-            name: "Swim", 
-            sex: MALE, 
-            numvolunteers: 1, 
+            { 
+            rank: 1,
+            name: "M - Swim", 
             numhours: 5, 
             };
 
