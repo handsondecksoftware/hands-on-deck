@@ -408,45 +408,49 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
 ////////////////////////////////////////////////////////////
 exports.getVolunteerLeaderboard = async user => 
     {
-    var response = {success: false, errorcode: -1, volunteerInfo: []};
+    var response = {success: false, errorcode: -1, volunteerLeader: []};
+    var query = "";
 
     try 
         {
         console.log('getVolunteerLeaderboard() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Query only the top 10 volunteers in the list
-        // Don't send any personal information such as email, team_id, user_id, or leaderboards
-        // only name, team and number of hours
-        // Should be in DESC order
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        var volunteerElement = 
-            {
-            rank: 1,
-            name: "Ryan Stolys",
-            teammame: "M - Golf", 
-            numhours: 23,
-            };
+        query =  " SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
+        query += " FROM volunteer_stats AS VS";
+        query += " LEFT JOIN volunteer AS V ON V.volunteer_id = VS.volunteer_id";
+        query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
+        query += " WHERE VS.institution_id = " + user.institution_id;
+        query += " ORDER BY num_hours DESC LIMIT 10;";
+       
+        await database.queryDB(query2, (res, e) => 
+            { 
+            if(e) 
+                {
+                console.log("DATABASE ERROR: " + e.message);
+                response.volunteerLeader = [];
+                response.errorcode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+                }
+            else 
+                {
+                response.volunteerLeader = res.rows;
 
-        var volunteerElement2 = 
-            {
-            rank: 1,
-            name: "Jayden Cole",
-            teammame: "M - Swim", 
-            numhours: 3,
-            };
+                //Set the rank of each volunteer -- assuming they are in sorted order already
+                for(var v = 1; i <= response.volunteerLeader.length; v++)
+                    {
+                    response.volunteerLeader[v]['rank'] = v; 
+                    }
 
-        response.volunteerInfo.push(volunteerElement);
-        response.volunteerInfo.push(volunteerElement2);
-
-        response.errorcode = error.NOERROR;
-        response.success = true;
+                response.errorcode = error.NOERROR;
+                response.success = true;
+                }
+            });
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
-        response.volunteerInfo = null;
+        response.volunteerLeader = null;
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }

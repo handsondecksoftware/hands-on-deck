@@ -354,33 +354,41 @@ exports.getTeamsForViewable = async user =>
 ////////////////////////////////////////////////////////////
 exports.getTeamLeaderboard = async user => 
     {
-    var response = {success: false, errorcode: -1, teamInfo: []};
+    var response = {success: false, errorcode: -1, teamLeader: []};
 
     try 
         {
         console.log('getTeamLeaderboard() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Query only the top 10 volunteers in the list
-        // Don't send team id value, only the relevant information to display
-        // Should be in DESC order
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        var teamElement = 
+        query =  " SELECT CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
+        query += " FROM volunteer_stats AS VS";
+        query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
+        query += " WHERE VS.institution_id = " + user.institution_id;
+        query += " ORDER BY num_hours DESC;";
+       
+        await database.queryDB(query2, (res, e) => 
             { 
-            rank: 1,
-            name: "M - Golf", 
-            numhours: 23, 
-            };
+            if(e) 
+                {
+                console.log("DATABASE ERROR: " + e.message);
+                response.teamLeader = [];
+                response.errorcode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+                }
+            else 
+                {
+                response.teamLeader = res.rows;
 
-        var teamElement2 = 
-            { 
-            rank: 1,
-            name: "M - Swim", 
-            numhours: 5, 
-            };
+                //Set the rank of each volunteer -- assuming they are in sorted order already
+                for(var t = 1; i <= response.teamLeader.length; t++)
+                    {
+                    response.teamLeader[t]['rank'] = t; 
+                    }
 
-        response.teamInfo.push(teamElement);
-        response.teamInfo.push(teamElement2);
+                response.errorcode = error.NOERROR;
+                response.success = true;
+                }
+            });
 
         response.errorcode = error.NOERROR;
         response.success = true;
@@ -389,7 +397,7 @@ exports.getTeamLeaderboard = async user =>
         {
         console.log("Error Occurred: " + err.message);
 
-        response.teamInfo = null;
+        response.teamLeader = null;
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
         }
