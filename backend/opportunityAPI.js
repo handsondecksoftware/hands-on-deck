@@ -11,6 +11,7 @@
 const database = require('./databaseSetup');
 const general = require('./general');
 const error = require('./errorCodes');
+const enumTypes = require('./enumTypes');
 
 
 ////////////////////////////////////////////////////////////
@@ -25,6 +26,8 @@ const error = require('./errorCodes');
 exports.getAllOpportunityInfo = async (user, oppID) => 
     {
     var response = {success: false, errorcode: -1, oppInfo: []};
+    var query = "";
+    var goodQuery = true;
 
     try 
         {
@@ -37,17 +40,57 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
             id: 1,
             sequencenum: 1,
             title: "Testing Opp",
-            type: "Meetings",
-            starttime: "2021-04-07T19:30:00Z",
-            endtime: "2021-04-07T20:30:00Z",
-            numvolunteers: 2,
-            };
+            //Create query base
+            query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
+            query += " starttime, endtime, oStat.numvolunteers";
+            query += " FROM opportunity AS O";
+            query += " LEFT JOIN (SELECT VD.opp_id, COUNT(*) AS numvolunteers FROM volunteeringdata AS VD";
+            query += " GROUP BY VD.opp_id) oStat";
+            query += " ON O.opp_id = oStat.opp_id";
 
-        response.oppInfo.push(oppElement);
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+            //Set the query condiditon
+            if(oppID == -1)
+                {
+                query += " WHERE institution_id = " + user.institution_id + " ORDER BY starttime DESC;";
+                }
+            else if(oppID > 0)
+                {
+                query += " WHERE O.opp_id = " + oppID + ";";
+                }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                goodQuery = true;
+                }
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            if(goodQuery)
+                {
+                //Run the query
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.oppInfo = [];
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.oppInfo = res.rows;
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            }
+        else 
+            {
+            response.oppInfo = [];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -65,7 +108,9 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
     }
 
 ////////////////////////////////////////////////////////////
-// Will get the opportunity info
+// Will get the opportunity info -- 
+//      eventually seperating this from the AllInfo call will allow us to 
+//      to seperate the opportunities by what teams can view the opportunity
 //
 // @param[in]  user             user information
 // @param[in]  opportunityID    ID of opp user is looking for detail on
@@ -82,24 +127,62 @@ exports.getOpportunityInfo = async (user, oppID) =>
         {
         console.log('getOpportunityInfo() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var oppElement = 
+        //Check that the caller is valid and that the input is valid
+        if(general.verifyInput(oppID))
             {
-            id: oppID,
-            sequencenum: 1,
-            title: "Your Opportunity",
-            type: "Meetings",
-            starttime: "2021-04-07T19:30:00Z",
-            endtime: "2021-04-07T20:30:00Z",
-            numvolunteers: 2,
-            };
+            //Create query base
+            query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
+            query += " starttime, endtime, oStat.numvolunteers";
+            query += " FROM opportunity AS O";
+            query += " LEFT JOIN (SELECT VD.opp_id, COUNT(*) AS numvolunteers FROM volunteeringdata AS VD";
+            query += " GROUP BY VD.opp_id) oStat";
+            query += " ON O.opp_id = oStat.opp_id";
 
-        response.oppInfo.push(oppElement);
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+            //Set the query condiditon
+            if(oppID == -1)
+                {
+                query += " WHERE institution_id = " + user.institution_id + " ORDER BY starttime DESC;";
+                }
+            else if(oppID > 0)
+                {
+                query += " WHERE institution_id = " + user.institution_id + " AND O.opp_id = " + oppID + ";";
+                //Make sure the opportunity being requested is from the correct institution
+                }
+            else 
+                {
+                response.oppInfo = [];
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                goodQuery = false;
+                }
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            if(goodQuery)
+                {
+                //Run the query
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.oppInfo = [];
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.oppInfo = res.rows;
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            }
+        else 
+            {
+            response.oppInfo = [];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -130,44 +213,86 @@ exports.getOpportunityInfo = async (user, oppID) =>
 exports.getOpportunityData = async (user, oppID) => 
     {
     var response = {success: false, errorcode: -1, oppData: []};
+    var query = "";
+    var query2 = "";
 
     try 
         {
         console.log('getOpportunityData() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var oppElement = 
+        //Check that the caller is valid and that the input is valid
+        if(general.verifyInput(oppID))
             {
-            id: 1,
-            sequenceNum: 1,
-            title: "SAAC Meeting", 
-            type: "Meetings", 
-            starttime: "2021-04-07 19:30:00",
-            endtime: "2021-04-07 20:30:00",
-            location: "Zoom",
-            description: "This is a test event that is the next SAAC meeting which we will use to test post method", 
-            viewableBy: [{name: 'All Teams', id: 0}],  
-            volunteerLimt: 40,
-            cordinatorname: "Ryan Stolys",
-            cordinatoremail: "rstolys@sfu.ca",
-            cordinatorphone: "123-456-7890",
-            numvolunteers: 1,
-            volunteers: [{name: "Jayden Cole", email: "jcole@sfu.ca", team: "M - Swim", hours: 2.5, volDataID: 1}],
-            };
+            //Create query base
+            query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
+            query += " starttime, endtime, location, description, volunteerlimit,";
+            query += " coordinatorname, coordinatoremail, coordinatorphone, oStat.numvolunteers"
+            query += " FROM opportunity AS O";
+            query += " LEFT JOIN (SELECT VD.opp_id, COUNT(*) AS numvolunteers FROM volunteeringdata AS VD";
+            query += " GROUP BY VD.opp_id) oStat";
+            query += " ON O.opp_id = oStat.opp_id";
+            query += " WHERE institution_id = " + user.institution_id + " AND O.opp_id = " + oppID + ";";
+            //Make sure the opportunity being requested is from the correct institution
+            
+            //Run the query
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.oppData = [];
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.oppData = res.rows[0];
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
 
-        response.oppData.push(oppElement);
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+            //if the first query was successful
+            if(response.success)
+                {
+                query2 = "SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, V.volunteer_id AS id, ";
+                query2 += " VD.starttime, VD.endtime, VD.validated, ";
+                query2 += " extract(HOUR FROM (VD.endtime - VD.starttime)) AS num_hours";
+                query2 += " FROM volunteer AS V, volunteeringdata AS VD";
+                query2 += " WHERE V.volunteer_id = VD.volunteer_id AND V.institution_id = " + user.institution_id;
+                query2 += " AND VD.opp_id = " + oppID + ";";
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+                await database.queryDB(query2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.oppData = [];
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.oppData['volunteers'] = res.rows;
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            }
+        else 
+            {
+            response.oppData = [];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
         console.log("Error Occurred: " + err.message);
 
         response.errorcode = error.SERVER_ERROR;
-        response.oppData = null;
+        response.oppData = [];
         response.success = false;
         }
 
@@ -190,36 +315,50 @@ exports.getOpportunityData = async (user, oppID) =>
 exports.addOpportunity = async (user, oppData) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
 
     try 
         {
         console.log('addOpportunity() called by: ' + user.volunteer_id);
 
-        var errorOccurred = false;
-
-        /* TODO: Needs to be fixed
-        if(!errorOccurred) 
+        //Validate the inputs and the user adding the opportunity
+        if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
+            general.verifyInput(oppData.title) && general.verifyInput(oppData.type) && 
+            general.verifyInput(oppData.starttime) && general.verifyInput(oppData.endtime) &&
+            general.verifyInput(oppData.location) && general.verifyInput(oppData.description) &&
+            general.verifyInput(oppData.coordinatorname) && general.verifyInput(oppData.coordinatoremail) &&
+            general.verifyInput(oppData.coordinatorphone) )
             {
-            await database.queryDB("INSERT INTO opportunity (opp_id, title, date, starttime, endtime, type, description, location) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + oppData.title + "', '" + oppData.date + "', '" + oppData.startTime + "','" + oppData.endTime + "', '" + oppData.type + "', '" + oppData.description + "', '" + oppData.location + "')", 
-                (res, e) => {
+            //Inputs and user are valid, create insert query
+
+            query =  "INSERT INTO opportunity (title, opportunity_type, starttime, endtime, location,";
+            query += " description, volunteerlimit, coordinatorname, coordinatoremail, coordinatorphone) VALUES";
+            query += "('" + oppData.title + "', '" + oppData.type + "', '" + oppData.starttime + "',";
+            query += " '" + oppData.endtime + "', '" + oppData.location + "', '" + oppData.description + "',";
+            query += oppData.volunteerlimit + ", '" + oppData.coordinatorname + "',";
+            query += " '" + oppData.coordinatoremail + "', '" + oppData.coordinatorphone + "');";
+        
+            await database.queryDB(query, (res, e) => 
+                { 
                 if(e) 
                     {
-                    console.log("error occured")
+                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
                     }
                 else 
                     {
-                    //Send the user an email with their account info 
                     response.errorcode = error.NOERROR;
                     response.success = true;
                     }
-            });
+                });
             }
-        */
-        //Temp values until above is fixed to be real query into database
-        response.errorcode = error.NOERROR;
-        response.success = true;
+        else 
+            {
+            response.oppInfo = [];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -240,7 +379,7 @@ exports.addOpportunity = async (user, oppData) =>
 // Will edit opportunity to database
 //
 // @param[in]  user                     user information
-// @param[in]  oppData                  JSON of opportunity JSON for event being editted
+// @param[in]  oppData                  JSON of opportunity data for event being editted
 //
 // @param[out] {success, errorcode}     Values indicating success of add  
 //
@@ -248,17 +387,51 @@ exports.addOpportunity = async (user, oppData) =>
 exports.editOpportunity = async (user, oppData) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
 
     try 
         {
         console.log('editOpportunity() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-        console.log(oppData);
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
+        //Validate the inputs and the user editting the opportunity
+        if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
+            general.verifyInput(oppData.id) && general.verifyInput(oppData.title) && 
+            general.verifyInput(oppData.type) && general.verifyInput(oppData.starttime) && 
+            general.verifyInput(oppData.endtime) && general.verifyInput(oppData.location) && 
+            general.verifyInput(oppData.description) && general.verifyInput(oppData.coordinatorname) && 
+            general.verifyInput(oppData.coordinatoremail) && general.verifyInput(oppData.coordinatorphone) )
+            {
+            //Inputs and user are valid, create insert query
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            query =  "UPDATE opportunity SET";
+            query += " title = '" + oppData.title + "', opportunity_type = '" + oppData.type + "',";
+            query += " starttime = '" + oppData.starttime + "', endtime = '" + oppData.endtime + "',";
+            query += " location = '" + oppData.location + "', description = '" + oppData.description + "',";
+            query += " volunteerlimit = " + oppData.volunteerlimit + ", coordinatorname = '" + oppData.coordinatorname + "',";
+            query += " coordinatoremail = '" + oppData.coordinatoremail + "', coordinatorphone = '" + oppData.coordinatorphone + "'";
+            query += " WHERE opp_id = " + oppData.id + ";";
+        
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            }
+        else 
+            {
+            response.oppInfo = [];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -287,17 +460,38 @@ exports.editOpportunity = async (user, oppData) =>
 exports.deleteOpportunity = async (user, oppID) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
 
     try 
         {
         console.log('deleteOpportunity() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-        //Need to check that this user has permission to delete opportunity as well
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
+        //Verify that this volunteer is allowed to delete this opportunity
+        if(general.verifyInput(oppID) && 
+            (user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV))
+            {
+            query =  "DELETE FROM opportunity WHERE opp_id = " + oppID + ";";
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            } 
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
     catch (err)
         {
@@ -330,10 +524,16 @@ exports.getOpportunityTypes = async user =>
         {
         console.log('getOpportunityTypes() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-        //Set default values for now
-        response.oppTypes = ["Meetings", "Special Olympics", "Game Day Events", "Social Events"];
-        ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
+        response.oppTypes.push(enumTypes.OT_NOT_SET);
+        response.oppTypes.push(enumTypes.OT_CAMPUS);
+        response.oppTypes.push(enumTypes.OT_COMMUNITY);
+        response.oppTypes.push(enumTypes.OT_GAME_DAY);
+        response.oppTypes.push(enumTypes.OT_MEDIA);
+        response.oppTypes.push(enumTypes.OT_MEETING);
+        response.oppTypes.push(enumTypes.OT_PLANNING);
+        response.oppTypes.push(enumTypes.OT_SOCIAL);
+        response.oppTypes.push(enumTypes.OT_SPECIAL_O);
+        response.oppTypes.push(enumTypes.OT_OTHER);
 
         response.errorcode = error.NOERROR;
         response.success = true;
@@ -343,7 +543,7 @@ exports.getOpportunityTypes = async user =>
         console.log("Error Occurred: " + err.message);
 
         response.errorcode = error.SERVER_ERROR;
-        response.oppTypes = null;
+        response.oppTypes = [];
         response.success = false;
         }
 

@@ -422,7 +422,7 @@ exports.getVolunteerLeaderboard = async user =>
         query += " WHERE VS.institution_id = " + user.institution_id;
         query += " ORDER BY num_hours DESC LIMIT 10;";
        
-        await database.queryDB(query2, (res, e) => 
+        await database.queryDB(query, (res, e) => 
             { 
             if(e) 
                 {

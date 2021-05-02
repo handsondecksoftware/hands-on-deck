@@ -366,7 +366,7 @@ exports.getTeamLeaderboard = async user =>
         query += " WHERE VS.institution_id = " + user.institution_id;
         query += " ORDER BY num_hours DESC;";
        
-        await database.queryDB(query2, (res, e) => 
+        await database.queryDB(query, (res, e) => 
             { 
             if(e) 
                 {
@@ -389,9 +389,6 @@ exports.getTeamLeaderboard = async user =>
                 response.success = true;
                 }
             });
-
-        response.errorcode = error.NOERROR;
-        response.success = true;
         }
     catch (err)
         {
