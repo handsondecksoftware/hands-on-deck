@@ -33,13 +33,10 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
         {
         console.log('getAllOpportunityInfo() called by: ' + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var oppElement = 
+        //Check that the caller is valid and that the input is valid
+        if(general.verifyInput(oppID) && 
+            (user.volunteer_type == enumTypes.VT_DEV || user.volunteer_type == enumTypes.VT_ADMIN) )
             {
-            id: 1,
-            sequencenum: 1,
-            title: "Testing Opp",
             //Create query base
             query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
             query += " starttime, endtime, oStat.numvolunteers";
