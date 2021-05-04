@@ -23,21 +23,14 @@ function initDropdowns(pageID)
             getRef('addOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
             getRef('addOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
             getRef('addOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-            addTimeDropdownOptions("add", "Start");
+            addTimeDropdownOptions("addOpportunity", "Start");
 
             getRef('addOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
             getRef('addOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
             getRef('addOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-            addTimeDropdownOptions("add", "End");
+            addTimeDropdownOptions("addOpportunity", "End");
 
             getRef('addOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
-
-            getRef('viewInvolvementValidated').onclick = function(){toggleDropdownMenu(this.id)};
-            getRef('viewInvolvementValidated_option_1').onclick = function(){selectDropdownOption(this.id)};
-            getRef('viewInvolvementValidated_option_2').onclick = function(){selectDropdownOption(this.id)};
-
-            //getRef('addOpportunityViewableBy').onclick = function(){toggleDropdownMenu(this.id)};
-            //fillOpportunityViewableByOptions('addOpportunityViewableByOptions');
             break;
             } 
         case 'Teams':

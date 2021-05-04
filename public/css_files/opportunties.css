@@ -17,6 +17,10 @@ body, html {
   margin: 0;
 }
 
+.opp-topRow{
+    height: 75px;
+}
+
 .addOppButton{
   width: 33%;
   padding-left: 100px;

@@ -236,7 +236,7 @@ function viewVolunteer(buttonID)
                         date.innerHTML = getDayOfYearFromTimestamp(volunteeringData[vData].starttime);
                         time.innerHTML = getTimeFromTimestamp(volunteeringData[vData].starttime);
                         
-                        var validateSymbol = volunteeringData[vData].validated ? "fas fa-check" : "fas fa-times"
+                        var validateSymbol = volunteeringData[vData].validated ? "fas fa-check table-view" : "fas fa-times table-view";
                         validate.innerHTML = "<i id=\"validate_" + volunteeringData[vData].id + "\"class=\"" + validateSymbol + "\" onclick=\"validateInstance(this.id)\"></i>";
                         remove.innerHTML = "<i id=\"delete_" + volunteeringData[vData].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteInstance(this.id, '" + volunteeringData[vData].title + "' , " + response.volunteerData.id + ")\"></i>";
                         }
@@ -311,17 +311,33 @@ function validateInstance(buttonID)
         {
         var vdata_ID = buttonID.slice(9);       //Remove "validate_"
 
+        //Determine the current state and flip it
+        var nextState = false;
+        if(getRef(buttonID).classList.value.includes("check"))
+            {
+            nextState = false;
+            getRef(buttonID).classList = "fas fa-times table-view";
+            }
+        else 
+            {
+            nextState = true;
+            getRef(buttonID).classList = "fas fa-check table-view";
+            }
+
         setLoaderVisibility(true);
 
-        handleAPIcall({vdata_ID: vdata_ID}, "/api/validateVolunteeringData", response => 
+        handleAPIcall({vdata_ID: vdata_ID, validated: nextState}, "/api/validateVolunteeringData", response => 
             {
             if(response.success)
                 {
-                //Reload the volunteer table
-                viewVolunteer("view_" + vol_ID);
+                //Do nothing, the check mark is already in the correct orientation 
                 }
             else 
                 {
+                //Flip the validate symbol back to its orginal state
+                if(nextState) { getRef(buttonID).classList = "fas fa-times"; }
+                else { getRef(buttonID).classList = "fas fa-check"; }
+                
                 printUserErrorMessage(response.errorcode);
                 }
 

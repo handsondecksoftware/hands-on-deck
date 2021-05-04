@@ -11,8 +11,7 @@
 //////////////////////////////////////////////////////////////////////// 
 // Global Variables
 //////////////////////////////////////////////////////////////////////// 
-var institutionSettings = {};
-var personalSettings = {};
+//None
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -44,76 +43,49 @@ function init()
 //////////////////////////////////////////////////////////////////////// 
 function loadSettings()
     {
-    /*
     setLoaderVisibility(true);  //Set twice since we are doing two post calls
     setLoaderVisibility(true);
-    handleAPIcall(null, "/getInstituionInfo", response =>
+    handleAPIcall(null, "/api/getInstitutionInfo", response =>
         {
-        var iInfo;
-
         if(response.success)
             {
-            iInfo = response.iInfo;
+            getRef("instiution-name").value = response.iInfo.name;
+            getRef("instiution-location").value = response.iInfo.location;
             }
         else 
             {
             printUserErrorMessage(response.errorcode);
             
-            //Set some default values to use
-            iInfo = 
-                {
-                id: -1, 
-                name: "Could Not Load", 
-                location: "Could Not Load", 
-                numVolunteers: "Unkown",
-                totalHours: "Unkown",
-                }
+            getRef("instiution-name").value = "Could Not Load";
+            getRef("instiution-location").value = "Could Not Load";
             }
-
-        getRef("instiution-name").value = iInfo.name;
-        getRef("instiution-location").value = iInfo.location;
 
         setLoaderVisibility(false);
         });
 
     
     //Set vol_ID to 0 to get personal volunteer info
-    handleAPIcall({volID: 0}, "/getVolunteerInfo", response =>
+    handleAPIcall({vol_ID: 0}, "/api/getVolunteerInfo", response =>
         {
-        var vInfo;
-
         if(response.success)
             {
-            vInfo = response.volunteerInfo;
+            getRef("personal-name").value = response.volunteerInfo[0].name;
+            getRef("personal-email").value = response.volunteerInfo[0].email;
+            getRef("personal-username").value = response.volunteerInfo[0].username;
+            getRef("settingLeaderboards").value = response.volunteerInfo[0].leaderboards;
+            changeSliderLabel('settingLeaderboards');
             }
         else 
             {
             printUserErrorMessage(response.errorcode);
             
-            //Set some default values to use
-            vInfo = 
-                {
-                id: -1, 
-                name: "Could Not Load", 
-                email: "Could Not Load", 
-                leaderboards: false,
-                }
+            getRef("personal-name").value = "Could Not Load";
+            getRef("personal-email").value = "Could Not Load";
+            getRef("settingLeaderboards").value = false;
             }
 
-        getRef("personal-name").value = vInfo.name;
-        getRef("personal-email").value = vInfo.email;
-        getRef("settingLeaderboards").value = vInfo.leaderboards;
-
         setLoaderVisibility(false);
-        });
-    */
-
-    //Temp until backend function is implemented
-    getRef("instiution-name").value = "Simon Fraser University (HARD CODE)";
-    getRef("instiution-location").value = "Burnaby (HARD CODE)";
-    getRef("personal-name").value = "Ryan Stolys (HARD CODE)";
-    getRef("personal-email").value = "Ryan Stolys (HARD CODE)";
-    getRef("settingLeaderboards").value = false;
+        });    
     }
 
 
@@ -131,44 +103,26 @@ function saveInstitutionSettings()
     var confirmString = "Are you sure you want to make the following changes? \n\n";
     confirmString += "Name: " + name + "\nLocation: " + location;
 
-    if(name.length > 0 && location.length > 0)
+    if(confirm(confirmString))
         {
-        if(confirm(confirmString))
-            {
-            /*
-            setLoaderVisibility(true);
-            var iInfo = gen_iInfo();
-            iInfo.name = name; iInfo.location: location; 
-            handleAPIcall({iInfo: iInfo}, "/editVolunteer", response =>
-                {
-                if(response.success)
-                    {
-                    alert("Password Successfully Updated!");
-                    togglePasswordBox();
-                    }
-                else 
-                    {
-                    if(response.errorcode == PERMISSION_ERROR)
-                        {
-                        alert("Your old password did not match the password we have saved in our system");
-                        }
-                    else 
-                        {
-                        printUserErrorMessage(response.errorcode);
-                        }
-                    }
+        setLoaderVisibility(true);
 
-                setLoaderVisibility(false);
-                });
-            */
-            setLoaderVisibility(true);
-            alert("Changing Settings");
+        var iInfo = gen_iInfo();
+        iInfo.name = name; iInfo.location = location; 
+
+        handleAPIcall({iInfo: iInfo}, "/api/editInstitutionInfo", response =>
+            {
+            if(response.success)
+                {
+                alert("Institution Settings Successfully Updated");
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
+
             setLoaderVisibility(false);
-            }
-        }
-    else 
-        {
-        alert("Oops! \n\nLooks like you tried to set your institution name or location to nothing. You can't do that");
+            });
         }
     }
 
@@ -184,52 +138,31 @@ function savePersonalSettings()
     var name = getRef("personal-name").value;
     var leaderboards = Number(getRef("settingLeaderboards").value) ? true : false;
     var email = getRef("personal-email").value;
+    var username = getRef("personal-username").value;
 
     var confirmString = "Are you sure you want to make the following changes? \n\n";
-    confirmString += "Name: " + name + "\nEmail: " + email + "\nAllow Leaderboards: " + (leaderboards ? "Yes" : "No");
+    confirmString += "Name: " + name + "\nEmail: " + email + "\nUsername: " + username + "\nAllow Leaderboards: " + (leaderboards ? "Yes" : "No");
 
-    if(name.length <= 0)
+    if(confirm(confirmString))
         {
-        alert("Oops! \n\nLooks like you tried to set your name to nothing. You can't do that");
-        }
-    else if(isNotEmailValid(email))
-        {
-        alert("Oops! \n\nLooks like you provided an invalid email address");
-        }
-    else 
-        {
-        if(confirm(confirmString))
+        setLoaderVisibility(true);
+
+        var vData = gen_vData();
+        vData.name = name; vData.email = email; vData.username = username; vData.leaderboards = leaderboards; 
+
+        handleAPIcall({volunteerData: vData}, "/api/editVolunteer", response =>
             {
-            /*
-            setLoaderVisibility(true);
-            var vInfo = gen_vInfo();
-            vInfo.name = name; vInfo.email: email; vInfo.leaderboards = leaderboards; 
-            handleAPIcall({volunteerInfo: vInfo}, "/editVolunteer", response =>
+            if(response.success)
                 {
-                if(response.success)
-                    {
-                    alert("Password Successfully Updated!");
-                    togglePasswordBox();
-                    }
-                else 
-                    {
-                    if(response.errorcode == PERMISSION_ERROR)
-                        {
-                        alert("Your old password did not match the password we have saved in our system");
-                        }
-                    else 
-                        {
-                        printUserErrorMessage(response.errorcode);
-                        }
-                    }
+                alert("Personal Settings Successfully Updated");
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorcode);
+                }
 
-                setLoaderVisibility(false);
-                });
-            */
-            setLoaderVisibility(true);
-            alert("Changing Settings");
             setLoaderVisibility(false);
-            }
+            });
         }
     }
 
@@ -252,9 +185,9 @@ function changePassword()
         }
     else 
         {
-        /*
         setLoaderVisibility(true);
-        handleAPIcall({oldPassword: oldPassword, newPassword: newPassword}, "/changePassword", response =>
+
+        handleAPIcall({oldPassword: oldPassword, newPassword: newPassword}, "/api/changePassword", response =>
             {
             if(response.success)
                 {
@@ -275,13 +208,6 @@ function changePassword()
 
             setLoaderVisibility(false);
             });
-        */
-
-        setLoaderVisibility(true);
-        alert("Changing Password");
-        setLoaderVisibility(false);
-
-        togglePasswordBox();
         }
     
     }
@@ -306,27 +232,4 @@ function togglePasswordBox()
         {
         getRef("changePasswordPopup").style.display = "none";
         }
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will determine if email address provided is valid
-//
-//////////////////////////////////////////////////////////////////////// 
-function isNotEmailValid(email)
-    {
-    var isNotValid = false;
-
-    if(!email.includes("@"))
-        {
-        isNotValid = true;
-        }
-    
-    if(!email.includes(".com") && !email.includes(".ca"))
-        {
-        isNotValid = true;        //This will work for most emails but can fail if we have international clients (probably fine)
-        }
-
-    return isNotValid;
     }

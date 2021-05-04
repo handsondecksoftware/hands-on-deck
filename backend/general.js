@@ -90,3 +90,29 @@ exports.verifyInput = input => {
 
     return valid;
 }
+
+
+////////////////////////////////////////////////////////////////////////
+// 
+// Will determine if email address provided is valid or empty string
+//
+//////////////////////////////////////////////////////////////////////// 
+exports.isValidEmail = email =>
+    {
+    var isValid = false;
+
+    if(email != "" && email != undefined)
+        {
+        if(email.includes("@") && email.includes("."))
+            {
+            isValid = true;
+            }
+        }
+    else 
+        {
+        isValid = true;     //Empty fields will be considered valid 
+        }
+    
+
+    return isValid;
+    }

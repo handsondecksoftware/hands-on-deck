@@ -20,6 +20,8 @@ var viewableByOptions_gv;
 
 var currentViewedOpportunity_gv;
 
+const NO_VOL_LIMIT = 1000;
+
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -36,20 +38,16 @@ function init()
     getRef('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
     getRef('addOpportunityChoice').onclick = function(){addOpportunity()};
     getRef('returnToOppListButt').onclick = function(){retToOpportunityMainPage()};
-    getRef('closeVolunteerInvolvement').onclick = function(){toggleViewInvolvementBoxVisibility()};
-    getRef('saveVolunteerInvolvement').onclick = function(){saveVolunteerInvolvement()};
     getRef('editOpportunity').onclick = function(){editOpportunity()};
-
-    getRef('addOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()}
-    getRef('cancelViewableBy').onclick = function(){toggleViewableByBoxVisibility()};
-    getRef('SelectViewableBy').onclick = function(){setViewableBy()};
-
 
     initSlider('Opportunties');
     initDropdowns('Opportunties');
 
     createDatePicker("addOpportunity-startDate", "addOpportunityStartDatePicker", 1);
     createDatePicker("addOpportunity-endDate", "addOpportunityEndDatePicker", 2);
+
+    createDatePicker("editInstance-startDate", "editInstanceStartDatePicker", 3);
+    createDatePicker("editInstance-endDate", "editInstanceEndDatePicker", 4);
 
     initLogout();
     }
@@ -68,7 +66,6 @@ function toggleOppourtuntiyBoxVisibility()
     if(currentState === "none")
         {
         fillOpportunityTypeOptions('addOpportunityTypeOptions');
-        fillOpportunityViewableByOptions();
         getRef('addOpportunityPopup').style.display = "block";
         }
     else 
@@ -82,142 +79,25 @@ function toggleOppourtuntiyBoxVisibility()
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will eiter display or hide the add oppourtuntiy box depending on the current state
-//
-////////////////////////////////////////////////////////////////////////
-function toggleViewInvolvementBoxVisibility()
-    {
-    //Change the oppourtuntiy popup box display
-    var currentState = getRef('viewVolunteerInvolvementPopup').style.display; 
-
-    if(currentState === "none")
-        {
-        getRef('viewVolunteerInvolvementPopup').style.display = "block";
-        }
-    else 
-        {
-        getRef('viewVolunteerInvolvementPopup').style.display = "none"; 
-        }
-
-    return;
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will eiter display or hide the viewableBy selection box depending on the current state
-//
-////////////////////////////////////////////////////////////////////////
-function toggleViewableByBoxVisibility()
-    {
-    //Change the oppourtuntiy popup box display
-    var currentState = getRef('viewableByPopup').style.display; 
-
-    if(currentState === "none")
-        {
-        fillOpportunityViewableByOptions();
-        getRef('viewableByPopup').style.display = "block";
-        }
-    else 
-        {
-        getRef('viewableByPopup').style.display = "none";
-        }
-
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
 // Connect the dropdown elements to a fucntion to change its value
 //
 ////////////////////////////////////////////////////////////////////////
-function addTimeDropdownOptions(addOrView, startORend)
+function addTimeDropdownOptions(type, startORend)
     {
     for(var i = 1; i <= 12; i++) 
         {
-        var elementId = addOrView + "Opportunity" + startORend + "TimeHrsOptions_option_" + i;
+        var elementId = type + startORend + "TimeHrsOptions_option_" + i;
         getRef(elementId).onclick = function(){selectDropdownOption(this.id);}
         }
 
     for(var i = 1; i <= 4; i++) 
         {
-        var elementId = addOrView + "Opportunity" + startORend + "TimeMinOptions_option_" + i;
+        var elementId = type + startORend + "TimeMinOptions_option_" + i;
         getRef(elementId).onclick = function(){selectDropdownOption(this.id);}
         }
     
-    getRef(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_1").onclick = function(){selectDropdownOption(this.id);}
-    getRef(addOrView + "Opportunity" + startORend + "TimeAmPmOptions_option_2").onclick = function(){selectDropdownOption(this.id);}
-        
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will set the global variable for the viewable by options
-//
-////////////////////////////////////////////////////////////////////////
-function setViewableBy() 
-    {
-    var numSelected = 0; 
-    opportunityViewableBy_gv = [];
-
-    //Check if all teams are selected
-    if(getRef('viewableTeam_0').checked)
-        {
-        opportunityViewableBy_gv.push(0);
-
-        //Set label to show all teams
-        getRef('viewOpportunity-viewableByLabel').innerHTML = "All Teams"; 
-        getRef('addOpportunity-viewableByLabel').innerHTML = "All Teams"; 
-        }
-    else 
-        {
-        //Add volunteers to the table
-        for(var option = 0; option < viewableByOptions_gv.length; option++)
-            {
-            //Check if the CheckBox is checked
-            if(getRef('viewableTeam_' + viewableByOptions_gv[option].id).checked)
-                {
-                opportunityViewableBy_gv.push(viewableByOptions_gv[option].id);
-
-                //Set label to show
-                getRef('viewOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name; 
-                getRef('addOpportunity-viewableByLabel').innerHTML = viewableByOptions_gv[option].name;
-
-                numSelected++;
-                }
-            }
-
-        if(numSelected > 1) 
-            {
-            getRef('viewOpportunity-viewableByLabel').innerHTML = "Multiple"; 
-            getRef('addOpportunity-viewableByLabel').innerHTML = "Multiple";  
-            }
-        }
-
-    toggleViewableByBoxVisibility();
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
-// Will check if the team can view the opportunity
-//
-////////////////////////////////////////////////////////////////////////
-function teamCanView(teamID) 
-    {
-    var rv = false;
-
-    for(var i = 0; i < opportunityViewableBy_gv.length; i++) 
-        {
-        if(opportunityViewableBy_gv[i] == teamID) 
-            {
-            rv = true;
-            break;
-            }
-        }
-
-    return rv;
+    getRef(type + startORend + "TimeAmPmOptions_option_1").onclick = function(){selectDropdownOption(this.id);}
+    getRef(type + startORend + "TimeAmPmOptions_option_2").onclick = function(){selectDropdownOption(this.id);}   
     }
 
 
@@ -229,13 +109,16 @@ function teamCanView(teamID)
 function fillOpportunityTable()
     {
     //Call method to load oppourtunities -- value of -1 will get all oppourtunities for my instituition
-    handleAPIcall({OpportunityID: -1}, '/api/getAllOpportunityInfo', response =>
+    handleAPIcall({oppID: -1}, '/api/getAllOpportunityInfo', response =>
         {
         if(response.success)
             {
             //Get reference to table 
             var oppourtuntityRoundTable = getRef('oppourtuntiesTable');
             var rowNum = 1;
+
+            //Empty the opportunity table first in case there are elements in it 
+            for(var i = oppourtuntityRoundTable.rows.length - 1; i >= 1; i--) { oppourtuntityRoundTable.deleteRow(i); }
 
             //Fill in table elements
             for(var oppNum = 0; oppNum < response.oppInfo.length; oppNum++)
@@ -255,17 +138,17 @@ function fillOpportunityTable()
                 //Fill in row elements
                 title.innerHTML = response.oppInfo[oppNum].title;
                 type.innerHTML = response.oppInfo[oppNum].type;
-                numVolunteers.innerHTML = response.oppInfo[oppNum].numvolunteers;
+                numVolunteers.innerHTML = response.oppInfo[oppNum].numvolunteers ?? 0;
                 date.innerHTML = getDayOfYearFromTimestamp(response.oppInfo[oppNum].starttime);
                 startTime.innerHTML = getTimeFromTimestamp(response.oppInfo[oppNum].starttime);
 
                 view.innerHTML = "<i id=\"view_" + response.oppInfo[oppNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewOpportunity(this.id)\"></i>";
-                remove.innerHTML = "<i id=\"delete_" + response.oppInfo[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id)\"></i>";
+                remove.innerHTML = "<i id=\"delete_" + response.oppInfo[oppNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteOpportunity(this.id, '" + response.oppInfo[oppNum].title + "')\"></i>";
                 }
             }
         else 
             {
-            console.log("Error in retriving oppourtuntiy table data. ErrorCode: " + response.errorCode);
+            console.log("Error in retriving oppourtuntiy table data. ErrorCode: " + response.errorcode);
 
             //Add element to table to indicate we could not load the data
             var oppourtuntityRoundTable = getRef('oppourtuntiesTable');
@@ -307,7 +190,7 @@ function addOpportunity()
     {
     try 
         {
-        //Collect start and end date values 
+        //Collect start and end date + time values 
         var startDate = getRef('addOpportunity-startDate').value;
         var startAm_Pm = getRef('dropdown-title-addOpportunityStartTimeAmPm').innerHTML;
         var startHour = parseInt(getRef('dropdown-title-addOpportunityStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
@@ -320,29 +203,30 @@ function addOpportunity()
 
 
         //Collect Form Values
-        var oppData = {
-            title: getRef('addOpportunity-title').value, 
-            startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
-            endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
-            location: getRef('addOpportunity-location').value, 
-            id: null,                                   //Assigned by the backend
-            occurred: false,                            //Likely false since we just created the event -- needs to be checked
-            type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-            viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected -- currently only can handle all teams
-            description: getRef('addOpportunity-description').value, 
-            sequenceNum: 1, 
-            coordinatorname: getRef('addOpportunity-coordinatorName'),
-            coordinatoremail: getRef('addOpportunity-coordinatorEmail'),
-            coordinatorphone: getRef('addOpportunity-coordinatorPhone'),
-            volunteerLimit: getRef('addOpportunityVolunteerLimit').value,
-            volunteers: null,                           //They have not been set yet
-        };
+        var oppData = gen_oppData();
+
+        //Set data we collected
+        oppData.title = getRef('addOpportunity-title').value;
+        oppData.type = getRef('dropdown-title-addOpportunityType').innerHTML;
+        oppData.starttime = convertDateToTimestamp(startDate, startHour, startMin);
+        oppData.endtime = convertDateToTimestamp(endDate, endHour, endMin);
+        oppData.location = getRef('addOpportunity-location').value;
+        oppData.description = getRef('addOpportunity-description').value;
+        oppData.coordinatorname = getRef('addOpportunity-coordinatorName').value;
+        oppData.coordinatoremail = getRef('addOpportunity-coordinatorEmail').value;
+        oppData.coordinatorphone = getRef('addOpportunity-coordinatorPhone').value;
+        oppData.volunteerLimit = getRef('addOpportunityVolunteerLimit').value;
+
+        setLoaderVisibility(true);
 
         handleAPIcall({oppData: oppData}, "/api/addOpportunity", response => 
             {
             if(response.success)
                 {
                 alert("You successfully added the opportunity");
+
+                //Reload the opportunity list
+                fillOpportunityTable();
                 
                 //Close the Oppourtunity Box
                 toggleOppourtuntiyBoxVisibility();
@@ -351,15 +235,16 @@ function addOpportunity()
                 {
                 printUserErrorMessage(response.errorCode);
                 }
+
+            setLoaderVisibility(false);
             });
         }
     catch(error)
         {
+        setLoaderVisibility(false);
         console.log(error.message);
         alert("Error adding opportunity. Please try again");
         };
-
-    return;
     }
 
 
@@ -392,19 +277,15 @@ function editOpportunity()
         getRef('viewOpportunityStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
         getRef('viewOpportunityStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
         getRef('viewOpportunityStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-        addTimeDropdownOptions("view", "Start");
+        addTimeDropdownOptions("viewOpportunity", "Start");
 
         getRef('viewOpportunityEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
         getRef('viewOpportunityEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
         getRef('viewOpportunityEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
-        addTimeDropdownOptions("view", "End");
+        addTimeDropdownOptions("viewOpportunity", "End");
 
         getRef('viewOpportunityType').onclick = function(){toggleDropdownMenu(this.id)};
         fillOpportunityTypeOptions('viewOpportunityTypeOptions');
-
-        getRef('viewOpportunity-viewableBy').onclick = function(){toggleViewableByBoxVisibility()};
-        getRef('viewOpportunity-viewableBy').disabled = false;
-        fillOpportunityViewableByOptions();
 
         changeSliderLabel('viewOpportunityVolunteerLimit');       //Call function to update label to match
         getRef('viewOpportunityVolunteerLimit').onchange = function(){changeSliderLabel(this.id)};
@@ -426,7 +307,6 @@ function editOpportunity()
 ////////////////////////////////////////////////////////////////////////
 function saveEditOpportunity() 
     {
-
     try 
         {
         //Collect start and end date values 
@@ -442,23 +322,21 @@ function saveEditOpportunity()
 
 
         //Collect Form Values
-        var oppData = {
-            title: getRef('viewOpportunity-title').value, 
-            startDatetime: convertDateToTimestamp(startDate, startHour, startMin),
-            endDatetime: convertDateToTimestamp(endDate, endHour, endMin),
-            location: getRef('viewOpportunity-location').value, 
-            id: currentViewedOpportunity_gv.id,                 
-            occurred: currentViewedOpportunity_gv.occurred,
-            type: addOppourtunityType_gv,               //This needs to be set when the option is selected
-            viewableBy: opportunityViewableBy_gv,       //This needs to be set when the option is selected
-            description: getRef('viewOpportunity-description').value, 
-            sequenceNum: currentViewedOpportunity_gv.sequenceNum, 
-            coordinatorname: getRef('viewOpportunity-coordinatorName').value,
-            coordinatoremail: getRef('viewOpportunity-coordinatorEmail').value,
-            coordinatorphone: getRef('viewOpportunity-coordinatorPhone').value,
-            volunteerLimit: getRef('viewOpportunityVolunteerLimit').value,
-            volunteers: null,                           //Can allow these to be updated
-        };
+        var oppData = gen_oppData();
+        oppData.id = getRef('viewOpportunity-id').value
+        oppData.sequenceNum = getRef('viewOpportunity-seqnum').value
+        oppData.title = getRef('viewOpportunity-title').value; 
+        oppData.starttime = convertDateToTimestamp(startDate, startHour, startMin);
+        oppData.endtime = convertDateToTimestamp(endDate, endHour, endMin);
+        oppData.location = getRef('viewOpportunity-location').value;      
+        oppData.type = getRef('dropdown-title-viewOpportunityType').innerHTML;
+        oppData.description = getRef('viewOpportunity-description').value; 
+        
+        oppData.coordinatorname = getRef('viewOpportunity-coordinatorName').value;
+        oppData.coordinatoremail = getRef('viewOpportunity-coordinatorEmail').value;
+        oppData.coordinatorphone = getRef('viewOpportunity-coordinatorPhone').value;
+        oppData.volunteerLimit = getRef('viewOpportunityVolunteerLimit').value;
+        oppData.volunteers = null;
 
         //Send post request and handle the response
         handleAPIcall({oppData: oppData}, "/api/editOpportunity", response => 
@@ -478,17 +356,15 @@ function saveEditOpportunity()
                 getRef('viewOpportunityStartTimeHrs').onclick = function(){return};
                 getRef('viewOpportunityStartTimeMin').onclick = function(){return};
                 getRef('viewOpportunityStartTimeAmPm').onclick = function(){return};
-                addTimeDropdownOptions("view", "Start");
+                addTimeDropdownOptions("viewOpportunity", "Start");
 
                 getRef('viewOpportunityEndTimeHrs').onclick = function(){return};
                 getRef('viewOpportunityEndTimeMin').onclick = function(){return};
                 getRef('viewOpportunityEndTimeAmPm').onclick = function(){return};
-                addTimeDropdownOptions("view", "End");
+                addTimeDropdownOptions("viewOpportunity", "End");
 
                 getRef('viewOpportunityType').onclick = function(){return};
                 getRef('viewOpportunityTypeOptions').innerHTML = "";
-
-                getRef('viewOpportunity-viewableBy').onclick = function(){return};
 
                 getRef('viewOpportunityVolunteerLimit').onchange = function(){return};
 
@@ -559,78 +435,18 @@ function fillOpportunityTypeOptions(dropdownID)
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will find the various types of an Opportunity that are availible and add them
-//
-////////////////////////////////////////////////////////////////////////
-function fillOpportunityViewableByOptions() 
-    {
-    //Get the teams Type options 
-    handleAPIcall(null, '/api/getTeamsForViewable', response =>
-        {
-        if(response.success)
-            {
-            //Get table id
-            var viewableByTable = getRef("viewableByTable");
-
-            //Remove the current elements if any 
-            for(var i = viewableByTable.rows.length - 1 ; i > 1; i--)
-                {
-                viewableByTable.deleteRow(i);
-                }
-
-            //set the current row number 
-            var rowNum = 2;
-
-            //Add volunteers to the table
-            for(var option = 0; option < response.teamInfo.length; option++)
-                {
-                //Create new row
-                var row = viewableByTable.insertRow(rowNum++);
-
-                //Create row elements 
-                var selectBox = row.insertCell(0);
-                var teamName = row.insertCell(1);
-        
-                //Fill in row elements
-                if(opportunityViewableBy_gv.length > 0)
-                    {
-                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teamInfo[option].id +"\"" + (teamCanView(response.teamInfo[option].id) ? "checked" : "") + ">";
-                    }
-                else 
-                    {
-                    selectBox.innerHTML =  "<input type=\"checkbox\" id=\"viewableTeam_" + response.teamInfo[option].id +"\">";
-                    }
-                
-                teamName.innerHTML = (response.teamInfo[option].sex == 'Men' ? 'M - ' : 'W - ') + response.teamInfo[option].name;
-                }
-
-            //Set the global varaible of the values 
-            viewableByOptions_gv = response.teamInfo;
-            }
-        else 
-            {
-            console.log("Could not successfully load teams availible. Error Code: " + response.errorCode);
-            }
-        });
-
-    return;
-    }
-
-
-////////////////////////////////////////////////////////////////////////
-// 
 // Deletes an opportunity
 //
 ////////////////////////////////////////////////////////////////////////
-function deleteOpportunity(elementID)
+function deleteOpportunity(elementID, oppTitle)
     {
     //Get the elementID
-    var OpportunityID = elementID.slice(7);    //Will remove 'delete_'
+    var OpportunityID = Number(elementID.slice(7));    //Will remove 'delete_'
 
-    if(confirm("Are you sure you want to delete this entry?"))
+    if(confirm("Are you sure you want to delete opportunity: \n" + oppTitle + "?"))
         {
         //Delete the selected Opportunity
-        handleAPIcall({OpportunityID: OpportunityID}, '/api/deleteOpportunity', response =>
+        handleAPIcall({oppID: OpportunityID}, '/api/deleteOpportunity', response =>
             {
             if(response.success)
                 {
@@ -666,67 +482,78 @@ function viewOpportunity(elementID)
         {
         setLoaderVisibility(true);
         //Get the Opportunity data using getOpportunityData() -- pass oppourtunity ID to get the data we need
-        handleAPIcall({OpportunityID: OpportunityID}, '/api/getOpportunityData', response =>
+        handleAPIcall({oppID: OpportunityID}, '/api/getOpportunityData', response =>
             {
             if(response.success)
                 {
-                currentViewedOpportunity_gv = response.oppData[0];      //Set the current Opportunity
+                getRef('viewOpportunity-id').value = response.oppData.id;
+                getRef('viewOpportunity-seqnum').value = response.oppData.sequenceNum;
 
                 //Fill in the data for the view screen -- our request will only return 1 element in the array
-                getRef('viewOpportunity-title').value = response.oppData[0].title;
+                getRef('viewOpportunity-title').value = response.oppData.title;
 
-                getRef('viewOpportunity-startDate').value = getUTCFormatFromTimestamp(response.oppData[0].starttime);
-                getRef('viewOpportunity-endDate').value = getUTCFormatFromTimestamp(response.oppData[0].endtime);
+                getRef('viewOpportunity-startDate').value = getUTCFormatFromTimestamp(response.oppData.starttime);
+                getRef('viewOpportunity-endDate').value = getUTCFormatFromTimestamp(response.oppData.endtime);
 
-                var startTimeHrs = getHoursFromTimestamp(response.oppData[0].starttime);
-                var startTimeMin = getMinutesFromTimestamp(response.oppData[0].starttime);
+                var startTimeHrs = getHoursFromTimestamp(response.oppData.starttime);
+                var startTimeMin = getMinutesFromTimestamp(response.oppData.starttime);
                 getRef('dropdown-title-viewOpportunityStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
                 getRef('dropdown-title-viewOpportunityStartTimeMin').innerHTML = startTimeMin;
                 getRef('dropdown-title-viewOpportunityStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
 
-                var endTimeHrs = getHoursFromTimestamp(response.oppData[0].endtime);
-                var endTimeMin = getMinutesFromTimestamp(response.oppData[0].endtime);
+                var endTimeHrs = getHoursFromTimestamp(response.oppData.endtime);
+                var endTimeMin = getMinutesFromTimestamp(response.oppData.endtime);
                 getRef('dropdown-title-viewOpportunityEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
                 getRef('dropdown-title-viewOpportunityEndTimeMin').innerHTML = endTimeMin;
                 getRef('dropdown-title-viewOpportunityEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
 
-                getRef('dropdown-title-viewOpportunityType').innerHTML = response.oppData[0].type;
-                getRef('viewOpportunityVolunteerLimit').value = response.oppData[0].volunteerLimt;
+                getRef('dropdown-title-viewOpportunityType').innerHTML = response.oppData.type;
+                getRef('viewOpportunityVolunteerLimit').value = (response.oppData.volunteerlimit == NO_VOL_LIMIT) ? 15 : response.oppData.volunteerlimit;
                 changeSliderLabel('viewOpportunityVolunteerLimit');
-                getRef('viewOpportunity-viewableByLabel').innerHTML = (response.oppData[0].viewableBy.length <= 1) ? response.oppData[0].viewableBy[0].name : "Multiple";
-                opportunityViewableBy_gv = response.oppData[0].viewableBy;
+                //getRef('viewOpportunity-viewableByLabel').innerHTML = (response.oppData.viewableBy.length <= 1) ? response.oppData.viewableBy.name : "Multiple";
+                //opportunityViewableBy_gv = response.oppData.viewableBy;
 
-                getRef('viewOpportunity-location').value = response.oppData[0].location;
-                getRef('viewOpportunity-description').value = response.oppData[0].description;
+                getRef('viewOpportunity-location').value = response.oppData.location;
+                getRef('viewOpportunity-description').value = response.oppData.description;
 
-                getRef('viewOpportunity-coordinatorName').value = response.oppData[0].cordinatorname;
-                getRef('viewOpportunity-coordinatorEmail').value = response.oppData[0].cordinatoremail;
-                getRef('viewOpportunity-coordinatorPhone').value = response.oppData[0].cordinatorphone;
+                getRef('viewOpportunity-coordinatorName').value = response.oppData.coordinatorname;
+                getRef('viewOpportunity-coordinatorEmail').value = response.oppData.coordinatoremail;
+                getRef('viewOpportunity-coordinatorPhone').value = response.oppData.coordinatorphone;
 
                 //Get table id
                 var viewOpp_VolunteerTable = getRef('viewVolunteersForOpportunityTable');
                 var rowNum = 1;
 
+                //Remove existing rows is there are any 
+                for(var i = viewOpp_VolunteerTable.rows.length - 1; i >= 1; i--) { viewOpp_VolunteerTable.deleteRow(i); }
+
+                var volunteerData = response.oppData.volunteers;
+
                 //Add volunteers to the table
-                for(var volNum = 0; volNum < response.oppData[0].volunteers.length; volNum++)
+                for(var volNum = 0; volNum < volunteerData.length; volNum++)
                     {
                     //Create new row
                     var row = viewOpp_VolunteerTable.insertRow(rowNum++);
 
                     //Create row elements 
                     var name = row.insertCell(0);
-                    var email = row.insertCell(1);
-                    var team = row.insertCell(2);
+                    var stime = row.insertCell(1);
+                    var etime = row.insertCell(2);
                     var hours = row.insertCell(3);
-                    var view = row.insertCell(4);
+                    var validated = row.insertCell(4);
+                    var edit = row.insertCell(5);
+                    var remove = row.insertCell(6);
             
-                    
                     //Fill in row elements
-                    name.innerHTML = response.oppData[0].volunteers[volNum].name;
-                    email.innerHTML = response.oppData[0].volunteers[volNum].email;
-                    team.innerHTML = response.oppData[0].volunteers[volNum].team;
-                    hours.innerHTML = response.oppData[0].volunteers[volNum].hours;
-                    view.innerHTML = "<i id=\"view_" + response.oppData[0].volunteers[volNum].volDataID + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteerForOpportunity(this.id)\"></i>";
+                    name.innerHTML = volunteerData[volNum].name;
+                    stime.innerHTML = getTimeFromTimestamp(volunteerData[volNum].starttime);
+                    etime.innerHTML = getTimeFromTimestamp(volunteerData[volNum].endtime);
+                    hours.innerHTML = volunteerData[volNum].num_hours;
+
+                    var validateSymbol = volunteerData[volNum].validated ? "fas fa-check table-view" : "fas fa-times table-view";
+                    validated.innerHTML = "<i id=\"validate_" + volunteerData[volNum].id + "\"class=\"" + validateSymbol + "\" onclick=\"validateInstance(this.id)\"></i>";
+                    edit.innerHTML = "<i id=\"edit_" + volunteerData[volNum].id + "\" class=\"fas fa-pencil-alt table-view\" onclick=\"editInstance(this.id, true, '" + volunteerData[volNum].name + "')\"></i>";
+                    remove.innerHTML = "<i id=\"delete_" + volunteerData[volNum].id + "\" class=\"fas fa-trash table-view\" onclick=\"deleteInstance(this.id, '" + volunteerData[volNum].name + "', " + response.oppData.id + ")\"></i>";
                     }
 
 
@@ -754,47 +581,240 @@ function viewOpportunity(elementID)
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will show the popup menu displaying volunteer data information for the specific oppourtunity 
+// Will validate the volunteering instance
 //
 ////////////////////////////////////////////////////////////////////////
-function viewVolunteerForOpportunity(elementID)
+function validateInstance(buttonID)
     {
-    var VolunteerDataID = elementID.slice(5);       //will remove 'view_'
-
-    //Show the popup window
-    toggleViewInvolvementBoxVisibility();
-
-    //Get the volunteer data ID -- passed as an array of 1 element
-    /*
-    handleAPIcall({dataID: [VolunteerDataID]}, '/getVolunteeringData', response => 
+    try 
         {
-        if(response.success)
+        var vdata_ID = buttonID.slice(9);       //Remove "validate_"
+
+        //Determine the current state and flip it
+        var nextState = false;
+        if(getRef(buttonID).classList.value.includes("check"))
             {
-            
+            nextState = false;
+            getRef(buttonID).classList = "fas fa-times table-view";
             }
         else 
             {
-            //Notify user of error
+            nextState = true;
+            getRef(buttonID).classList = "fas fa-check table-view";
             }
-            
-        });
-    */
 
+        setLoaderVisibility(true);
+
+        handleAPIcall({vdata_ID: vdata_ID, validated: nextState}, "/api/validateVolunteeringData", response => 
+            {
+            if(response.success)
+                {
+                //Do nothing, the check mark is already in the correct orientation 
+                }
+            else 
+                {
+                //Flip the validate symbol back to its orginal state
+                if(nextState) { getRef(buttonID).classList = "fas fa-times table-view"; }
+                else { getRef(buttonID).classList = "fas fa-check table-view"; }
+                
+                printUserErrorMessage(response.errorcode);
+                }
+
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
+        {
+        alert("Oops, something unexpected happened. Please try again");
+        setLoaderVisibility(false);
+        console.log(error.message);
+        }
     }
 
 
 ////////////////////////////////////////////////////////////////////////
 // 
-// Will save the volunteer information that was updated by the user
+// Will show the volunteering data information and allow it to be editted
+//      If it gets editted this function will also save that editted instance
 //
 ////////////////////////////////////////////////////////////////////////
-function saveVolunteerInvolvement()
+function editInstance(buttonID, fromTable, volName)
     {
-    //Get the involvement ID
+    if(fromTable)
+        {
+        try
+            {
+            var vdata_ID = Number(buttonID.slice(5));       //Remove "edit_"
 
-    //Collect the volunteer involvement ID
+            //Show popup menu
+            getRef("editInstancePopup").style.display = 'block';
 
-    //Make post request and communicate the result
+            setLoaderVisibility(true);
+
+            handleAPIcall({vdata_ID: vdata_ID}, "/api/getVolunteeringDataInstance", response => 
+                {
+                if(response.success)
+                    {
+                    //Fill data in the popup
+                    getRef("editInstance-name").innerHTML = volName;
+                    getRef("instanceID").value = vdata_ID;
+                    getRef("oppID").value = response.volunteeringData.opp_id;
+                    getRef("volID").value = response.volunteeringData.vol_id;
+                    getRef("isValidated").value = response.volunteeringData.validated;
+                    
+
+                    getRef('editInstance-startDate').value = getUTCFormatFromTimestamp(response.volunteeringData.starttime);
+                    getRef('editInstance-endDate').value = getUTCFormatFromTimestamp(response.volunteeringData.endtime);
+
+                    var startTimeHrs = getHoursFromTimestamp(response.volunteeringData.starttime);
+                    var startTimeMin = getMinutesFromTimestamp(response.volunteeringData.starttime);
+                    getRef('dropdown-title-editInstanceStartTimeHrs').innerHTML = (startTimeHrs > 12) ? startTimeHrs - 12 : startTimeHrs;
+                    getRef('dropdown-title-editInstanceStartTimeMin').innerHTML = startTimeMin;
+                    getRef('dropdown-title-editInstanceStartTimeAmPm').innerHTML = (startTimeHrs > 12) ? "pm" : ((startTimeHrs == 12 && startTimeMin > 0) ? "pm" : "am");
+
+                    var endTimeHrs = getHoursFromTimestamp(response.volunteeringData.endtime);
+                    var endTimeMin = getMinutesFromTimestamp(response.volunteeringData.endtime);
+                    getRef('dropdown-title-editInstanceEndTimeHrs').innerHTML = (endTimeHrs > 12) ? endTimeHrs - 12 : endTimeHrs;
+                    getRef('dropdown-title-editInstanceEndTimeMin').innerHTML = endTimeMin;
+                    getRef('dropdown-title-editInstanceEndTimeAmPm').innerHTML = (endTimeHrs > 12) ? "pm" : (endTimeHrs == 12 && endTimeMin > 0) ? "pm" : "am";
+
+                    //Activite dropdown menus
+                    getRef('editInstanceStartTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+                    getRef('editInstanceStartTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+                    getRef('editInstanceStartTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+                    addTimeDropdownOptions("editInstance", "Start");
+
+                    getRef('editInstanceEndTimeHrs').onclick = function(){toggleDropdownMenu(this.id)};
+                    getRef('editInstanceEndTimeMin').onclick = function(){toggleDropdownMenu(this.id)};
+                    getRef('editInstanceEndTimeAmPm').onclick = function(){toggleDropdownMenu(this.id)};
+                    addTimeDropdownOptions("editInstance", "End");
+
+                    
+                    //Setup button clicks on popup
+                    getRef("closeEditInstance").onclick = function(){editInstance(this.id, false, null)};
+                    getRef("saveEditInstance").onclick = function(){editInstance(this.id, false, null)};
+                    }
+                else 
+                    {
+                    printUserErrorMessage(response.errorcode);
+
+                    //Close the popup menu
+                    getRef("editInstancePopup").style.display = 'none';
+                    }
+
+                setLoaderVisibility(false);
+                });
+            }
+        catch(error)
+            {
+            setLoaderVisibility(false);
+
+            alert("Something unexpected happened. Try again");
+            console.log(error.message);
+
+            //Close the popup
+            getRef("editInstancePopup").style.display = 'none';
+            }
+        }
+    else    //This was called from the volunteer 
+        {
+        if(buttonID.includes("close"))
+            {
+            getRef("editInstancePopup").style.display = 'none';       //Close the popup, do nothing
+            }
+        else 
+            {
+            try 
+                {
+                //Collect the volunteering data information
+                var vData = gen_vingData();
+
+                vData.id = getRef("instanceID").value;
+                vData.opp_id = getRef("oppID").value;
+                vData.vol_id = getRef("volID").value;
+                vData.validated = getRef("isValidated").value;
+
+                //Get time info 
+                var startDate = getRef('editInstance-startDate').value;
+                var startAm_Pm = getRef('dropdown-title-editInstanceStartTimeAmPm').innerHTML;
+                var startHour = parseInt(getRef('dropdown-title-editInstanceStartTimeHrs').innerHTML) + ((startAm_Pm == "pm") ? 12 : 0);
+                var startMin = parseInt(getRef('dropdown-title-editInstanceStartTimeMin').innerHTML);
+
+                var endDate = getRef('editInstance-endDate').value;
+                var endAm_Pm = getRef('dropdown-title-editInstanceEndTimeAmPm').innerHTML;
+                var endHour = parseInt(getRef('dropdown-title-editInstanceEndTimeHrs').innerHTML) + ((endAm_Pm == "pm") ? 12 : 0);
+                var endMin = parseInt(getRef('dropdown-title-editInstanceEndTimeMin').innerHTML);
+
+                vData.starttime = convertDateToTimestamp(startDate, startHour, startMin);
+                vData.endtime = convertDateToTimestamp(endDate, endHour, endMin);
+
+                setLoaderVisibility(true);
+
+                handleAPIcall({volunteeringData: vData}, '/api/editVolunteeringData', response =>
+                    {
+                    if(response.success)
+                        {
+                        //Close the popup and reload the view opportunity page
+                        getRef("editInstancePopup").style.display = "none";
+
+                        viewOpportunity("view_" + vData.opp_id);
+                        }
+                    else 
+                        {
+                        printUserErrorMessage(response.errorcode);
+                        }
+
+                    setLoaderVisibility(false);
+                    });
+                }
+            catch(error)
+                {
+                
+                }
+            }
+        }
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Deletes the volunteer instance
+//
+////////////////////////////////////////////////////////////////////////
+function deleteInstance(buttonID, volName, oppID)
+    {
+    try 
+        {
+        if(confirm("Are you sure you want to delete the volunteer instance for: " + volName + " ?"))
+            {
+            var vdata_ID = Number(buttonID.slice(7));       //Remove "delete_"
+
+            setLoaderVisibility(true);
+
+            handleAPIcall({vdata_ID: vdata_ID}, "/api/deleteVolunteeringData", response => 
+                {
+                if(response.success)
+                    {
+                    alert("Deletion was successful!");
+                    
+                    //Reload the volunteer table
+                    viewOpportunity("view_" + oppID);
+                    }
+                else 
+                    {
+                    printUserErrorMessage(response.errorcode);
+                    }
+
+                setLoaderVisibility(false);
+                });
+            }
+        }
+    catch (error)
+        {
+        alert("Oops, something unexpected happened. Please try again");
+        setLoaderVisibility(false);
+        console.log(error.message);
+        }
     }
 
 
@@ -805,13 +825,18 @@ function saveVolunteerInvolvement()
 ////////////////////////////////////////////////////////////////////////
 function retToOpportunityMainPage()
     {
+    //Update the opportunity table
+    fillOpportunityTable();
+
     //Change page state back to main page
     getRef("viewOpportunityPage").style.display = "none";
     getRef("opportunitiesMainPage").style.display = "block";
     }
 
 
-/* Nice code that finds element, we don't need it
+
+
+/* Nice code that finds element, can be helpful for search bar
 // Finds the row of the delete button clicked
         e = e || event;
         var eventEl = e.srcElement || e.target, 

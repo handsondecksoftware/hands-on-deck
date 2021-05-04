@@ -299,6 +299,10 @@
     overflow-y: auto;
 }
 
+.popup-content-fixed-height {
+    padding: 10px;
+}
+
 .popup-buttons {
     height: 50px;
     padding-bottom: 10px;

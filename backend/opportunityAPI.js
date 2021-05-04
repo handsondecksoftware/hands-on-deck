@@ -252,7 +252,7 @@ exports.getOpportunityData = async (user, oppID) =>
             //if the first query was successful
             if(response.success)
                 {
-                query2 = "SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, V.volunteer_id AS id, ";
+                query2 = "SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, VD.volunteeringdata_id AS id, ";
                 query2 += " VD.starttime, VD.endtime, VD.validated, ";
                 query2 += " extract(HOUR FROM (VD.endtime - VD.starttime)) AS num_hours";
                 query2 += " FROM volunteer AS V, volunteeringdata AS VD";
@@ -329,11 +329,11 @@ exports.addOpportunity = async (user, oppData) =>
             //Inputs and user are valid, create insert query
 
             query =  "INSERT INTO opportunity (title, opportunity_type, starttime, endtime, location,";
-            query += " description, volunteerlimit, coordinatorname, coordinatoremail, coordinatorphone) VALUES";
+            query += " description, volunteerlimit, coordinatorname, coordinatoremail, coordinatorphone, institution_id) VALUES";
             query += "('" + oppData.title + "', '" + oppData.type + "', '" + oppData.starttime + "',";
             query += " '" + oppData.endtime + "', '" + oppData.location + "', '" + oppData.description + "',";
             query += oppData.volunteerlimit + ", '" + oppData.coordinatorname + "',";
-            query += " '" + oppData.coordinatoremail + "', '" + oppData.coordinatorphone + "');";
+            query += " '" + oppData.coordinatoremail + "', '" + oppData.coordinatorphone + "', " + user.institution_id + ");";
         
             await database.queryDB(query, (res, e) => 
                 { 

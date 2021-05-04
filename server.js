@@ -40,6 +40,7 @@ const database = require('./backend/databaseSetup');
 
 const institution = require('./backend/institutionAPI');
 const volunteer = require('./backend/volunteerAPI');
+const volunteerData = require('./backend/volunteeringDataAPI');
 const opportunity = require('./backend/opportunityAPI');
 const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
@@ -188,6 +189,11 @@ app.post('/api/getVolunteeringData', auth.authcheck, async (request, response) =
     response.send(await volunteerData.getVolunteeringData(request.user, request.body.vol_ID));
     });
 
+app.post('/api/getVolunteeringDataInstance', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteerData.getVolunteeringDataInstance(request.user, request.body.vdata_ID));
+    });
+
 app.post('/api/addVolunteeringData', auth.authcheck, async (request, response) =>
     {
     response.send(await volunteerData.addVolunteeringData(request.user, request.body.volunteeringData));
@@ -273,7 +279,7 @@ app.post('/api/editOpportunity', auth.authcheck, async (request, response) =>
 
 app.post('/api/deleteOpportunity', auth.authcheck, async (request, response) =>
     {
-    response.send(await opportunity.deleteOpportunity(request.user, request.body.opportunityID));
+    response.send(await opportunity.deleteOpportunity(request.user, request.body.oppID));
     });
 
 

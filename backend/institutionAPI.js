@@ -44,6 +44,7 @@ exports.getInstitutionInfo = async user =>
                     }
                 else 
                     {
+                    response.iInfo = res.rows[0];
                     response.errorcode = error.NOERROR;
                     response.success = true;
                     }
@@ -89,7 +90,7 @@ exports.editInstitutionInfo = async (user, iInfo) =>
         if(general.verifyInput(iInfo.name) && general.verifyInput(iInfo.location))
             {
             //Inputs are valid, Make sure the volunteer is of proper type
-            if(user.volunteer_type == DEV || user.volunteer_type == ADMIN)
+            if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
                 {
                 query =  "UPDATE institution SET";
                 query += " name = '" + iInfo.name + "', location = '" + iInfo.location;
@@ -97,7 +98,7 @@ exports.editInstitutionInfo = async (user, iInfo) =>
                 }
             }
 
-        if(user.volunteer_type == DEV || user.volunteer_type == ADMIN)
+        if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
             await database.queryDB(query, (res, e) => 
                 { 

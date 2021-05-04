@@ -140,6 +140,10 @@ hr {
     border: 1px solid black;
 }
 
+.hideObj{
+    display: none !important;
+}
+
 /*********************Logout styling for popup menu***********************/
 .logout-popup{
   border-radius: 10px;

@@ -245,11 +245,12 @@ function getUTCFormatFromTimestamp(date)
 //////////////////////////////////////////////////////////////////
 //
 // get human readable date in format DOW MMM DD YYYY 
-//      incoming format YYYY-MM-DD HH:MM:SS
+//      incoming format YYYY-MM-DDTHH:MM:SS...
 //
 //////////////////////////////////////////////////////////////////
 function getDayOfYearFromTimestamp(date)
     {
+    //Need to adjust for timezone of system since new Date() does
     var target = new Date(date.slice(0,10));
     var machineDate = target.getTime() + (new Date().getTimezoneOffset())*MS_IN_MIN;
     return new Date(machineDate).toString().slice(0, 15);
@@ -391,6 +392,20 @@ function gen_vData()
         };
     }
 
+function gen_vingData()
+    {
+    return {
+        id: null, 
+        opp_id: null,
+        vol_id: null,
+        title: null,
+        type: null,
+        starttime: null,
+        endtime: null,
+        validated: null,
+        };
+    }
+
 
 function gen_oppInfo()
     {
@@ -417,7 +432,6 @@ function gen_oppData()
         endtime: null,
         location: null, 
         description: null, 
-        viewableby: null, 
         volunteerlimit: null, 
         coordinatorname: null, 
         coordinatoremail: null, 

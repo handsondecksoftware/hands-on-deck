@@ -37,7 +37,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         console.log('getVolunteerInfo() called by: ' + user.volunteer_id);
 
         //Set the query
-        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
         query += " FROM volunteer AS V";
         query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
         query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
@@ -48,7 +48,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             {
             query += ";";
             }
-        else if(volunteerID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
+        else if(volunteerID == 0)
             {
             query += " AND V.volunteer_id = " + user.volunteer_id + ";";
             }
@@ -125,7 +125,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
         console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
 
         //Set the default query
-        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
         query += " FROM volunteer AS V";
         query += " LEFT JOIN";
         query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
@@ -254,41 +254,19 @@ exports.editVolunteer = async (user, volunteerData) =>
 
         //Verify all the inputs from the volunteerData element that will be placed in SQL query
         if(general.verifyInput(volunteerData.name) && general.verifyInput(volunteerData.username) &&
-            general.verifyInput(volunteerData.email) && general.verifyInput(volunteerData.teammame))
+            general.verifyInput(volunteerData.email) && general.verifyInput(volunteerData.leaderboards))
             {
-            //The inputs are valid
+            //The inputs do not contain SQL injection attacks
 
-            //Ensure the email provided is not used by anyone else 
-            query = "SELECT * FROM volunteer";
-            query += " WHERE email = '" + volunteerData.email + "' AND volunteer_id != " + user.volunteer_id;
-
-            await database.queryDB(query, (res, e) => 
-                { 
-                if(e) 
-                    {
-                    console.log("DATABASE ERROR: " + e.message);
-                    response.errorcode = error.DATABASE_ACCESS_ERROR;
-                    response.success = false;
-                    }
-                else 
-                    {
-                    tempResult = res.rows;
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
-                    }
-                });
-
-            //if the email is not duplicated
-            if(tempResult == null || tempResult == undefined)
+            //Ensure the username and name is not empty
+            if(volunteerData.username != "" && volunteerData.username != undefined && 
+                volunteerData.name != "" && volunteerData.name != undefined && general.isValidEmail(volunteerData.email))
                 {
-                //Update the volunteers information
-                query2 =  "UPDATE volunteer SET";
-                query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[0];
-                query2 += "', email = '" + volunteerData.email + "', username = '" + volunteerData.username;
-                query2 += "', leaderboards = " + volunteerData.leaderboards;
-                query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
-    
-                await database.queryDB(query2, (res, e) => 
+                 //Ensure the username provided is not used by anyone else 
+                query = "SELECT * FROM volunteer";
+                query += " WHERE username = '" + volunteerData.username + "' AND volunteer_id != " + user.volunteer_id;
+
+                await database.queryDB(query, (res, e) => 
                     { 
                     if(e) 
                         {
@@ -298,12 +276,45 @@ exports.editVolunteer = async (user, volunteerData) =>
                         }
                     else 
                         {
+                        tempResult = res.rows;
                         response.errorcode = error.NOERROR;
                         response.success = true;
                         }
                     });
+
+                console.log(tempResult);
+                //if the username is not duplicated
+                if(tempResult === undefined || tempResult.length == 0)
+                    {
+                    //Update the volunteers information
+                    query2 =  "UPDATE volunteer SET";
+                    query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[0];
+                    query2 += "', email = '" + volunteerData.email + "', username = '" + volunteerData.username;
+                    query2 += "', leaderboards = " + volunteerData.leaderboards;
+                    query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
+        
+                    await database.queryDB(query2, (res, e) => 
+                        { 
+                        if(e) 
+                            {
+                            console.log("DATABASE ERROR: " + e.message);
+                            response.errorcode = error.DATABASE_ACCESS_ERROR;
+                            response.success = false;
+                            }
+                        else 
+                            {
+                            response.errorcode = error.NOERROR;
+                            response.success = true;
+                            }
+                        });
+                    }
+                else
+                    {
+                    response.errorcode = error.INVALID_INPUT_ERROR;
+                    response.success = false;
+                    }
                 }
-            else
+            else 
                 {
                 response.errorcode = error.INVALID_INPUT_ERROR;
                 response.success = false;
@@ -340,6 +351,7 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
     var response = {success: false, errorcode: -1};
     var query = "";
     var query2 = "";
+    var passwordMatch = false;
 
     try 
         {
@@ -351,7 +363,7 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
             //Can assume inputs are now valid, check that the old password is valid
             query = "SELECT password FROM volunteer WHERE volunteer_id = " + user.volunteer_id;
 
-            await database.queryDB(query2, (res, e) => 
+            await database.queryDB(query, (res, e) => 
                 { 
                 if(e) 
                     {
@@ -361,26 +373,32 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
                     }
                 else if(bcrypt.compareSync(oldPassword, res.rows[0].password))
                     {
-                    query2 =  "UPDATE volunteer SET";
-                    query2 += " password = " + bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10));
-                    query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
-
-                    await database.queryDB(query2, (res, e) => 
-                        { 
-                        if(e) 
-                            {
-                            console.log("DATABASE ERROR: " + e.message);
-                            response.errorcode = error.DATABASE_ACCESS_ERROR;
-                            response.success = false;
-                            }
-                        else 
-                            {
-                            response.errorcode = error.NOERROR;
-                            response.success = true;
-                            }
-                        });
+                    passwordMatch = true;
                     }
                 });
+
+            //If the passwords match
+            if(passwordMatch)
+                {
+                query2 =  "UPDATE volunteer SET";
+                query2 += " password = '" + bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)) + "'";
+                query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
+
+                await database.queryDB(query2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        console.log("DATABASE ERROR: " + e.message);
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
             }
         }
     catch (err)
