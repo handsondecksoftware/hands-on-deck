@@ -119,6 +119,8 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
 exports.getOpportunityInfo = async (user, oppID) => 
     {
     var response = {success: false, errorcode: -1, oppInfo: []};
+    var query = "";
+    var goodQuery = true;
 
     try 
         {
