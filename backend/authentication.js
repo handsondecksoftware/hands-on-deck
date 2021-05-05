@@ -59,6 +59,7 @@ exports.authcheck = async (req, res, next) =>
         {
         console.log("ERROR OCCURRED: ");
         console.log(error);
+        res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
         }
     }
 

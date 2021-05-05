@@ -140,6 +140,11 @@ app.post('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     response.send(await institution.getInstitutionInfo(request.user));
     });
 
+app.post('/api/getAllInstitutionInfo', auth.authcheck, async (request, response) =>
+    {
+    response.send(await institution.getAllInstitutionInfo());
+    });
+
 app.post('/api/editInstitutionInfo', auth.authcheck, async (request, response) =>
     {
     response.send(await institution.editInstitutionInfo(request.user, request.body.iInfo));
@@ -220,6 +225,11 @@ app.post('/api/validateVolunteeringData', auth.authcheck, async (request, respon
 app.post('/api/getTeamInfo', auth.authcheck, async (request, response) =>
     {
     response.send(await team.getTeamInfo(request.user, request.body.teamID));
+    });
+
+app.post('/api/getAllTeamInfo', auth.authcheck, async (request, response) =>
+    {
+    response.send(await team.getAllTeamInfo(request.body.institution_id));
     });
 
 app.post('/api/getTeamData', auth.authcheck, async (request, response) =>
@@ -312,7 +322,7 @@ app.post('/api/getTeamLeaderboard', auth.authcheck, async (request, response) =>
 app.post('/api/createAccount', async (request, response) =>
     {
     //Temp response until we implement this funtionality
-    response.send({success: false, errormessage: " Request Recieved. Not yet implemented."});
+    response.send(await volunteer.createAccount(request.body));
     });
 
 app.post('/api/isTokenValid',  auth.authcheck, async (request, response) =>

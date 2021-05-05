@@ -489,73 +489,82 @@ exports.getVolunteerLeaderboard = async user =>
 // @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
 //
 ////////////////////////////////////////////////////////////
-/* THIS WILL NEED TO BE MOVED TO CREATE ACCOUNT
-exports.addVolunteer = async (user, volunteerData) => 
+exports.createAccount = async vData => 
     {
     var response = {success: false, errorcode: -1};
-    var errorOccurred = false;
+    var query = "";
+    var tempResult = [];
+    var query2 = "";
+
 
     try {
-        console.log('addVolunteer() called by: ' + user);
-
-
-        //Validate inputs here
-
-        //If input is false
-        // use -- INVALID_INPUT_ERROR
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        //Add volunteerData
-        //JSON element is in form
-        
-        volunteerData = 
+        //Validate all inputs 
+        if(general.verifyInput(vData.name) && general.verifyInput(vData.username) && 
+            general.verifyInput(vData.leaderboards) && general.verifyInput(vData.password) &&
+            general.verifyInput(vData.institution_id) && general.verifyInput(vData.team_id) &&
+            general.verifyInput(vData.email) && general.isValidEmail(vData.email))
             {
-            firstName: <string>,
-            lastName: <string>,
-            email: <string>, 
-            type: <int>,
-            id: <int>, 
-            teamName: <string>, 
-            teamID: <string>, 
-            volHours: <int>, 
-            volunteeringData []: <JSON> 
-            };
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+            console.log('createAccount() called by: ' + vData.username + ' for institution: ' + vData.institution_id);
+            
+            //Make sure the provided username is unique
+            query = "SELECT volunteer_id FROM volunteer WHERE username = '" + vData.username + "';";
 
-        //Generate user password
-        var userPassword = general.generatePassword();
-
-        //Hash password to store in db
-        var hashedPassword = await bcrypt.hash(userPassword, 10).catch(e => {
-            console.log("An Error Occured in hasing the password");
-            errorOccurred = true; 
-        });
-
-        if(!errorOccurred) {
-            await database.queryDB("INSERT INTO volunteer (volunteer_id, team_id, firstname, lastname, password, email, volunteertype) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + 1 + "', '" + volunteerData.firstName + "', '" + volunteerData.lastName + "', '" + hashedPassword + "', '" + volunteerData.email + "', '" + volunteerData.type + "')", 
-                                (res, e) => {
-                if(e) {
+            await database.queryDB(query, (res, e) => 
+                {
+                if(e) 
+                    {
+                    tempResult = [];
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    }
+                else 
+                    {
+                    tempResult = res.rows;
+                    }
+                });
+
+            //Check if query returned nothing which means the username is unique
+            if(tempResult != undefined && tempResult.length == 0)
+                {
+                query2 =  "INSERT INTO volunteer(team_id, institution_id, firstname, lastname, email, password, username, volunteer_type, leaderboards)";
+                query2 += "VALUES (" + vData.team_id + ", " + vData.institution_id + ", '" + vData.name.split(" ")[0] + "', '" + vData.name.split(" ")[1] + "', '";
+                query2 += vData.email + "', '" + bcrypt.hashSync(vData.password, bcrypt.genSaltSync(10)) + "', '" + vData.username + "', '";
+                query2 += enumType.VT_VOLUNTEER + "', '" + vData.leaderboards + "');"
+
+                console.log("Step 2 Query");
+                console.log(query2);
+
+                await database.queryDB(query2, (res, e) => 
+                    {
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
                 }
-                else {
-                    //Send the user an email with their account info 
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
-                }
-            });
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            }
         }
-    }
-    catch (err) {
-        console.log("Error Occurred: " + err.message);
+    catch (error) 
+        {
+        console.log("Error Occurred: " + error.message);
 
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
-    }
+        }
 
     //Log completion of function
-    console.log('Result of addVolunteer() is: ' + response.success);
+    console.log('Result of createAccount() is: ' + response.success);
 
     return response;
     }
-*/

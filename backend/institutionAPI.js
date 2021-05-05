@@ -74,6 +74,56 @@ exports.getInstitutionInfo = async user =>
 
 ////////////////////////////////////////////////////////////
 //
+// Will get the volunteers instituion information
+//
+////////////////////////////////////////////////////////////
+exports.getAllInstitutionInfo = async () => 
+    {
+    var response = {success: false, errorcode: -1, iInfo: []};
+    var query = "";
+
+    try 
+        {
+        var currTime = new Date().toISOString();
+        console.log('getAllInstitutionInfo() called at: ' + currTime);
+
+        //Set the query -- need to exclude the developer accounts
+        query = "SELECT institution_id AS id, name, location FROM institution WHERE institution_id >= 1;";
+
+        await database.queryDB(query, (res, e) => 
+            { 
+            if(e) 
+                {
+                console.log("DATABASE ERROR: " + e.message);
+                response.errorcode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+                }
+            else 
+                {
+                response.iInfo = res.rows;
+                response.errorcode = error.NOERROR;
+                response.success = true;
+                }
+            });
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.errorcode = error.SERVER_ERROR;
+        response.iInfo = [];
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getAllInstitutionInfo() is: ' + response.success);
+
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
+//
 // Will edit the volunteers instituion info 
 //
 ////////////////////////////////////////////////////////////
@@ -87,7 +137,8 @@ exports.editInstitutionInfo = async (user, iInfo) =>
         console.log('editInstitutionInfo() called by: ' + user.volunteer_id);
 
         //Validate the inputs from iInfo
-        if(general.verifyInput(iInfo.name) && general.verifyInput(iInfo.location))
+        if(general.verifyInput(iInfo.name) && general.verifyInput(iInfo.location) &&
+            iInfo.name.length > 0 && iInfo.location.length > 0)
             {
             //Inputs are valid, Make sure the volunteer is of proper type
             if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)

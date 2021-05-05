@@ -35,29 +35,20 @@ function setupWelcomePage()
         setLoaderVisibility(true);
         handleAPIcall(null, "/api/getInstitutionInfo", response =>
             {
-            var iInfo;
-    
             if(response.success)
                 {
-                iInfo = response.iInfo;
+                getRef("instituionName").innerHTML = response.iInfo.name;
+                getRef("numVolunteers").innerHTML = response.iInfo.numvolunteers;
+                getRef("totalHours").innerHTML = response.iInfo.totalhours;
                 }
             else 
                 {
                 printUserErrorMessage(response.errorcode);
     
-                //Set some default values to use
-                iInfo = {
-                    id: -1, 
-                    name: "Could Not Load", 
-                    location: "Could Not Load", 
-                    numvolunteers: "Unkown",
-                    totalhours: "Unkown",
-                    };
+                getRef("instituionName").innerHTML = "Could Not Load";
+                getRef("numVolunteers").innerHTML = "Could Not Load";
+                getRef("totalHours").innerHTML = "Could Not Load";
                 }
-    
-            getRef("instituionName").innerHTML = iInfo.name;
-            getRef("numVolunteers").innerHTML = iInfo.numvolunteers;
-            getRef("totalHours").innerHTML = iInfo.totalhours;
     
             setLoaderVisibility(false);
             });

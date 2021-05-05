@@ -70,6 +70,69 @@ exports.getTeamInfo = async (user, teamID) =>
 
 
 ////////////////////////////////////////////////////////////
+// Will get all the team info
+//
+// @param[in]  institution_id       institution_id to get teams for
+//
+// @param[out] teamInfo             Array of data JSONs for client  
+//
+////////////////////////////////////////////////////////////
+exports.getAllTeamInfo = async (institution_id) => 
+    {
+    var response = {success: false, errorcode: -1, teamInfo: []};
+    var query = "";
+
+    try 
+        {
+        var currTime = new Date().toISOString();
+        console.log('getAllTeamInfo() called at: ' + currTime);
+
+        //Set the query -- need to exclude the developer accounts
+        if(general.verifyInput(institution_id))
+            {
+            query = "SELECT team_id AS id, name, sex FROM team WHERE institution_id = " + institution_id + ";";
+
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    console.log("DATABASE ERROR: " + e.message);
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    response.teamInfo = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            }
+        else 
+            {
+            response.teamInfo = [{id: null, name: "No Team's Availible", sex: "" }];
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = true;
+            }
+        
+        }
+    catch (err)
+        {
+        console.log("Error Occurred: " + err.message);
+
+        response.errorcode = error.SERVER_ERROR;
+        response.teamInfo = [{id: null, name: "No Team's Availible", sex: "" }];
+        response.success = false;
+        }
+
+    //Log completion of function
+    console.log('Result of getAllTeamInfo() is: ' + response.success);
+
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
 // Will get the team data
 //
 // @param[in]  user             user information

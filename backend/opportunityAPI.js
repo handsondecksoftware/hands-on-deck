@@ -322,7 +322,7 @@ exports.addOpportunity = async (user, oppData) =>
 
         //Validate the inputs and the user adding the opportunity
         if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
-            general.verifyInput(oppData.title) && general.verifyInput(oppData.type) && 
+            general.verifyInput(oppData.title) && isValidEnum_OT(oppData.type) && 
             general.verifyInput(oppData.starttime) && general.verifyInput(oppData.endtime) &&
             general.verifyInput(oppData.location) && general.verifyInput(oppData.description) &&
             general.verifyInput(oppData.coordinatorname) && general.verifyInput(oppData.coordinatoremail) &&
@@ -395,7 +395,7 @@ exports.editOpportunity = async (user, oppData) =>
         //Validate the inputs and the user editting the opportunity
         if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
             general.verifyInput(oppData.id) && general.verifyInput(oppData.title) && 
-            general.verifyInput(oppData.type) && general.verifyInput(oppData.starttime) && 
+            isValidEnum_OT(oppData.type) && general.verifyInput(oppData.starttime) && 
             general.verifyInput(oppData.endtime) && general.verifyInput(oppData.location) && 
             general.verifyInput(oppData.description) && general.verifyInput(oppData.coordinatorname) && 
             general.verifyInput(oppData.coordinatoremail) && general.verifyInput(oppData.coordinatorphone) )
@@ -550,6 +550,34 @@ exports.getOpportunityTypes = async user =>
     console.log('Result of getOpportunityTypes() is: ' + response.success);
 
     return response;
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// Will add the opportunity types to the institution enum
+//
+// @param[in]  user                     user Information
+// @param[in]  opportunityType          opportunity type to be added
+//
+// @param[out] {success, errorcode}     Values indicating success of add  
+//
+////////////////////////////////////////////////////////////////////////////////////
+function isValidEnum_OT(value)
+    {
+    var enums = {
+        'Not Set': true,
+        'Meeting': true,
+        'Special Olympics': true,
+        'Game Day': true,
+        'Campus': true,
+        'Community': true,
+        'Social': true,
+        'Planning': true,
+        'Media': true,
+        'Other': true
+        };
+
+    return enums[value] ?? false;
     }
 
 
