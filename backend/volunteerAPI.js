@@ -454,9 +454,9 @@ exports.getVolunteerLeaderboard = async user =>
                 response.volunteerLeader = res.rows;
 
                 //Set the rank of each volunteer -- assuming they are in sorted order already
-                for(var v = 1; v <= response.volunteerLeader.length; v++)
+                for(var v = 0; v < response.volunteerLeader.length; v++)
                     {
-                    response.volunteerLeader[v]['rank'] = v; 
+                    response.volunteerLeader[v]['rank'] = v+1; 
                     }
 
                 response.errorcode = error.NOERROR;
