@@ -91,6 +91,7 @@ exports.verifyInput = input => {
     catch (error)
         {
         valid = false;
+        console.log("Input that caused error: " + input);
         console.log("Error occured in verifying the input: " + error.message);
         }
 
