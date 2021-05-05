@@ -72,21 +72,27 @@ exports.generatePassword = () => {
 exports.verifyInput = input => {
     var valid = true;
 
-    //If the input is a number then it will be ok, check if it is not
-    if(isNaN(input))
+    try
         {
-        if(input.includes(';'))
-            valid = false;
-        else if(input.includes('OR'))
-            valid = false;
-        else if(input.includes('='))
-    
-        //Add more checks for sql injection attacks
-    
-        if(!valid)
-            console.log("Input was invalid, may be SQL injection attack... INPUT: " + input);
+        //If the input is a number then it will be ok, check if it is not
+        if(isNaN(input))
+            {
+            if(input.includes(';'))
+                valid = false;
+            else if(input.includes('OR'))
+                valid = false;
+            else if(input.includes('='))
+
+            //Add more checks for sql injection attacks
+            if(!valid)
+                console.log("Input was invalid, may be SQL injection attack... INPUT: " + input);
+            }
         }
-   
+    catch (error)
+        {
+        valid = false;
+        console.log("Error occured in verifying the input: " + error.message);
+        }
 
     return valid;
 }
