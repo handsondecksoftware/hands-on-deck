@@ -42,7 +42,7 @@ exports.getVolunteeringData = async (user, vol_ID) =>
             query += " FROM volunteeringdata AS VD, opportunity AS O WHERE VD.opp_id = O.opp_id";
 
             //Determine Correct Query to run
-            if(vol_ID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
+            if(vol_ID == 0)
                 {
                 //Set the query
                 query += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
