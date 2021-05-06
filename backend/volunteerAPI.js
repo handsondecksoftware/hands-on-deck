@@ -435,12 +435,15 @@ exports.getVolunteerLeaderboard = async user =>
         {
         console.log('getVolunteerLeaderboard() called by: ' + user.volunteer_id);
 
+        // Can look at reordering query with innner join so that we do not have to consider null situations with num_hours
         query =  " SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
         query += " FROM volunteer_stats AS VS";
         query += " LEFT JOIN volunteer AS V ON V.volunteer_id = VS.volunteer_id";
         query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
         query += " WHERE VS.institution_id = " + user.institution_id + " AND V.leaderboards = true";
-        query += " ORDER BY num_hours DESC LIMIT 10;";
+        query += " ORDER BY num_hours DESC NULLS LAST LIMIT 10;";
+
+        //case when MyDate is null then 1 else 0 end, MyDate
        
         await database.queryDB(query, (res, e) => 
             { 
