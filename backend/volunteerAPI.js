@@ -37,7 +37,8 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         console.log('getVolunteerInfo() called by: ' + user.volunteer_id);
 
         //Set the query
-        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, VS.num_hours AS numhours";
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username,";
+        query += " CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, V.leaderboards, VS.num_hours AS numhours";
         query += " FROM volunteer AS V";
         query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
         query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
@@ -125,7 +126,8 @@ exports.getVolunteerData = async (user, vol_ID) =>
         console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
 
         //Set the default query
-        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username, CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, vd_data.numhours";
+        query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username,";
+        query += " CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, V.leaderboards, vd_data.numhours";
         query += " FROM volunteer AS V";
         query += " LEFT JOIN";
         query +=    " (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS numhours";
@@ -288,7 +290,7 @@ exports.editVolunteer = async (user, volunteerData) =>
                     {
                     //Update the volunteers information
                     query2 =  "UPDATE volunteer SET";
-                    query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[0];
+                    query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[1];
                     query2 += "', email = '" + volunteerData.email + "', username = '" + volunteerData.username;
                     query2 += "', leaderboards = " + volunteerData.leaderboards;
                     query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
@@ -437,7 +439,7 @@ exports.getVolunteerLeaderboard = async user =>
         query += " FROM volunteer_stats AS VS";
         query += " LEFT JOIN volunteer AS V ON V.volunteer_id = VS.volunteer_id";
         query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
-        query += " WHERE VS.institution_id = " + user.institution_id;
+        query += " WHERE VS.institution_id = " + user.institution_id + " AND V.leaderboards = true";
         query += " ORDER BY num_hours DESC LIMIT 10;";
        
         await database.queryDB(query, (res, e) => 

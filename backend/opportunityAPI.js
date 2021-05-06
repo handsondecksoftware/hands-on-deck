@@ -217,7 +217,7 @@ exports.getOpportunityData = async (user, oppID) =>
 
     try 
         {
-        console.log('getOpportunityData() called by: ' + user.volunteer_id);
+        console.log('getOpportunityData() called by: ' + user.volunteer_id + ' for opp: ' + oppID);
 
         //Check that the caller is valid and that the input is valid
         if(general.verifyInput(oppID))

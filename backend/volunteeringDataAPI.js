@@ -28,6 +28,7 @@ exports.getVolunteeringData = async (user, vol_ID) =>
     {
     var response = {success: false, errorcode: -1, volunteeringData: []};
     var query = "";
+    var goodQuery = true;
 
     try 
         {
@@ -45,12 +46,12 @@ exports.getVolunteeringData = async (user, vol_ID) =>
             if(vol_ID == 0)
                 {
                 //Set the query
-                query += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
+                query += " AND VD.volunteer_id = " + user.volunteer_id + ";";
                 }
             //To access specific volunteer that is not that user they must have admin or dev privileges
             else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
                 {
-                query += " WHERE VD.volunteer_id = " + vol_ID + ";";
+                query += " AND VD.volunteer_id = " + vol_ID + ";";
                 }
             else 
                 {
@@ -224,9 +225,9 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
 
 
             query =  "INSERT INTO volunteeringdata(volunteer_id, opp_id, starttime, endtime, validated)";
-            query += " VALUES (" + volunteeringData.vol_id + ", " + volunteeringData.opp_id;
-            query += " '" + volunteeringData.starttime + "', '" + volunteeringData.endtime + "'";
-            query += " validated = 'false');"
+            query += " VALUES (" + volunteeringData.vol_id + ", " + volunteeringData.opp_id + ",";
+            query += " '" + volunteeringData.starttime + "', '" + volunteeringData.endtime + "',";
+            query += " false);"
 
             await database.queryDB(query, (res, e) => 
                 { 
@@ -363,7 +364,7 @@ exports.deleteVolunteeringData = async (user, vData_ID) =>
             {
             //Can add verification that this deletion is happening by authorized party
             //  authrorized is admin or volunteer themself
-            query =  "DELETE FROM volunteeringdata WHERE vData_ID = " + vData_ID;
+            query =  "DELETE FROM volunteeringdata WHERE volunteeringdata_id = " + vData_ID;
 
             //Run query
             await database.queryDB(query, (res, e) => 
@@ -407,7 +408,7 @@ exports.deleteVolunteeringData = async (user, vData_ID) =>
 ////////////////////////////////////////////////////////////
 exports.validateVolunteeringData = async (user, vdata_ID, validated) => 
     {
-    var response = {success: false, errorCode: -1};
+    var response = {success: false, errorcode: -1};
     var query = "";
 
     try 

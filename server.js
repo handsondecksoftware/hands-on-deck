@@ -44,7 +44,7 @@ const volunteerData = require('./backend/volunteeringDataAPI');
 const opportunity = require('./backend/opportunityAPI');
 const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
-//const general = require('./backend/general');
+const error = require('./backend/errorCodes');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ app.post('/api/getInstitutionInfo', auth.authcheck, async (request, response) =>
     response.send(await institution.getInstitutionInfo(request.user));
     });
 
-app.post('/api/getAllInstitutionInfo', auth.authcheck, async (request, response) =>
+app.post('/api/getAllInstitutionInfo', async (request, response) =>
     {
     response.send(await institution.getAllInstitutionInfo());
     });
@@ -328,7 +328,7 @@ app.post('/api/createAccount', async (request, response) =>
 app.post('/api/isTokenValid',  auth.authcheck, async (request, response) =>
     {
     //if authcheck passes the token is valid
-    response.send({success: true, errorcode: null});
+    response.send({success: true, errorcode: error.NOERROR});
     });
 
 
