@@ -42,13 +42,13 @@ exports.getVolunteeringData = async (user, vol_ID) =>
             query += " FROM volunteeringdata AS VD, opportunity AS O WHERE VD.opp_id = O.opp_id";
 
             //Determine Correct Query to run
-            if(volunteerID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
+            if(vol_ID == 0 && user.volunteer_type == enumType.VT_VOLUNTEER)
                 {
                 //Set the query
                 query += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
                 }
             //To access specific volunteer that is not that user they must have admin or dev privileges
-            else if(volunteerID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
+            else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
                 {
                 query += " WHERE VD.volunteer_id = " + vol_ID + ";";
                 }
