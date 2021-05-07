@@ -11,7 +11,7 @@
 const database = require('./databaseSetup');
 const general = require('./general');
 const error = require('./errorCodes');
-
+const enumType = require('./enumTypes');
 
 const MALE = 1; 
 const FEMALE = 0; 
@@ -30,28 +30,56 @@ const FEMALE = 0;
 exports.getTeamInfo = async (user, teamID) => 
     {
     var response = {success: false, errorcode: -1, teamInfo: []};
+    var goodQuery = true;
 
     try 
         {
         console.log('getTeamInfo() called by: ' + user.volunteer_id);
-
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var teamElement = 
+        var query = "";
+        //Set the query
+        query = "SELECT T.team_id AS id, T.name AS name, T.sex as sex, numhours, numvolunteers"
+        query += " FROM team AS T"
+        query += " LEFT JOIN (SELECT V.team_id, SUM(num_hours) AS numhours, COUNT(*) AS numvolunteers FROM volunteer AS V"
+        query += " LEFT JOIN (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS num_hours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data"
+        query += " ON vd_data.volunteer_id = V.volunteer_id"
+        query += " GROUP BY V.team_id) team_data"
+        query += " ON team_data.team_id = T.team_id"
+        if(teamID === -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            id: 1, 
-            name: "Golf", 
-            sex: MALE, 
-            numvolunteers: 1, 
-            numhours: 23, 
-            };
-                
+                query += ";";
+            }
+        else if(teamID > 0)
+            {
+            query += " WHERE T.team_id = " + teamID + ";";
+            }
+        else 
+            {
+                response.teamInfo = null;
+                response.errorcode = error.PERMISSION_ERROR;
+                response.success = false;
+                goodQuery = false;
+            }
 
-        response.teamInfo.push(teamElement);
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-
-        response.errorcode = error.NOERROR;
-        response.success = true;
+        //Run query if query is valid
+        if(goodQuery)
+            {
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.teamInfo = null;
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    }
+                else 
+                    {
+                    //Send the list of available teams to the user
+                    response.teamInfo = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+            }
         }
     catch (err)
         {

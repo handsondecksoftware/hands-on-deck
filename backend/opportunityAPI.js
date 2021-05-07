@@ -577,7 +577,7 @@ function isValidEnum_OT(value)
         'Other': true
         };
 
-    return enums[value] ?? false;
+    return enums[value] || false; // used to be "??", not sure what was intended to be there? Ternary operator? It was crashing the app before
     }
 
 
