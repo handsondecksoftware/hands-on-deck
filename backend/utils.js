@@ -7,8 +7,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-const error = require('./errorcodes');
-const enums = require('./enumTypes');
+const error = require('../backend/errorcodes');
 
 const PRODUCTION = true;
 

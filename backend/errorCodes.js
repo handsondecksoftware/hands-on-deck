@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-// errorCodes.js -- exported module containing error codes across server
+// errorcodes.js -- exported module containing error codes across server
 //                  
 // Ryan Stolys, 07/10/20
 //    - File Created

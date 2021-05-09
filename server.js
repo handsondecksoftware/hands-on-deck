@@ -36,8 +36,6 @@ var MILISECS_IN_SECOND = 1000;
 ////////////////////////////////////////////////////////////////////////
 const database = require('./backend/databaseSetup');
 
-//const error = require('./backend/errorCodes');
-
 const institution = require('./backend/institutionAPI');
 const volunteer = require('./backend/volunteerAPI');
 const volunteerData = require('./backend/volunteeringDataAPI');
