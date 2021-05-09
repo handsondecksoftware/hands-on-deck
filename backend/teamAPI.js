@@ -9,55 +9,64 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const general = require('./general');
-const error = require('./errorCodes');
+const util = require('./utils');
+const error = require('./errorcodes');
 const enumType = require('./enumTypes');
-
-const MALE = 1; 
-const FEMALE = 0; 
 
 
 ////////////////////////////////////////////////////////////
 // Will get the team info
 //
-// @param[in]  user             user information
-// @param[in]  teamID           ID of team the client is looking for detail on
+// @param[in]  user                 user information
+// @param[in]  teamID               ID of team the client is looking for detail on
 //                                  value of -1 means all values are of interest
 //
-// @param[out] volunteerInfo          Array of data JSONs for client  
+// @param[out] volunteerInfo        Array of data JSONs for client  
 //
 ////////////////////////////////////////////////////////////
 exports.getTeamInfo = async (user, teamID) => 
     {
     var response = {success: false, errorcode: -1, teamInfo: []};
+    var query = "";
     var goodQuery = true;
 
     try 
         {
-        console.log('getTeamInfo() called by: ' + user.volunteer_id);
-        var query = "";
+        util.logINFO("getTeamInfo(): called by: " + user.volunteer_id + " for teamID " + teamID);
+        
         //Set the query
-        query = "SELECT T.team_id AS id, T.name AS name, T.sex as sex, numhours, numvolunteers"
+        query =  "SELECT T.team_id AS id, T.name AS name, T.sex as sex, numhours, numvolunteers"
         query += " FROM team AS T"
-        query += " LEFT JOIN (SELECT V.team_id, SUM(num_hours) AS numhours, COUNT(*) AS numvolunteers FROM volunteer AS V"
-        query += " LEFT JOIN (SELECT VD.volunteer_id, SUM(extract(HOUR FROM (VD.endtime - VD.starttime))) AS num_hours FROM volunteeringdata AS VD GROUP BY VD.volunteer_id) vd_data"
-        query += " ON vd_data.volunteer_id = V.volunteer_id"
-        query += " GROUP BY V.team_id) team_data"
-        query += " ON team_data.team_id = T.team_id"
-        if(teamID === -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
+        query += " LEFT JOIN (SELECT team_id, COUNT(*) as numvolunteers, SUM(num_hours) AS numhours FROM volunteer_stats GROUP BY team_id) vstat"
+        query += " ON vstat.team_id = T.team_id"
+        query += " WHERE T.institution_id = " + user.institution_id;
+
+        if(teamID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-                query += ";";
+            query += ";";
             }
         else if(teamID > 0)
             {
-            query += " WHERE T.team_id = " + teamID + ";";
+            if(util.verifyInput(teamID))
+                {
+                query += " AND T.team_id = " + teamID + ";";
+                }
+            else 
+                {
+                response.teamInfo = null;
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                goodQuery = false;
+                util.logWARN("getTeamInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                }
             }
         else 
             {
-                response.teamInfo = null;
-                response.errorcode = error.PERMISSION_ERROR;
-                response.success = false;
-                goodQuery = false;
+            response.teamInfo = null;
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            goodQuery = false;
+            util.logWARN("getTeamInfo(): Set errorcode to: " + error.PERMISSION_ERROR, error.PERMISSION_ERROR);
             }
 
         //Run query if query is valid
@@ -70,6 +79,7 @@ exports.getTeamInfo = async (user, teamID) =>
                     response.teamInfo = null;
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getTeamInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -83,15 +93,16 @@ exports.getTeamInfo = async (user, teamID) =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.teamInfo = null;
         response.success = false;
+
+        util.logWARN("getTeamInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getTeamInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getTeamInfo() is: ' + response.success);
+    util.logINFO("getTeamInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -112,11 +123,11 @@ exports.getAllTeamInfo = async (institution_id) =>
 
     try 
         {
-        var currTime = new Date().toISOString();
-        console.log('getAllTeamInfo() called at: ' + currTime);
+        util.logINFO("getAllTeamInfo(): called");
+
 
         //Set the query -- need to exclude the developer accounts
-        if(general.verifyInput(institution_id))
+        if(util.verifyInput(institution_id))
             {
             query = "SELECT team_id AS id, name, sex FROM team WHERE institution_id = " + institution_id + ";";
 
@@ -124,9 +135,9 @@ exports.getAllTeamInfo = async (institution_id) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getAllTeamInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -141,20 +152,25 @@ exports.getAllTeamInfo = async (institution_id) =>
             response.teamInfo = [{id: null, name: "No Team's Availible", sex: "" }];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = true;
+            util.logWARN("getAllTeamInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            util.logINFO("getAllTeamInfo(): Provided default value in return");
+
             }
         
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.teamInfo = [{id: null, name: "No Team's Availible", sex: "" }];
         response.success = false;
+
+        util.logWARN("getAllTeamInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getAllTeamInfo(): " + err.message, err.code);
+        util.logINFO("getAllTeamInfo(): Provided default value in return");
         }
 
     //Log completion of function
-    console.log('Result of getAllTeamInfo() is: ' + response.success);
+    util.logINFO("getAllTeamInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -173,65 +189,86 @@ exports.getAllTeamInfo = async (institution_id) =>
 exports.getTeamData = async (user, teamID) => 
     {
     var response = {success: false, errorcode: -1, teamData: null};
+    var query = "";
+    var query2 = "";
 
     try 
         {
-        console.log('getTeamData() called by: ' + user.volunteer_id);
+        util.logINFO("getTeamData(): called by: " + user.volunteer_id + " for teamID: " + teamID);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Set some default values to use for now
-        var volunteerElement = 
-                {
-                id: 1,
-                name: "Ryan Stolys",
-                email: "rstolys@sfu.ca",
-                leaderboards: true, 
-                teamname: "M - Golf", 
-                team_id: 1,
-                numhours: 23, 
-                };
-
-        var volunteerElement2 = 
-                {
-                id: 2,
-                name: "Jayden Cole",
-                email: "jcole@sfu.ca",
-                leaderboards: true, 
-                teamname: "M - Swim", 
-                team_id: 1,
-                numhours: 34, 
-                };
-            
-
-        var teamElement = 
+        if(util.verifyInput(teamID))
             {
-            id: 1, 
-            name: "Golf", 
-            sex: "Men", 
-            numvolunteers: 1, 
-            numhours: 23,
-            leaderboard: true, 
-            volunteers: [volunteerElement, volunteerElement2],
-            };
-            
+            //Set the query
+            query =  "SELECT T.team_id AS id, T.name AS name, T.sex as sex, vstat.numhours, vstat.numvolunteers, T.leaderboard"
+            query += " FROM team AS T";
+            query += " LEFT JOIN (SELECT team_id, COUNT(*) as numvolunteers, SUM(num_hours) AS numhours FROM volunteer_stats GROUP BY team_id) vstat"
+            query += " ON vstat.team_id = T.team_id"
+            query += " WHERE T.team_id = " + teamID + ";"
 
-        response.teamData = teamElement;
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
+            await database.queryDB(query, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    util.logWARN("getTeamData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                    }
+                else 
+                    {
+                    response.teamData = res.rows[0];
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            //If the above query was successful - get the volunteer information
+            if(response.success)
+                {
+                query2 =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username,";
+                query2 += " CONCAT(T.sex, ' - ', T.name) AS teamname, V.team_id, V.leaderboards, VS.num_hours AS numhours";
+                query2 += " FROM volunteer AS V";
+                query2 += " LEFT JOIN team AS T ON T.team_id = V.team_id";
+                query2 += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
+                query2 += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id;
+                query2 += " AND V.team_id = " + teamID + ";";
+
+                await database.queryDB(query2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("getTeamData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.teamData['volunteers'] = res.rows;
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.teamData = null;
+            response.success = false;
+            util.logWARN("getTeamData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.teamData = null;
         response.success = false;
+
+        util.logWARN("getTeamData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getTeamData(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getTeamData() is: ' + response.success);
+    util.logINFO("getTeamData(): Result is: " + response.success);
 
     return response;
     }
@@ -249,40 +286,67 @@ exports.getTeamData = async (user, teamID) =>
 exports.editTeam = async (user, teamData) => 
     {
     var response = {success: false, errorcode: -1};
+    var query = "";
 
     try 
         {
-        console.log('editTeam() called by: ' + user.volunteer_id);
+        util.logINFO("editTeam(): called by: " + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Edit team data
-        //JSON element is in form
-        /*
-        teamData = 
-            { 
-            id, 
-            name, 
-            sex, 
-            numvolunteers, 
-            numhours, 
-            volunteers,
-            }; 
-        */   
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
+
+        //Verify the inputs are valid
+        if(util.verifyInput(teamData.id) && util.verifyInput(teamData.name) && 
+            util.verifyInput(teamData.sex) && util.verifyInput(teamData.leaderboard) &&
+            isValidEnum_ST(teamData.sex))
+            {
+            //Set the query to update the information
+            query =  "UPDATE team SET";
+            query += " name = '" + teamData.name + "', sex = '" + teamData.sex + "',";
+            query += " leaderboard = '" + teamData.leaderboard + "'";
+            query += " WHERE team_id = " + teamData.id + ";";
+
+            //Verify the user has valid permissions
+            if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                {
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("editTeam(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.PERMISSION_ERROR;
+                response.success = false;
+                util.logWARN("editTeam(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logWARN("editTeam(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("editTeam(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("editTeam(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of editTeam() is: ' + response.success);
+    util.logINFO("editTeam(): Result is: " + response.success);
     
     return response;
     }
@@ -303,52 +367,61 @@ exports.addTeam = async (user, teamData) =>
 
     try 
         {
-        console.log('addTeam() called by: ' + user.volunteer_id);
+        util.logINFO("addTeam(): called by: " + user.volunteer_id);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Edit team data
-        //JSON element is in form
-        /*
-        teamData = 
-            { 
-            id, 
-            name, 
-            sex, 
-            numvolunteers, 
-            numhours, 
-            volunteers,
-            }; 
-        */   
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        /* FIX QUERY TO BE LEGITIMATE ADD WITH NEW DATABASE
-        await database.queryDB("INSERT INTO team (team_id, name, institution_id, leaderboard, sex) VALUES ('" + (Math.floor(Math.random() * 100) + 10) + "', '" + teamData.name + "', '" + 1 + "', '" + teamData.leaderboards + "', '" + teamData.sex + "')", 
-                                (res, e) => {
-                if(e) {
-                    response.errorcode = error.DATABASE_ACCESS_ERROR;
-                    response.success = false;
-                }
-                else {
-                    //Send the user an email with their account info 
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
-                }
-            });
-        */
+        //Verify the inputs are valid
+        if(util.verifyInput(teamData.name) && util.verifyInput(teamData.leaderboard) &&
+            util.verifyInput(teamData.sex) && isValidEnum_ST(teamData.sex))
+            {
+            //Set the query to update the information
+            query =  "INSERT INTO team(institution_id, name, leaderboard, sex) VALUES (";
+            query += user.institution_id + ", '" + teamData.name + "', '" + teamData.leaderboard + "',";
+            query += " '" + teamData.sex + "'";
+            query += ");";
 
-        response.errorcode = error.NOERROR;
-        response.success = true;
+            //Verify the user has valid permissions
+            if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                {
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("addTeam(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.PERMISSION_ERROR;
+                response.success = false;
+                util.logWARN("addTeam(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logWARN("addTeam(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("addTeam(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("addTeam(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of addTeam() is: ' + response.success);
+    util.logINFO("addTeam(): Result is: " + response.success);
     
     return response;
     }
@@ -369,25 +442,58 @@ exports.deleteTeam = async (user, teamID) =>
 
     try 
         {
-        console.log('deleteTeam() called by: ' + user.volunteer_id + ' for team: ' + teamID);
+        util.logINFO("deleteTeam(): called by: " + user.volunteer_id + " for team: " + teamID);
 
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-          
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-    
-        response.errorcode = error.NOERROR;
-        response.success = true;
+
+        //Verify the inputs are valid
+        if(util.verifyInput(teamID))
+            {
+            //Set the query to delete the team
+            query =  "DELETE FROM team WHERE team_id = " + teamID + ";";
+
+            //Verify the user has valid permissions
+            if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                {
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("deleteTeam(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.PERMISSION_ERROR;
+                response.success = false;
+                util.logWARN("deleteTeam(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logWARN("deleteTeam(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("deleteTeam(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("deleteTeam(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of deleteTeam() is: ' + response.success);
+    util.logINFO("deleteTeam(): Result is: " + response.success);
     
     return response;
     }
@@ -405,32 +511,12 @@ exports.getTeamsForViewable = async user =>
     {
     var response = {success: false, errorcode: -1, teamInfo: []};
 
-    try 
-        {
-        console.log('getTeamsForViewable() called by: ' + user.volunteer_id);
-
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        //Used as default values for now -- we don't need numvolunteers and num hours in response 
-        //  will make query faster to exclude them
-        response.teamInfo.push({id: 1, name: "Golf", sex: 'Men', numvolunteers: null, numhours: null});
-        response.teamInfo.push({id: 3, name: "Golf", sex: 'Women', numvolunteers: null, numhours: null});
-        response.teamInfo.push({id: 2, name: "Golf", sex: 'Men', numvolunteers: null, numhours: null});
-        ////////////////////////ADD SQL QUERY FOR DATA HERE////////////////////////////////////
-        
-        response.errorcode = error.NOERROR;
-        response.success = true;
-        }
-    catch (err)
-        {
-        console.log("Error Occurred: " + err.message);
-
-        response.errorcode = error.SERVER_ERROR;
-        response.success = false;
-        }
-
+    util.logINFO("getTeamsForViewable(): called by: " + user.volunteer_id);
+    util.logWARN("getTeamsForViewable(): Set errorcode to: " + error.NOT_SUPPORTED, error.NOT_SUPPORTED);
+   
     //Log completion of function
-    console.log('Result of getTeamsForViewable() is: ' + response.success);
-    
+    util.logINFO("getTeamsForViewable(): Result is: " + response.success);
+
     return response;
     }
 
@@ -449,22 +535,24 @@ exports.getTeamLeaderboard = async user =>
 
     try 
         {
-        console.log('getTeamLeaderboard() called by: ' + user.volunteer_id);
+        util.logINFO("getTeamLeaderboard(): called by: " + user.volunteer_id);
 
-        query =  " SELECT CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
-        query += " FROM volunteer_stats AS VS";
-        query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
-        query += " WHERE VS.institution_id = " + user.institution_id;
-        query += " ORDER BY num_hours DESC;";
+
+        query =  " SELECT CONCAT(T.sex, ' - ', T.name) AS teamname, vstat.numhours";
+        query += " FROM team AS T";
+        query += " LEFT JOIN (SELECT team_id, SUM(num_hours) AS numhours FROM volunteer_stats GROUP BY team_id) vstat"
+        query += " ON vstat.team_id = T.team_id";
+        query += " WHERE T.institution_id = " + user.institution_id + " AND T.leaderboard = true";
+        query += " ORDER BY numhours DESC  NULLS LAST;";
        
         await database.queryDB(query, (res, e) => 
             { 
             if(e) 
                 {
-                console.log("DATABASE ERROR: " + e.message);
                 response.teamLeader = [];
                 response.errorcode = error.DATABASE_ACCESS_ERROR;
                 response.success = false;
+                util.logWARN("getTeamLeaderboard(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                 }
             else 
                 {
@@ -483,15 +571,38 @@ exports.getTeamLeaderboard = async user =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.teamLeader = null;
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("getTeamLeaderboard(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getTeamLeaderboard(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getTeamLeaderboard() is: ' + response.success);
-    
+    util.logINFO("getTeamLeaderboard(): Result is: " + response.success);
+
     return response;
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// Will add the opportunity types to the institution enum
+//
+// @param[in]  user                     user Information
+// @param[in]  opportunityType          opportunity type to be added
+//
+// @param[out] {success, errorcode}     Values indicating success of add  
+//
+////////////////////////////////////////////////////////////////////////////////////
+function isValidEnum_ST(value)
+    {
+    var enums = {
+        'M': true,
+        'W': true
+        };
+
+        // DENYS: used to be "??", not sure what was intended to be there? Ternary operator? It was crashing the app before
+        // RYAN: Need newer version of node to use ?? operator. From node 14.0.0
+    return enums[value] || false; 
     }

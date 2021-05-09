@@ -44,7 +44,8 @@ const volunteerData = require('./backend/volunteeringDataAPI');
 const opportunity = require('./backend/opportunityAPI');
 const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
-const error = require('./backend/errorCodes');
+const error = require('./backend/errorcodes');
+const util = require('./backend/utils');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@ const error = require('./backend/errorCodes');
 //
 //Log start of server session
 //
-var server = app.listen(process.env.PORT || 5000, () => console.log(`Listening on 5000`));
+var server = app.listen(process.env.PORT || 5000, () => util.logINFO("Listening on 5000"));
 
 ////////////////////////////////////////////////////////////////////////
 // EXPRESS AND PASSPORT SETUP
@@ -80,12 +81,12 @@ app.use(cookieParser('secretString'));
 app.get('*', async function (req, res, next) { // universal access variable, keep working
     
     //Log status of user
-    //console.log("THE USER IS currently " + req.isAuthenticated());
+    //util.logINFO("THE USER IS currently " + req.isAuthenticated());
 
     // res.locals.user = req.user || null;
     // if (res.locals.user != null) {
-    //     console.log("the user is");
-    //     console.log(res.locals.user);
+    //     util.logINFO("the user is");
+    //     util.logINFO(res.locals.user);
     // }
   
     next();
@@ -99,26 +100,27 @@ app.get('/', (request, response) => {
 });
 
 app.get('/home', auth.authcheck_get, (request, response) => {
-    console.log("Rendering home");
+    util.logINFO("WEB SERVER: Rendering home");
     response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
 });
 
 app.get('/volunteers', auth.authcheck_get, (request, response) => {
-    console.log("Rendering vols");
+    util.logINFO("WEB SERVER: Rendering vols");
     response.render('pages/volunteers', { home: false, opps: false, volunt: true, teams: false, settings: false});
 });
 
 app.get('/opportunities', auth.authcheck_get, (request, response) => {
-    console.log("Rendering opps");
+    util.logINFO("WEB SERVER: Rendering opps");
     response.render('pages/opportunities', { home: false, opps: true, volunt: false, teams: false, settings: false});
 });
 
 app.get('/teams', auth.authcheck_get, (request, response) => {
-    console.log("Rendering teams");
+    util.logINFO("WEB SERVER: Rendering teams");
     response.render('pages/teams', { home: false, opps: false, volunt: false, teams: true, settings: false});
 });
 
 app.get('/settings', auth.authcheck_get, (request, response) => {
+    util.logINFO("WEB SERVER: Rendering settings");
     response.render('pages/settings', { home: false, opps: false, volunt: false, teams: false, settings: true});
 });
 
@@ -187,7 +189,6 @@ app.post('/api/addVolunteer', auth.authcheck, async (request, response) =>
 */
 
 
-
 /////////VOLUNTEERING DATA API CALLS/////////////////////////////////////////////
 app.post('/api/getVolunteeringData', auth.authcheck, async (request, response) =>
     {
@@ -239,7 +240,7 @@ app.post('/api/getTeamData', auth.authcheck, async (request, response) =>
 
 app.post('/api/editTeam', auth.authcheck, async (request, response) =>
     {
-    response.send(await team.editTeam(request.user, request.teamData));
+    response.send(await team.editTeam(request.user, request.body.teamData));
     });
 
 app.post('/api/addTeam', auth.authcheck, async (request, response) =>
@@ -353,20 +354,19 @@ app.post('/api/signIn', function(request, response, next)
             {
             if (err) 
                 {
-                console.log('Error Occured: ');
-                console.log(err);
+                util.logINFO("/api/signIn(): Returning unexpected error message to user");
 
                 if(isMobile)
-                    response.send({success: false, session: null, message: "Unknown Database Error Occurred"});
+                    response.send({success: false, session: null, message: "Soemthing unexpected happened. Please try again"});
                 else
-                    response.render('pages/signIn', { 'message': "Unknown Database Error Occurred"}); 
+                    response.render('pages/signIn', { 'message': "Soemthing unexpected happened. Please try again"}); 
                 }
             else 
                 {
                 //If there is no user matching the provided email
                 if(result.rows[0] == null) 
                     {
-                    console.log("Oops. Incorrect login details.");
+                    util.logINFO("/api/signIn(): Oops. Incorrect login details.");
 
                     if(isMobile)
                         response.send({success: false, session: null, message: "Incorrect Username"});
@@ -380,7 +380,7 @@ app.post('/api/signIn', function(request, response, next)
                         if (err) throw err;
                         else if (isMatch)       //Passwords matched
                             {
-                            //console.log("Passwords matched!");
+                            //util.logINFO("/api/signIn(): Passwords matched!");
                             //Define payload data for user 
                             var user = {
                                 username: username,
@@ -392,7 +392,7 @@ app.post('/api/signIn', function(request, response, next)
                             //if user log in success, generate a JWT token for the user with a secret key
                             jwt.sign({user}, SECRETKEY, { expiresIn: (isMobile ? APP_EXPIRY : WEB_EXPIRY) }, (err, token) => 
                                 {
-                                if(err) { console.log(err) }
+                                if(err) { util.logERROR("/api/signIn(): " + err.message, err.code) }
                                 else
                                     {
                                     if(isMobile)
@@ -407,7 +407,7 @@ app.post('/api/signIn', function(request, response, next)
                             }
                         else 
                             {
-                            //console.log("Oops. Incorrect login details.");
+                            //util.logINFO("/api/signIn(): Oops. Incorrect login details.");
 
                             if(isMobile)
                                 response.send({success: false, session: null, message: "Incorrect Password"});
@@ -421,15 +421,11 @@ app.post('/api/signIn', function(request, response, next)
         }
     catch (e) 
         { 
-        console.log("UNEXPECTED ERROR OCCURRED");
-        console.log("Sent Request Body:");
-        console.log(request);
-        console.log("Error:");
-        console.log(e); 
-
-        response.send({success: false, session: null, message: "An Unexpected Error Occurred"});
-       
-        //throw (e); 
+        util.logERROR("/api/signIn(): An unexpected error occurred: " + err.message, err.code);
+        util.logINFO("/api/signIn(): Request Body --");
+        util.logINFO(request.body);
+        
+        response.send({success: false, session: null, message: "Something unexpected happened. Please try again."});
         }
     });
 ////////////////////////////////////////////////////////////////////////

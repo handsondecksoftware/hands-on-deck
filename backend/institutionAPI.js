@@ -7,9 +7,9 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const error = require('./errorCodes');
+const error = require('./errorcodes');
 const enumType = require('./enumTypes');
-const general = require('./general');
+const util = require('./utils');
 
 
 ////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ exports.getInstitutionInfo = async user =>
 
     try 
         {
-        console.log('getInstitutionInfo() called by: ' + user.volunteer_id);
+        util.logINFO("getInstitutionInfo(): called by: " + user.volunteer_id);
 
         //Set the query
         var query = "SELECT institution_id AS id, name, location, numvolunteers, totalhours";
@@ -38,9 +38,9 @@ exports.getInstitutionInfo = async user =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getInstitutionInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -54,19 +54,21 @@ exports.getInstitutionInfo = async user =>
             {
             response.errorcode = error.PERMISSION_ERROR;
             response.success = false;
+            util.logWARN("getInstitutionInfo(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.iInfo = null;
         response.success = false;
+
+        util.logWARN("getInstitutionInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getInstitutionInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getInstitutionInfo() is: ' + response.success);
+    util.logINFO("getInstitutionInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -84,8 +86,7 @@ exports.getAllInstitutionInfo = async () =>
 
     try 
         {
-        var currTime = new Date().toISOString();
-        console.log('getAllInstitutionInfo() called at: ' + currTime);
+        util.logINFO("getAllInstitutionInfo(): called");
 
         //Set the query -- need to exclude the developer accounts
         query = "SELECT institution_id AS id, name, location FROM institution WHERE institution_id >= 1;";
@@ -94,9 +95,9 @@ exports.getAllInstitutionInfo = async () =>
             { 
             if(e) 
                 {
-                console.log("DATABASE ERROR: " + e.message);
                 response.errorcode = error.DATABASE_ACCESS_ERROR;
                 response.success = false;
+                util.logWARN("getAllInstitutionInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                 }
             else 
                 {
@@ -108,15 +109,16 @@ exports.getAllInstitutionInfo = async () =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.iInfo = [];
         response.success = false;
+
+        util.logWARN("getAllInstitutionInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getAllInstitutionInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getAllInstitutionInfo() is: ' + response.success);
+    util.logINFO("getAllInstitutionInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -134,10 +136,10 @@ exports.editInstitutionInfo = async (user, iInfo) =>
 
     try 
         {
-        console.log('editInstitutionInfo() called by: ' + user.volunteer_id);
+        util.logINFO("getAllInstitutionInfo(): called by: " + user.volunteer_id);
 
         //Validate the inputs from iInfo
-        if(general.verifyInput(iInfo.name) && general.verifyInput(iInfo.location) &&
+        if(util.verifyInput(iInfo.name) && util.verifyInput(iInfo.location) &&
             iInfo.name.length > 0 && iInfo.location.length > 0)
             {
             //Inputs are valid, Make sure the volunteer is of proper type
@@ -155,9 +157,9 @@ exports.editInstitutionInfo = async (user, iInfo) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("editInstitutionInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -170,18 +172,20 @@ exports.editInstitutionInfo = async (user, iInfo) =>
             {
             response.errorcode = error.PERMISSION_ERROR;
             response.success = false;
+            util.logWARN("editInstitutionInfo(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
-        response.errormessage = "Something unexpected happened. Please try again";
+        response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("editInstitutionInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("editInstitutionInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of editInstitutionInfo() is: ' + response.success);
+    util.logINFO("editInstitutionInfo(): Result is: " + response.success);
 
     return response;
     }

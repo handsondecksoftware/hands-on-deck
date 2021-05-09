@@ -27,6 +27,6 @@ module.exports =
     OT_OTHER: 'Other',
 
     //Sex Types
-    ST_MALE: 'Male', 
-    ST_FEMALE: 'Female'
+    ST_MALE: 'M', 
+    ST_FEMALE: 'F'
     }

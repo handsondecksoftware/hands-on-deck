@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const general = require('./general');
-const error = require('./errorCodes');
+const util = require('./utils');
+const error = require('./errorcodes');
 const enumTypes = require('./enumTypes');
 
 
@@ -31,10 +31,11 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
 
     try 
         {
-        console.log('getAllOpportunityInfo() called by: ' + user.volunteer_id);
+        util.logINFO("getAllOpportunityInfo(): called by: " + user.volunteer_id);
+
 
         //Check that the caller is valid and that the input is valid
-        if(general.verifyInput(oppID) && 
+        if(util.verifyInput(oppID) && 
             (user.volunteer_type == enumTypes.VT_DEV || user.volunteer_type == enumTypes.VT_ADMIN) )
             {
             //Create query base
@@ -59,6 +60,7 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
                 response.errorcode = error.INVALID_INPUT_ERROR;
                 response.success = false;
                 goodQuery = true;
+                util.logWARN("getAllOpportunityInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
                 }
 
             if(goodQuery)
@@ -68,10 +70,10 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.oppInfo = [];
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getAllOpportunityInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -87,19 +89,21 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
             response.oppInfo = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("getAllOpportunityInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.oppInfo = null;
         response.success = false;
+
+        util.logWARN("getAllOpportunityInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getAllOpportunityInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getAllOpportunityInfo() is: ' + response.success);
+    util.logINFO("getAllOpportunityInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -124,10 +128,11 @@ exports.getOpportunityInfo = async (user, oppID) =>
 
     try 
         {
-        console.log('getOpportunityInfo() called by: ' + user.volunteer_id);
+        util.logINFO("getOpportunityInfo(): called by: " + user.volunteer_id);
+
 
         //Check that the caller is valid and that the input is valid
-        if(general.verifyInput(oppID))
+        if(util.verifyInput(oppID))
             {
             //Create query base
             query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
@@ -141,6 +146,7 @@ exports.getOpportunityInfo = async (user, oppID) =>
             if(oppID == -1)
                 {
                 query += " WHERE institution_id = " + user.institution_id + " ORDER BY starttime DESC;";
+                //Add date condition? -- maybe can be additional parameter in API call
                 }
             else if(oppID > 0)
                 {
@@ -153,6 +159,7 @@ exports.getOpportunityInfo = async (user, oppID) =>
                 response.errorcode = error.INVALID_INPUT_ERROR;
                 response.success = false;
                 goodQuery = false;
+                util.logWARN("getOpportunityInfo(): Set error code to: " + user.volunteer_type, error.INVALID_INPUT_ERROR);
                 }
 
             if(goodQuery)
@@ -162,10 +169,10 @@ exports.getOpportunityInfo = async (user, oppID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.oppInfo = [];
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getOpportunityInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -181,19 +188,21 @@ exports.getOpportunityInfo = async (user, oppID) =>
             response.oppInfo = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("getOpportunityInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.oppInfo = null;
         response.success = false;
+
+        util.logWARN("getOpportunityInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getOpportunityInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getOpportunityInfo() is: ' + response.success);
+    util.logINFO("getOpportunityInfo(): Result is: " + response.success);
 
     return response;
     }
@@ -217,10 +226,10 @@ exports.getOpportunityData = async (user, oppID) =>
 
     try 
         {
-        console.log('getOpportunityData() called by: ' + user.volunteer_id + ' for opp: ' + oppID);
+        util.logINFO("getOpportunityData(): called by: " + user.volunteer_id + " for opp: " + oppID);
 
         //Check that the caller is valid and that the input is valid
-        if(general.verifyInput(oppID))
+        if(util.verifyInput(oppID))
             {
             //Create query base
             query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
@@ -238,10 +247,10 @@ exports.getOpportunityData = async (user, oppID) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.oppData = [];
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getOpportunityData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -265,10 +274,10 @@ exports.getOpportunityData = async (user, oppID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.oppData = [];
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getOpportunityData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -284,19 +293,21 @@ exports.getOpportunityData = async (user, oppID) =>
             response.oppData = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("getOpportunityData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.oppData = [];
         response.success = false;
+
+        util.logWARN("getOpportunityData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getOpportunityData(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getOpportunityData() is: ' + response.success);
+    util.logINFO("getOpportunityData(): Result is: " + response.success);
 
     return response;
     }
@@ -318,15 +329,16 @@ exports.addOpportunity = async (user, oppData) =>
 
     try 
         {
-        console.log('addOpportunity() called by: ' + user.volunteer_id);
+        util.logINFO("addOpportunity(): called by: " + user.volunteer_id);
+
 
         //Validate the inputs and the user adding the opportunity
         if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
-            general.verifyInput(oppData.title) && isValidEnum_OT(oppData.type) && 
-            general.verifyInput(oppData.starttime) && general.verifyInput(oppData.endtime) &&
-            general.verifyInput(oppData.location) && general.verifyInput(oppData.description) &&
-            general.verifyInput(oppData.coordinatorname) && general.verifyInput(oppData.coordinatoremail) &&
-            general.verifyInput(oppData.coordinatorphone) )
+            util.verifyInput(oppData.title) && isValidEnum_OT(oppData.type) && 
+            util.verifyInput(oppData.starttime) && util.verifyInput(oppData.endtime) &&
+            util.verifyInput(oppData.location) && util.verifyInput(oppData.description) &&
+            util.verifyInput(oppData.coordinatorname) && util.verifyInput(oppData.coordinatoremail) &&
+            util.verifyInput(oppData.coordinatorphone) )
             {
             //Inputs and user are valid, create insert query
 
@@ -341,9 +353,9 @@ exports.addOpportunity = async (user, oppData) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("addOpportunity(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -357,18 +369,20 @@ exports.addOpportunity = async (user, oppData) =>
             response.oppInfo = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("addOpportunity(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("addOpportunity(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("addOpportunity(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of addOpportunity() is: ' + response.success);
+    util.logINFO("addOpportunity(): Result is: " + response.success);
 
     return response;
     }
@@ -390,15 +404,15 @@ exports.editOpportunity = async (user, oppData) =>
 
     try 
         {
-        console.log('editOpportunity() called by: ' + user.volunteer_id);
+        util.logINFO("editOpportunity(): called by: " + user.volunteer_id);
 
         //Validate the inputs and the user editting the opportunity
         if((user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV) &&
-            general.verifyInput(oppData.id) && general.verifyInput(oppData.title) && 
-            isValidEnum_OT(oppData.type) && general.verifyInput(oppData.starttime) && 
-            general.verifyInput(oppData.endtime) && general.verifyInput(oppData.location) && 
-            general.verifyInput(oppData.description) && general.verifyInput(oppData.coordinatorname) && 
-            general.verifyInput(oppData.coordinatoremail) && general.verifyInput(oppData.coordinatorphone) )
+            util.verifyInput(oppData.id) && util.verifyInput(oppData.title) && 
+            isValidEnum_OT(oppData.type) && util.verifyInput(oppData.starttime) && 
+            util.verifyInput(oppData.endtime) && util.verifyInput(oppData.location) && 
+            util.verifyInput(oppData.description) && util.verifyInput(oppData.coordinatorname) && 
+            util.verifyInput(oppData.coordinatoremail) && util.verifyInput(oppData.coordinatorphone) )
             {
             //Inputs and user are valid, create insert query
 
@@ -414,9 +428,9 @@ exports.editOpportunity = async (user, oppData) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("editOpportunity(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -430,18 +444,21 @@ exports.editOpportunity = async (user, oppData) =>
             response.oppInfo = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("editOpportunity(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("editOpportunity(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("editOpportunity(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of editOpportunity() is: ' + response.success);
+    util.logINFO("editOpportunity(): Result is: " + response.success);
+
 
     return response;
     }
@@ -463,10 +480,10 @@ exports.deleteOpportunity = async (user, oppID) =>
 
     try 
         {
-        console.log('deleteOpportunity() called by: ' + user.volunteer_id);
+        util.logINFO("deleteOpportunity(): called by: " + user.volunteer_id);
 
         //Verify that this volunteer is allowed to delete this opportunity
-        if(general.verifyInput(oppID) && 
+        if(util.verifyInput(oppID) && 
             (user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV))
             {
             query =  "DELETE FROM opportunity WHERE opp_id = " + oppID + ";";
@@ -475,9 +492,9 @@ exports.deleteOpportunity = async (user, oppID) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("deleteOpportunity(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -490,18 +507,20 @@ exports.deleteOpportunity = async (user, oppID) =>
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("editInstitutionInfo(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("deleteOpportunity(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("deleteOpportunity(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of deleteOpportunity() is: ' + response.success);
+    util.logINFO("deleteOpportunity(): Result is: " + response.success);
 
     return response;
     }
@@ -521,7 +540,7 @@ exports.getOpportunityTypes = async user =>
 
     try 
         {
-        console.log('getOpportunityTypes() called by: ' + user.volunteer_id);
+        util.logINFO("getOpportunityTypes(): called by: " + user.volunteer_id);
 
         response.oppTypes.push(enumTypes.OT_NOT_SET);
         response.oppTypes.push(enumTypes.OT_CAMPUS);
@@ -539,15 +558,17 @@ exports.getOpportunityTypes = async user =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.oppTypes = [];
         response.success = false;
+
+        util.logWARN("getOpportunityTypes(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getOpportunityTypes(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getOpportunityTypes() is: ' + response.success);
+    util.logINFO("getOpportunityTypes(): Result is: " + response.success);
+
 
     return response;
     }
@@ -579,45 +600,3 @@ function isValidEnum_OT(value)
 
     return enums[value] || false; // used to be "??", not sure what was intended to be there? Ternary operator? It was crashing the app before
     }
-
-
-////////////////////////////////////////////////////////////////////////////////////
-// Will add the opportunity types to the institution enum
-//
-// @param[in]  user                     user Information
-// @param[in]  opportunityType          opportunity type to be added
-//
-// @param[out] {success, errorcode}     Values indicating success of add  
-//
-////////////////////////////////////////////////////////////////////////////////////
-/*
-exports.addOpportunityType = async (user, type)  => 
-  {
-  var response = {success: false, errorcode: -1, oppTypes: []};
-
-  try 
-    {
-    console.log('addOpportunityType() called by: ' + user.volunteer_id);
-
-    ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-    response.oppTypes = ["Meetings", "Special Olympics", "Game Day Events", "Social Events"];
-    ////////////////////////ADD SQL QUERY TO EDIT DATA HERE////////////////////////////////////
-    
-    response.errorcode = error.NOERROR;
-    response.success = true;
-    }
-  catch (err)
-    {
-    console.log("Error Occurred: " + err.message);
-
-    response.errorcode = error.SERVER_ERROR;
-    response.oppTypes = null;
-    response.success = false;
-    }
-
-  //Log completion of function
-  console.log('Result of addOpportunityType() is: ' + response.success);
-  
-  return response;
-  }
-*/

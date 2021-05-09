@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const general = require('./general');
-const error = require('./errorCodes');
+const util = require('./utils');
+const error = require('./errorcodes');
 const enumType = require('./enumTypes');
 
 
@@ -32,10 +32,10 @@ exports.getVolunteeringData = async (user, vol_ID) =>
 
     try 
         {
-        console.log('getVolunteeringData() called by: ' + user.volunteer_id);
+        util.logINFO("getVolunteeringData(): called by: " + user.volunteer_id);
 
         //Ensure the input passed is valid
-        if(general.verifyInput(vol_ID))
+        if(util.verifyInput(vol_ID))
             {
             //Set the query
             query =  "SELECT volunteeringdata_id AS id, volunteer_id AS vol_id, VD.opp_id,"; 
@@ -59,7 +59,8 @@ exports.getVolunteeringData = async (user, vol_ID) =>
                 response.errorcode = error.PERMISSION_ERROR;
                 response.success = false;
                 goodQuery = false;
-                }
+                util.logWARN("getVolunteeringData(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+            }
 
             //Run query if query is valid
             if(goodQuery)
@@ -68,10 +69,10 @@ exports.getVolunteeringData = async (user, vol_ID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.volunteeringData = null;
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -87,20 +88,22 @@ exports.getVolunteeringData = async (user, vol_ID) =>
             response.volunteeringData = [];
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("getVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.volunteeringData = null;
         response.success = false;
+
+        util.logWARN("getVolunteeringData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getVolunteeringData(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getVolunteeringData() is: ' + response.success);
-    
+    util.logINFO("getVolunteeringData(): Result is: " + response.success);
+
     return response;
     }
 
@@ -123,9 +126,9 @@ exports.getVolunteeringDataInstance = async (user, vdata_ID) =>
 
     try 
         {
-        console.log('getVolunteeringDataInstance() called by: ' + user.volunteer_id + ' for instance: ' + vdata_ID);
+        util.logINFO("getVolunteeringDataInstance(): called by: " + user.volunteer_id + " for instance: " + vdata_ID);
 
-        if(general.verifyInput(vdata_ID))
+        if(util.verifyInput(vdata_ID))
             {
             //Set the query
             query =  "SELECT volunteeringdata_id AS id, volunteer_id AS vol_id, VD.opp_id,"; 
@@ -148,6 +151,7 @@ exports.getVolunteeringDataInstance = async (user, vdata_ID) =>
                 response.errorcode = error.PERMISSION_ERROR;
                 response.success = false;
                 goodQuery = false;
+                util.logWARN("getVolunteeringDataInstance(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
                 }
 
             //Run query if query is valid
@@ -157,10 +161,10 @@ exports.getVolunteeringDataInstance = async (user, vdata_ID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.volunteeringData = null;
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getVolunteeringDataInstance(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -176,20 +180,22 @@ exports.getVolunteeringDataInstance = async (user, vdata_ID) =>
             response.volunteeringData = null;
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("getVolunteeringDataInstance(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.volunteeringData = null;
         response.success = false;
+
+        util.logWARN("getVolunteeringDataInstance(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getVolunteeringDataInstance(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getVolunteeringDataInstance() is: ' + response.success);
-    
+    util.logINFO("getVolunteeringDataInstance(): Result is: " + response.success);
+
     return response;
     }
 
@@ -210,12 +216,12 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
 
     try 
         {
-        console.log('addVolunteeringData() called by: ' + user.volunteer_id);
+        util.logINFO("addVolunteeringData(): called by: " + user.volunteer_id);
 
         //Ensure all the inputs are valid
-        if(general.verifyInput(volunteeringData.starttime) && 
-            general.verifyInput(volunteeringData.endtime) &&
-            general.verifyInput(volunteeringData.opp_id))
+        if(util.verifyInput(volunteeringData.starttime) && 
+            util.verifyInput(volunteeringData.endtime) &&
+            util.verifyInput(volunteeringData.opp_id))
             {
             //Inputs are valid, insert new element to database
 
@@ -233,9 +239,9 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("addVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -248,19 +254,21 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("addVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("addVolunteeringData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("addVolunteeringData(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of addVolunteeringData() is: ' + response.success);
-    
+    util.logINFO("addVolunteeringData(): Result is: " + response.success);
+
     return response;
     }
 
@@ -281,12 +289,12 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
 
     try 
         {
-        console.log('editVolunteeringData() called by: ' + user.volunteer_id);
+        util.logINFO("editVolunteeringData(): called by: " + user.volunteer_id);
 
         //Ensure all the inputs are valid
-        if(general.verifyInput(volunteeringData.starttime) && 
-            general.verifyInput(volunteeringData.endtime) &&
-            general.verifyInput(volunteeringData.opp_id))
+        if(util.verifyInput(volunteeringData.starttime) && 
+            util.verifyInput(volunteeringData.endtime) &&
+            util.verifyInput(volunteeringData.opp_id))
             {
             //Inputs are valid, insert new element to database
 
@@ -305,9 +313,9 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("editVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -320,18 +328,21 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("editVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("editVolunteeringData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("editVolunteeringData(): " + err.message, err.code);
+
         }
 
     //Log completion of function
-    console.log('Result of editVolunteeringData() is: ' + response.success);
+    util.logINFO("editVolunteeringData(): Result is: " + response.success);
 
     return response;
     }
@@ -353,7 +364,8 @@ exports.deleteVolunteeringData = async (user, vData_ID) =>
 
     try 
         {
-        console.log('deleteVolunteeringData() called by: ' + user.volunteer_id + ' for volunteering data: ' + vData_ID);
+        util.logINFO("deleteVolunteeringData(): called by: " + user.volunteer_id + " for volunteering data: " + vData_ID);
+
 
         if(isNaN(vData_ID))
             {
@@ -373,6 +385,7 @@ exports.deleteVolunteeringData = async (user, vData_ID) =>
                     {
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("deleteVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -384,14 +397,16 @@ exports.deleteVolunteeringData = async (user, vData_ID) =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("deleteVolunteeringData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("deleteVolunteeringData(): " + err.message, err.code);
+
         }
 
     //Log completion of function
-    console.log('Result of editVolunteeringData() is: ' + response.success);
+    util.logINFO("deleteVolunteeringData(): Result is: " + response.success);
 
     return response;
     }
@@ -413,10 +428,10 @@ exports.validateVolunteeringData = async (user, vdata_ID, validated) =>
 
     try 
         {
-        console.log('validateVolunteeringData() called by: ' + user.volunteer_id);
+        util.logINFO("validateVolunteeringData(): called by: " + user.volunteer_id + " for volunteering data: " + vdata_ID);
 
         //Check the input is valid
-        if(general.verifyInput(vdata_ID))
+        if(util.verifyInput(vdata_ID))
             {
             if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
                 {
@@ -431,6 +446,7 @@ exports.validateVolunteeringData = async (user, vdata_ID, validated) =>
                         {
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("validateVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -443,24 +459,28 @@ exports.validateVolunteeringData = async (user, vdata_ID, validated) =>
                 {
                 response.errorcode = error.PERMISSION_ERROR;
                 response.success = false;
+                util.logWARN("validateVolunteeringData(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
                 }
             }
         else 
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("validateVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("validateVolunteeringData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("validateVolunteeringData(): " + err.message, err.code);
+
         }
 
     //Log completion of function
-    console.log('Result of validateVolunteeringData() is: ' + response.success);
+    util.logINFO("validateVolunteeringData(): Result is: " + response.success);
 
     return response;
     }

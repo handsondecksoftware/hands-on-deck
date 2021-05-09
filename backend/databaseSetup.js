@@ -6,6 +6,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+const util = require('./utils');
 const { Pool, Client } = require('pg');
 const pool = new Pool(
   {
@@ -26,36 +27,36 @@ exports.queryDB = async (queryString, callbackFunction) => {
   
     var queryError = false; 
 
-    var client = await pool.connect();
+    var client = await pool.connect();      //Gain access to the database
 
     //console.time("db Start");
 
     try {
-        result = await client.query(queryString).catch(e => {
-            console.log('A Database Error Occured');
-            console.log(e);
-    
+        result = await client.query(queryString).catch(e => 
+            {
+            util.logERROR("queryDB(): " + e.message, e.code);
+            util.logINFO("queryDB(): Notified caller of error");
+        
             callbackFunction(null, e);
-                queryError = true;
+            queryError = true;
             }); 
     
-            if(!queryError) {
+            if(!queryError) 
+                {
                 callbackFunction(result, false);
-            }
+                }
         
         client.release();          //Remove connection to database
 
         //console.timeEnd("db Start");
         }
-    catch (err) {
-       
-        console.log('An Error Occured');
-        console.log(err);
+    catch (err) 
+        {
+        util.logERROR("queryDB(): An unknown error occured" + e.message, e.code);
+        util.logINFO("queryDB(): Notified caller of error");
 
         callbackFunction(null, err);
-    }
-
-    return; 
+        }
     }
 
 

@@ -8,7 +8,7 @@
 //
 //
 ////////////////////////////////////////////////////////////////////////
-const error = require('./errorCodes');
+const error = require('./errorcodes');
 const jwt = require('jsonwebtoken');
 const database = require('./databaseSetup');
 const SECRETKEY = "it'sALL____ON____";
@@ -23,7 +23,7 @@ exports.authcheck = async (req, res, next) =>
     {
     try 
         {
-        //console.log("authcheck");
+        //util.logINFO("authcheck(): called");
         //Extract token
         const token = req.headers.authorization.split(" ")[1];      //split removes 'Bearer ' from header
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
@@ -33,7 +33,7 @@ exports.authcheck = async (req, res, next) =>
                 {
                 if(err) 
                     {
-                    console.log(err.message);
+                    util.logERROR("authcheck(): " + err.message, err.code);
 
                     if(req.body.isMobile)
                         res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
@@ -57,8 +57,7 @@ exports.authcheck = async (req, res, next) =>
         }
     catch (error)
         {
-        console.log("ERROR OCCURRED: ");
-        console.log(error);
+        util.logERROR("authcheck(): " + err.message, err.code);
         res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
         }
     }
@@ -74,7 +73,7 @@ exports.authcheck_get = async (req, res, next) =>
     {
     try
         {
-        //console.log("authcheck_get");
+        //util.logINFO("authcheck_get(): called");
         //Extract token
         const token = req.cookies.access_token;      //No need to remove Bearer since it is not in cookie
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
@@ -84,7 +83,7 @@ exports.authcheck_get = async (req, res, next) =>
                 {
                 if(err) 
                     {
-                    console.log(err.message);
+                    util.logERROR("authcheck_get(): " + err.message, err.code);
 
                     if(req.body.isMobile)
                         res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
@@ -108,8 +107,8 @@ exports.authcheck_get = async (req, res, next) =>
         }
     catch (error)
         {
-        console.log("ERROR OCCURRED: ");
-        console.log(error);
+        util.logERROR("authcheck_get(): " + err.message, err.code);
+        res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
         }
     }
 
@@ -124,14 +123,14 @@ async function tokenNotExpired(token)
     {
     var notExpired = false;
 
-    //console.log("Searching for: " + token);
+    //util.logINFO("tokenNotExpired(): seraching for: " + token);
     //Query database for token in expired table
     await database.queryDB("SELECT * FROM expire_table WHERE token='" + token + "';", (result, err) => 
         {
         if (err) 
             {
-            console.log('DATABASE ACCESS ERROR. Assuming invalid token');
-            console.log(err);
+            util.logERROR("tokenNotExpired(): " + err.message, err.code);
+            util.logINFO("tokenNotExpired(): Database error - Assuming invalid token");
             notExpired = false;
             }
         else 
@@ -139,12 +138,12 @@ async function tokenNotExpired(token)
             //If there is no token matching the one we are looking for
             if(result.rows[0] == null) 
                 {
-                //console.log('Token not found in expire_table');
+                //util.logINFO("tokenNotExpired(): Token not found in expire_table");
                 notExpired = true;
                 }
             else 
                 {
-                //console.log('Token found in expire_table. Is currently invalid');
+                //util.logINFO("tokenNotExpired(): Token found in expire_table. Is currently invalid");
                 notExpired = false;
                 }
             }
@@ -177,19 +176,19 @@ exports.makeTokenInvalid = async (req, res, next) =>
             {
             if (err) 
                 {
-                console.log('DATABASE INSERT ERROR. Token remains valid');
-                console.log(err);
+                util.logERROR("makeTokenInvalid(): " + err.message, err.code);
+                util.logINFO("makeTokenInvalid(): Database error - Token remains valid. Decoded Token: " + decodedToken);
                 }
             else 
                 {
-                console.log("Token successfully added to epire_table");
+                util.logINFO("makeTokenInvalid(): Token successfully added to epire_table");
                 }
             });
         }
     catch (error)
         {
-        console.log(error);
-        console.log("ERROR OCCURRED: while trying to invalidate token");
+        util.logERROR("makeTokenInvalid(): " + err.message, err.code);
+        util.logINFO("makeTokenInvalid(): Taking no action. Decoded token: " + decodedToken);
         }
 
     return next();

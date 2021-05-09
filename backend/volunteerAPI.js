@@ -10,8 +10,8 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const general = require('./general');
-const error = require('./errorCodes');
+const util = require('./utils');
+const error = require('./errorcodes');
 const bcrypt = require('bcryptjs');
 const enumType = require('./enumTypes');
 
@@ -34,7 +34,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
 
     try 
         {
-        console.log('getVolunteerInfo() called by: ' + user.volunteer_id);
+        util.logINFO("getVolunteerInfo(): called by: " + user.volunteer_id);
 
         //Set the query
         query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username,";
@@ -64,6 +64,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             response.errorcode = error.PERMISSION_ERROR;
             response.success = false;
             goodQuery = false;
+            util.logWARN("getVolunteerInfo(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
             }
 
         //Run query if query is valid
@@ -73,14 +74,13 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.volunteerInfo = null;
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getVolunteerInfo(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
-                    //Send the user an email with their account info 
                     response.volunteerInfo = res.rows;
                     response.errorcode = error.NOERROR;
                     response.success = true;
@@ -90,16 +90,17 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.volunteerInfo = null;
         response.success = false;
+
+        util.logWARN("getVolunteerInfo(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getVolunteerInfo(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getVolunteerInfo() is: ' + response.success);
-    
+    util.logINFO("getVolunteerInfo(): Result is: " + response.success);
+
     return response;
     }
 
@@ -123,7 +124,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
 
     try 
         {
-        console.log('getVolunteerData() called by: ' + user.volunteer_id + ' for user: ' + vol_ID);
+        util.logINFO("getVolunteerData(): called by: " + user.volunteer_id + " for user " + vol_ID);
 
         //Set the default query
         query =  "SELECT V.volunteer_id AS id, CONCAT(V.firstname, ' ', V.lastname) AS name, V.email, V.username,";
@@ -151,8 +152,8 @@ exports.getVolunteerData = async (user, vol_ID) =>
             response.errorcode = error.PERMISSION_ERROR;
             response.success = false;
             goodQuery = false;
+            util.logWARN("getVolunteerData(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
             }
-
 
         //Run query #1 if query is valid
         if(goodQuery)
@@ -161,10 +162,10 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.volunteerData = null;
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("getVolunteerData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -203,10 +204,10 @@ exports.getVolunteerData = async (user, vol_ID) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.volunteerData = null;
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("getVolunteerData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -220,16 +221,17 @@ exports.getVolunteerData = async (user, vol_ID) =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.volunteerData = null;
         response.success = false;
+
+        util.logWARN("getVolunteerData(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getVolunteerData(): " + err.message, error.UNKNOWN_ERROR);
         }
 
     //Log completion of function
-    console.log('Result of getVolunteerData() is: ' + response.success);
-    
+    util.logINFO("getVolunteerData(): Result is: " + response.success);
+
     return response;
     }
 
@@ -252,17 +254,17 @@ exports.editVolunteer = async (user, volunteerData) =>
 
     try 
         {
-        console.log('editVolunteer() called by: ' + user.volunteer_id);
+        util.logINFO("editVolunteer(): called by: " + user.volunteer_id);
 
         //Verify all the inputs from the volunteerData element that will be placed in SQL query
-        if(general.verifyInput(volunteerData.name) && general.verifyInput(volunteerData.username) &&
-            general.verifyInput(volunteerData.email) && general.verifyInput(volunteerData.leaderboards))
+        if(util.verifyInput(volunteerData.name) && util.verifyInput(volunteerData.username) &&
+            util.verifyInput(volunteerData.email) && util.verifyInput(volunteerData.leaderboards))
             {
             //The inputs do not contain SQL injection attacks
 
             //Ensure the username and name is not empty
             if(volunteerData.username != "" && volunteerData.username != undefined && 
-                volunteerData.name != "" && volunteerData.name != undefined && general.isValidEmail(volunteerData.email))
+                volunteerData.name != "" && volunteerData.name != undefined && util.isValidEmail(volunteerData.email))
                 {
                  //Ensure the username provided is not used by anyone else 
                 query = "SELECT * FROM volunteer";
@@ -272,9 +274,9 @@ exports.editVolunteer = async (user, volunteerData) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("editVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -284,7 +286,6 @@ exports.editVolunteer = async (user, volunteerData) =>
                         }
                     });
 
-                console.log(tempResult);
                 //if the username is not duplicated
                 if(tempResult === undefined || tempResult.length == 0)
                     {
@@ -299,9 +300,9 @@ exports.editVolunteer = async (user, volunteerData) =>
                         { 
                         if(e) 
                             {
-                            console.log("DATABASE ERROR: " + e.message);
                             response.errorcode = error.DATABASE_ACCESS_ERROR;
                             response.success = false;
+                            util.logWARN("editVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                             }
                         else 
                             {
@@ -314,26 +315,29 @@ exports.editVolunteer = async (user, volunteerData) =>
                     {
                     response.errorcode = error.INVALID_INPUT_ERROR;
                     response.success = false;
+                    util.logWARN("editVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
                     }
                 }
             else 
                 {
                 response.errorcode = error.INVALID_INPUT_ERROR;
                 response.success = false;
+                util.logWARN("editVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
                 }
             }
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("editVolunteer(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("editVolunteer(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of editVolunteer() is: ' + response.success);
-    
+    util.logINFO("editVolunteer(): Result is: " + response.success);
+
     return response;
     }
 
@@ -357,10 +361,10 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
 
     try 
         {
-        console.log('changePassword() called by: ' + user.volunteer_id);
+        util.logINFO("changePassword(): called by: " + user.volunteer_id);
 
         //Validate the inputs from the passwords 
-        if(general.verifyInput(oldPassword) && general.verifyInput(newPassword))
+        if(util.verifyInput(oldPassword) && util.verifyInput(newPassword))
             {
             //Can assume inputs are now valid, check that the old password is valid
             query = "SELECT password FROM volunteer WHERE volunteer_id = " + user.volunteer_id;
@@ -369,9 +373,9 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
                 { 
                 if(e) 
                     {
-                    console.log("DATABASE ERROR: " + e.message);
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("changePassword(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else if(bcrypt.compareSync(oldPassword, res.rows[0].password))
                     {
@@ -390,9 +394,9 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
                     { 
                     if(e) 
                         {
-                        console.log("DATABASE ERROR: " + e.message);
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("changePassword(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -405,14 +409,15 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("changePassword(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("changePassword(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of changePassword() is: ' + response.success);
+    util.logINFO("changePassword(): Result is: " + response.success);
     
     return response;
     }
@@ -433,7 +438,7 @@ exports.getVolunteerLeaderboard = async user =>
 
     try 
         {
-        console.log('getVolunteerLeaderboard() called by: ' + user.volunteer_id);
+        util.logINFO("getVolunteerLeaderboard(): called by: " + user.volunteer_id);
 
         // Can look at reordering query with innner join so that we do not have to consider null situations with num_hours
         query =  " SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
@@ -449,10 +454,10 @@ exports.getVolunteerLeaderboard = async user =>
             { 
             if(e) 
                 {
-                console.log("DATABASE ERROR: " + e.message);
                 response.volunteerLeader = [];
                 response.errorcode = error.DATABASE_ACCESS_ERROR;
                 response.success = false;
+                util.logWARN("getVolunteerLeaderboard(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                 }
             else 
                 {
@@ -471,16 +476,17 @@ exports.getVolunteerLeaderboard = async user =>
         }
     catch (err)
         {
-        console.log("Error Occurred: " + err.message);
-
         response.volunteerLeader = null;
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("getVolunteerLeaderboard(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("getVolunteerLeaderboard(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of getVolunteerLeaderboard() is: ' + response.success);
-    
+    util.logINFO("getVolunteerLeaderboard(): Result is: " + response.success);
+
     return response;
     }
 
@@ -503,14 +509,14 @@ exports.createAccount = async vData =>
 
 
     try {
+        util.logINFO("createAccount(): called by: " +  vData.username + " for institution: " + vData.institution_id);
+
         //Validate all inputs 
-        if(general.verifyInput(vData.name) && general.verifyInput(vData.username) && 
-            general.verifyInput(vData.leaderboards) && general.verifyInput(vData.password) &&
-            general.verifyInput(vData.institution_id) && general.verifyInput(vData.team_id) &&
-            general.verifyInput(vData.email) && general.isValidEmail(vData.email))
-            {
-            console.log('createAccount() called by: ' + vData.username + ' for institution: ' + vData.institution_id);
-            
+        if(util.verifyInput(vData.name) && util.verifyInput(vData.username) && 
+            util.verifyInput(vData.leaderboards) && util.verifyInput(vData.password) &&
+            util.verifyInput(vData.institution_id) && util.verifyInput(vData.team_id) &&
+            util.verifyInput(vData.email) && util.isValidEmail(vData.email))
+            {            
             //Make sure the provided username is unique
             query = "SELECT volunteer_id FROM volunteer WHERE username = '" + vData.username + "';";
 
@@ -521,6 +527,7 @@ exports.createAccount = async vData =>
                     tempResult = [];
                     response.errorcode = error.DATABASE_ACCESS_ERROR;
                     response.success = false;
+                    util.logWARN("createAccount(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
                 else 
                     {
@@ -536,15 +543,13 @@ exports.createAccount = async vData =>
                 query2 += vData.email + "', '" + bcrypt.hashSync(vData.password, bcrypt.genSaltSync(10)) + "', '" + vData.username + "', '";
                 query2 += enumType.VT_VOLUNTEER + "', '" + vData.leaderboards + "');"
 
-                console.log("Step 2 Query");
-                console.log(query2);
-
                 await database.queryDB(query2, (res, e) => 
                     {
                     if(e) 
                         {
                         response.errorcode = error.DATABASE_ACCESS_ERROR;
                         response.success = false;
+                        util.logWARN("createAccount(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                         }
                     else 
                         {
@@ -553,23 +558,33 @@ exports.createAccount = async vData =>
                         }
                     });
                 }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                util.logWARN("createAccount(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                util.logINFO("createAccount(): The username was already taken");
+                }
             }
         else 
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
+            util.logWARN("createAccount(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
-    catch (error) 
+    catch (err) 
         {
-        console.log("Error Occurred: " + error.message);
-
         response.errorcode = error.SERVER_ERROR;
         response.success = false;
+
+        util.logWARN("createAccount(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("createAccount(): " + err.message, err.code);
         }
 
     //Log completion of function
-    console.log('Result of createAccount() is: ' + response.success);
+    util.logINFO("createAccount(): Result is: " + response.success);
+
 
     return response;
     }
