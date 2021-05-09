@@ -7,7 +7,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-const error = require('../backend/errorcodes');
+const error = require('./errorcodes');
 
 const PRODUCTION = true;
 
@@ -112,6 +112,7 @@ exports.logINFO = msg =>
         }
     }
 
+
 ////////////////////////////////////////////////////////////////////////
 // 
 // Will generate an INFO log
@@ -130,6 +131,7 @@ exports.logWARN = (msg, errorcode) =>
         console.warn(currTime + LOG_SPACE + WARN + LOG_SPACE + error.name[errorcode] + LOG_SPACE + msg);
         }
     }
+
 
 ////////////////////////////////////////////////////////////////////////
 // 
