@@ -42,7 +42,7 @@ const volunteerData = require('./backend/volunteeringDataAPI');
 const opportunity = require('./backend/opportunityAPI');
 const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
-const error = require('./backend/errorcodes');
+const error = require('./backend/errorCodes');
 //const util = require('./backend/utils');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS

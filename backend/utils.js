@@ -7,7 +7,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-const error = require('./errorcodes');
+const error = require('./errorCodes');
 
 const PRODUCTION = true;
 

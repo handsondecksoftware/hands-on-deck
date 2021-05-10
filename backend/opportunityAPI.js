@@ -10,7 +10,7 @@
 
 const database = require('./databaseSetup');
 const util = require('./utils');
-const error = require('./errorcodes');
+const error = require('./errorCodes');
 const enumTypes = require('./enumTypes');
 
 

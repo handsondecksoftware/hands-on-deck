@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 const database = require('./databaseSetup');
-const error = require('./errorcodes');
+const error = require('./errorCodes');
 const enumType = require('./enumTypes');
 const util = require('./utils');
 
