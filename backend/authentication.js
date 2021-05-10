@@ -8,7 +8,7 @@
 //
 //
 ////////////////////////////////////////////////////////////////////////
-const error = require('./errorcodes');
+const error = require('./errorCodes');
 const jwt = require('jsonwebtoken');
 const database = require('./databaseSetup');
 const SECRETKEY = "it'sALL____ON____";

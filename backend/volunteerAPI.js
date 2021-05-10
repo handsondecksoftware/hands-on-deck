@@ -11,7 +11,7 @@
 
 const database = require('./databaseSetup');
 const util = require('./utils');
-const error = require('./errorcodes');
+const error = require('./errorCodes');
 const bcrypt = require('bcryptjs');
 const enumType = require('./enumTypes');
 
