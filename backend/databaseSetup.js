@@ -6,6 +6,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+const util = require('./utils');
 const { Pool, Client } = require('pg');
 
 //We need to create an environment variable with this string in our heroku environment
@@ -35,8 +36,8 @@ exports.queryDB = async (queryString, callbackFunction) => {
     try {
         result = await client.query(queryString).catch(e => 
             {
-            console.log("ERROR:  queryDB(): " + e.message, e.code);
-            console.log("INFO:   queryDB(): Notified caller of error");
+            util.logERROR("queryDB(): " + e.message, e.code);
+            util.logINFO("queryDB(): Notified caller of error");
         
             callbackFunction(null, e);
             queryError = true;
@@ -53,8 +54,8 @@ exports.queryDB = async (queryString, callbackFunction) => {
         }
     catch (err) 
         {
-        console.log("ERROR:  queryDB(): An unknown error occured" + e.message, e.code);
-        console.log("INFO:   queryDB(): Notified caller of error");
+        util.logERROR("queryDB(): An unknown error occured " + e.message, e.code);
+        util.logINFO("queryDB(): Notified caller of error");
 
         callbackFunction(null, err);
         }
