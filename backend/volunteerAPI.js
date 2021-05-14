@@ -424,6 +424,78 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
 
 
 ////////////////////////////////////////////////////////////
+// Will delete a user from the database
+//
+// @param[in]  user             user information
+// @param[in]  vol_ID           ID of volunteer to delete
+//
+// @param[out] {success, errorcode}
+//
+////////////////////////////////////////////////////////////
+exports.deleteVolunteer = async (user, vol_ID ) => 
+    {
+    var response = {success: false, errorcode: -1};
+    var query = "";
+
+    try 
+        {
+        util.logINFO("deleteVolunteer(): called by: " + user.volunteer_id);
+
+        //Verify the user permission
+        if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+            {
+            //Ensure vol_ID input is valid
+            if(util.verifyInput(vol_ID))
+                {
+                 // Set the query
+                query = "DELETE FROM volunteer WHERE volunteer_id = " + vol_ID + ";";
+            
+                await database.queryDB(query, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("deleteVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                util.logWARN("deleteVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                }
+            }
+        else
+            {
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            util.logWARN("deleteVolunteer(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+            }
+        }
+    catch (err)
+        {
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+
+        util.logWARN("deleteVolunteer(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("deleteVolunteer(): " + err.message, err.code);
+        }
+
+    //Log completion of function
+    util.logINFO("deleteVolunteer(): Result is: " + response.success);
+
+    return response;
+    }
+
+
+////////////////////////////////////////////////////////////
 // Will update user info in database
 //
 // @param[in]  user             user information
@@ -461,12 +533,16 @@ exports.getVolunteerLeaderboard = async user =>
                 }
             else 
                 {
-                response.volunteerLeader = res.rows;
+                var tempRank = res.rows;
 
-                //Set the rank of each volunteer -- assuming they are in sorted order already
+                //Set the rank of each volunteer
                 for(var v = 0; v < response.volunteerLeader.length; v++)
                     {
-                    response.volunteerLeader[v]['rank'] = v+1; 
+                    if(tempRank.num_hours == null)
+                        break;
+
+                    tempRank[v]['rank'] = v+1;
+                    response.volunteerLeader.push(tempRank); 
                     }
 
                 response.errorcode = error.NOERROR;

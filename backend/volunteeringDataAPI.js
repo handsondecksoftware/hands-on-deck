@@ -292,8 +292,7 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
         util.logINFO("editVolunteeringData(): called by: " + user.volunteer_id);
 
         //Ensure all the inputs are valid
-        if(util.verifyInput(volunteeringData.starttime) && 
-            util.verifyInput(volunteeringData.endtime) &&
+        if(util.verifyInput(volunteeringData.starttime) && util.verifyInput(volunteeringData.endtime) &&
             util.verifyInput(volunteeringData.opp_id))
             {
             //Inputs are valid, insert new element to database
@@ -306,7 +305,11 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
             query =  "UPDATE volunteeringdata SET";
             query += " volunteer_id = " + volunteeringData.vol_id + ", opp_id = " + volunteeringData.opp_id;
             query += ", starttime = '" + volunteeringData.starttime + "', endtime = '" + volunteeringData.endtime + "',";
-            query += " validated = '" + volunteeringData.validated + "'";
+
+            //Can only update validated if this is not the volunteer 
+            if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                query += " validated = '" + volunteeringData.validated + "'";
+                
             query += " WHERE volunteeringdata_id = " + volunteeringData.id + ";";
 
             await database.queryDB(query, (res, e) => 

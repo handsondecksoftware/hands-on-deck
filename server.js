@@ -179,12 +179,10 @@ app.post('/api/changePassword', auth.authcheck, async (request, response) =>
     response.send(await volunteer.changePassword(request.user, request.body.oldPassword, request.body.newPassword));
     });
 
-/* Can add this at the end. Volunteers are added from app through the "createAccount" api call
-app.post('/api/addVolunteer', auth.authcheck, async (request, response) =>
+app.post('/api/deleteVolunteer', auth.authcheck, async (request, response) =>
     {
-    response.send(await volunteer.addVolunteer(request.user, request.body.volunteerData));
+    response.send(await volunteer.deleteVolunteer(request.user, request.body.vol_ID));
     });
-*/
 
 
 /////////VOLUNTEERING DATA API CALLS/////////////////////////////////////////////
