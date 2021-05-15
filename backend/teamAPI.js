@@ -39,11 +39,11 @@ exports.getTeamInfo = async (user, teamID) =>
         query += " FROM team AS T"
         query += " LEFT JOIN (SELECT team_id, COUNT(*) as numvolunteers, SUM(num_hours) AS numhours FROM volunteer_stats GROUP BY team_id) vstat"
         query += " ON vstat.team_id = T.team_id"
-        query += " WHERE T.institution_id = " + user.institution_id;
+        query += " WHERE T.institution_id = " + user.institution_id + " AND T.team_id != 0";        //Want to remove the admin team from the list -- confirm this
 
         if(teamID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            query += ";";
+            query += "ORDER BY T.name DESC;";
             }
         else if(teamID > 0)
             {

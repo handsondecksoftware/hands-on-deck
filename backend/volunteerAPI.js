@@ -47,7 +47,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         //Determine Correct Query to run
         if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            query += ";";
+            query += "AND V.team_id != 0;";
             }
         else if(volunteerID == 0)
             {

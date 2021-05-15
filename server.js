@@ -18,7 +18,7 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "15m";
+const WEB_EXPIRY = "1h";
 const APP_EXPIRY = "24h";
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES

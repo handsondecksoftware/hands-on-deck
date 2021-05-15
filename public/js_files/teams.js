@@ -22,6 +22,9 @@ function init()
     {
     loadTeams();
 
+    //Setup search
+    initSearch('searchTeams', 'teamsTable', 2);
+
     //Setup open and close of add team popup box
     getRef('addTeamButton').onclick = function(){toggleTeamBoxVisibility()};
     getRef('cancelTeamChoice').onclick = function(){toggleTeamBoxVisibility()};
@@ -55,6 +58,9 @@ function loadTeams()
                 //Get reference to table 
                 var teamTable = getRef('teamsTable');
                 var rowNum = 1;
+
+                //Empty the opportunity table first in case there are elements in it 
+                for(var i = teamTable.rows.length - 1; i >= 1; i--) { teamTable.deleteRow(i); }
     
                 //Fill in table elements
                 for(var teamNum = 0; teamNum < response.teamInfo.length; teamNum++)
@@ -73,7 +79,7 @@ function loadTeams()
                     //Fill in row elements
                     teamName.innerHTML = response.teamInfo[teamNum].name;
                     sex.innerHTML = response.teamInfo[teamNum].sex;
-                    numVolunteers.innerHTML = response.teamInfo[teamNum].numvolunteers;
+                    numVolunteers.innerHTML = response.teamInfo[teamNum].numvolunteers ?? 0;
                     volunteerHrs.innerHTML = response.teamInfo[teamNum].numhours ?? 0;
     
                     view.innerHTML = "<i id=\"view_" + response.teamInfo[teamNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewTeam(this.id)\"></i>";
@@ -161,6 +167,8 @@ function showAllTeams()
     {
     getRef("teamMainPage").style.display = "block";
     getRef("viewTeamPage").style.display = "none";
+
+    loadTeams();
 
     currentTeam_gv = -1;
     }

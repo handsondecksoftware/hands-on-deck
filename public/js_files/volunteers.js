@@ -29,6 +29,9 @@ function init()
     initLogout();
 
     loadVolunteers();
+
+    //Setup search
+    initSearch('searchVolunteers', 'volunteersTable', 2);
     }
 
 

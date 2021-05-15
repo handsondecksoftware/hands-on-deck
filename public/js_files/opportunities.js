@@ -33,6 +33,10 @@ function init()
     //Fill the oppourtunties table
     fillOpportunityTable();
 
+    //Setup search
+    initSearch('searchOpportunities', 'oppourtuntiesTable', 2);
+
+
     //Setup open and close of popup box
     getRef('addOpportunityButton').onclick = function(){toggleOppourtuntiyBoxVisibility()};
     getRef('cancelOpportunityChoice').onclick = function(){toggleOppourtuntiyBoxVisibility()};
@@ -836,27 +840,3 @@ function retToOpportunityMainPage()
 
 
 
-/* Nice code that finds element, can be helpful for search bar
-// Finds the row of the delete button clicked
-        e = e || event;
-        var eventEl = e.srcElement || e.target, 
-        parent = eventEl.parentNode,
-        isRow = function(el) 
-            {
-            return el.tagName.match(/tr/i);
-            };
-
-        // Move up the DOM until tr is reached
-        while (parent = parent.parentNode) 
-            {
-            if (isRow(parent)) 
-                {
-                // Delete the row visually
-                parent.remove()
-
-                //TODO: Delete the oppportunity from the back end
-                
-                return true;
-                }
-            }
-*/
