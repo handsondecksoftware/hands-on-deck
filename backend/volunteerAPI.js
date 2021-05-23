@@ -338,7 +338,7 @@ exports.editVolunteer = async (user, volunteerData) =>
             {
             response.errorcode = error.INVALID_INPUT_ERROR;
             response.success = false;
-            util.logWARN("deleteVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            util.logWARN("editVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)

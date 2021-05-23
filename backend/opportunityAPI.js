@@ -7,7 +7,6 @@
 //    - Updated to new design document
 //
 ////////////////////////////////////////////////////////////////////////
-
 const database = require('./databaseSetup');
 const util = require('./utils');
 const error = require('./errorCodes');
@@ -34,11 +33,9 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
         {
         util.logINFO("getAllOpportunityInfo(): called by: " + user.volunteer_id);
 
-
-        //Check that the caller is valid and that the input is valid
+        //Check that the caller is valid
         if(user.volunteer_type == enumTypes.VT_DEV || user.volunteer_type == enumTypes.VT_ADMIN)
             {
-            //Create query base
             query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
             query += " starttime, endtime, oStat.numvolunteers";
             query += " FROM opportunity AS O";
@@ -113,9 +110,7 @@ exports.getAllOpportunityInfo = async (user, oppID) =>
     }
 
 ////////////////////////////////////////////////////////////
-// Will get the opportunity info -- 
-//      eventually seperating this from the AllInfo call will allow us to 
-//      to seperate the opportunities by what teams can view the opportunity
+// Will get the opportunity info -- called from app so only current opps appear
 //
 // @param[in]  user             user information
 // @param[in]  opportunityID    ID of opp user is looking for detail on
@@ -135,7 +130,6 @@ exports.getOpportunityInfo = async (user, oppID) =>
         {
         util.logINFO("getOpportunityInfo(): called by: " + user.volunteer_id);
 
-        //Create query base
         query =  "SELECT O.opp_id AS id, sequencenum, title, opportunity_type AS type,";
         query += " starttime, endtime, oStat.numvolunteers";
         query += " FROM opportunity AS O";
@@ -146,8 +140,8 @@ exports.getOpportunityInfo = async (user, oppID) =>
         //Set the query condiditon
         if(oppID == -1)
             {
-            query += " WHERE institution_id = $1 ORDER BY starttime DESC;";
-            //Add date condition? -- maybe can be additional parameter in API call
+            query += " WHERE institution_id = $1 AND endtime > NOW() ORDER BY starttime DESC;";
+            //Only provide opportunities that have not passed
 
             values.push(user.institution_id);
             }
@@ -329,8 +323,6 @@ exports.addOpportunity = async (user, oppData) =>
         //Validate the inputs and the user adding the opportunity
         if(user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV)
             {
-            //Inputs and user are valid, create insert query
-
             query =  "INSERT INTO opportunity (title, opportunity_type, starttime, endtime, location,";
             query += " description, volunteerlimit, coordinatorname, coordinatoremail, coordinatorphone, institution_id)";
             query += " VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);";
@@ -408,8 +400,6 @@ exports.editOpportunity = async (user, oppData) =>
         //Validate the inputs and the user editting the opportunity
         if(user.volunteer_type == enumTypes.VT_ADMIN || user.volunteer_type == enumTypes.VT_DEV)
             {
-            //Inputs and user are valid, create insert query
-
             query =  "UPDATE opportunity SET";
             query += " title = $1, opportunity_type = $2, starttime = $3, endtime = $4,";
             query += " location = $5, description = $6, volunteerlimit = $7, coordinatorname = $8,";

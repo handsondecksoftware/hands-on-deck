@@ -204,22 +204,17 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
     var response = {success: false, errorcode: -1};
     var query = "";
     var values = [];
+    var oppData = null;
+    var query2 = "";
+    var values2 = [];
 
     try 
         {
         util.logINFO("addVolunteeringData(): called by: " + user.volunteer_id);
 
-        //Set the volunteer_id
-        if(volunteeringData.vol_id == 0)
-            volunteeringData.vol_id = user.volunteer_id;
-
-        query =  "INSERT INTO volunteeringdata(volunteer_id, opp_id, starttime, endtime, validated)";
-        query += " VALUES ($1, $2, $3, $4, false);";
-
-        values.push(volunteeringData.vol_id);
+        //Get the start and end time of the opportunity
+        query  = "SELECT starttime, endtime FROM opportunity WHERE opp_id = $1;"
         values.push(volunteeringData.opp_id);
-        values.push(volunteeringData.starttime);
-        values.push(volunteeringData.endtime);
 
         await database.queryDB(query, values, (res, e) => 
             { 
@@ -231,10 +226,59 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
                 }
             else 
                 {
-                response.errorcode = error.NOERROR;
-                response.success = true;
+                oppData = res.rows[0];
                 }
             });
+
+        //If we were able to find a valid opportunity
+        if(oppData != null && oppData != undefined)
+            {
+            //Compare dates to make sure they are in valid range
+            if(new Date(oppData.starttime) <= new Date(volunteeringData.starttime) &&
+                new Date(oppData.endtime) >= new Date(volunteeringData.endtime))
+                {
+                //Set the volunteer_id
+                if(volunteeringData.vol_id == 0)
+                    volunteeringData.vol_id = user.volunteer_id;
+
+                query2 =  "INSERT INTO volunteeringdata(volunteer_id, opp_id, starttime, endtime, validated)";
+                query2 += " VALUES ($1, $2, $3, $4, false);";
+
+                values2.push(volunteeringData.vol_id);
+                values2.push(volunteeringData.opp_id);
+                values2.push(volunteeringData.starttime);
+                values2.push(volunteeringData.endtime);
+
+                await database.queryDB(query2, values2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("addVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                util.logINFO("addVolunteeringData(): Date of inputs were not in valid range");
+                util.logWARN("addVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logINFO("addVolunteeringData(): The opportunity could not be located");
+            util.logWARN("addVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR); 
+            }
         }
     catch (err)
         {
@@ -267,37 +311,17 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
     var response = {success: false, errorcode: -1};
     var query = "";
     var values = [];
+    var oppDate = null;
+    var query2 = "";
+    var values2 = [];
 
     try 
         {
         util.logINFO("editVolunteeringData(): called by: " + user.volunteer_id);
 
-        //Set the volunteer_id
-        if(volunteeringData.vol_id == 0)
-            volunteeringData.vol_id = user.volunteer_id;
-
-        query =  "UPDATE volunteeringdata SET";
-        query += " volunteer_id = $1, opp_id = $2, starttime = $3, endtime = $4";
-
-        values.push(volunteeringData.vol_id);
+        //Get the start and end time of the opportunity
+        query  = "SELECT starttime, endtime FROM opportunity WHERE opp_id = $1;"
         values.push(volunteeringData.opp_id);
-        values.push(volunteeringData.starttime);
-        values.push(volunteeringData.endtime);
-
-        //Can only update validated if this is not the volunteer 
-        if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
-            {
-            query += ", validated = $5 WHERE volunteeringdata_id = $6;";
-
-            values.push(volunteeringData.validated);
-            values.push(volunteeringData.id);
-            }
-        else 
-            {
-            query += " WHERE volunteeringdata_id = $5;";
-
-            values.push(volunteeringData.id);
-            }
 
         await database.queryDB(query, values, (res, e) => 
             { 
@@ -309,10 +333,74 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
                 }
             else 
                 {
-                response.errorcode = error.NOERROR;
-                response.success = true;
+                oppData = res.rows[0];
                 }
             });
+
+        //If we were able to find a valid opportunity
+        if(oppData != null && oppData != undefined)
+            {
+            //Compare dates to make sure they are in valid range
+            if(new Date(oppData.starttime) <= new Date(volunteeringData.starttime) &&
+                new Date(oppData.endtime) >= new Date(volunteeringData.endtime))
+                {
+                //Set the volunteer_id
+                if(volunteeringData.vol_id == 0)
+                    volunteeringData.vol_id = user.volunteer_id;
+
+                query2 =  "UPDATE volunteeringdata SET";
+                query2 += " volunteer_id = $1, opp_id = $2, starttime = $3, endtime = $4";
+
+                values2.push(volunteeringData.vol_id);
+                values2.push(volunteeringData.opp_id);
+                values2.push(volunteeringData.starttime);
+                values2.push(volunteeringData.endtime);
+
+                //Can only update validated if this is not the volunteer 
+                if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                    {
+                    query += ", validated = $5 WHERE volunteeringdata_id = $6;";
+
+                    values.push(volunteeringData.validated);
+                    values.push(volunteeringData.id);
+                    }
+                else 
+                    {
+                    query += " WHERE volunteeringdata_id = $5;";
+
+                    values.push(volunteeringData.id);
+                    }
+
+                await database.queryDB(query2, values2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("editVolunteeringData(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                util.logINFO("editVolunteeringData(): Date of inputs were not in valid range");
+                util.logWARN("editVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logINFO("editVolunteeringData(): The opportunity could not be located");
+            util.logWARN("editVolunteeringData(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR); 
+            }
         }
     catch (err)
         {

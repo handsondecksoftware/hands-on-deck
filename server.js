@@ -10,17 +10,14 @@
 //    - Update to current design documentation
 //
 ////////////////////////////////////////////////////////////
-var express = require('express')
+const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
-require('dotenv').config('./.env');
-
 const jwt = require('jsonwebtoken');
-const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "1h";
-const APP_EXPIRY = "24h";
+
+require('dotenv').config('./.env');
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -387,7 +384,7 @@ app.post('/api/signIn', function(request, response, next)
                             };
 
                             //if user log in success, generate a JWT token for the user with a secret key
-                            jwt.sign({user}, SECRETKEY, { expiresIn: (isMobile ? APP_EXPIRY : WEB_EXPIRY) }, (err, token) => 
+                            jwt.sign({user}, process.env.SECRETKEY, { expiresIn: (isMobile ? process.env.APP_EXPIRY : process.env.WEB_EXPIRY) }, (err, token) => 
                                 {
                                 if(err) { util.logERROR("/api/signIn(): " + err.message, err.code) }
                                 else

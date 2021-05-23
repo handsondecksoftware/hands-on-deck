@@ -12,7 +12,6 @@ const error = require('./errorCodes');
 const jwt = require('jsonwebtoken');
 const util = require('./utils');
 const database = require('./databaseSetup');
-const SECRETKEY = "it'sALL____ON____";
 
 
 ////////////////////////////////////////////////////////////
@@ -30,7 +29,7 @@ exports.authcheck = async (req, res, next) =>
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
             {
             //Verify the jwt
-            jwt.verify(token, SECRETKEY, (err, authorizedData) => 
+            jwt.verify(token, process.env.SECRETKEY, (err, authorizedData) => 
                 {
                 if(err) 
                     {
@@ -79,7 +78,7 @@ exports.authcheck_get = async (req, res, next) =>
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
             {
             //Verify the jwt
-            jwt.verify(token, SECRETKEY, (err, authorizedData) => 
+            jwt.verify(token, process.env.SECRETKEY, (err, authorizedData) => 
                 {
                 if(err) 
                     {
