@@ -10,16 +10,14 @@
 //    - Update to current design documentation
 //
 ////////////////////////////////////////////////////////////
-var express = require('express')
+const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
-
 const jwt = require('jsonwebtoken');
-const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
-const WEB_EXPIRY = "1h";
-const APP_EXPIRY = "24h";
+
+require('dotenv').config('./.env');
 ////////////////////////////////////////////////////////////////////////
 // GLOABL CONSTANTS AND VARIABLES
 ////////////////////////////////////////////////////////////////////////
@@ -224,7 +222,7 @@ app.post('/api/getTeamInfo', auth.authcheck, async (request, response) =>
     response.send(await team.getTeamInfo(request.user, request.body.teamID));
     });
 
-app.post('/api/getAllTeamInfo', auth.authcheck, async (request, response) =>
+app.post('/api/getAllTeamInfo', async (request, response) =>
     {
     response.send(await team.getAllTeamInfo(request.body.institution_id));
     });
@@ -346,7 +344,7 @@ app.post('/api/signIn', function(request, response, next)
             // JSON.parse() ensures that isMobile acts as a boolean instead of string
 
         //Query database
-        database.queryDB("SELECT volunteer_id, institution_id, username, password, volunteer_type FROM volunteer WHERE username='" + username + "';", (result, err) => 
+        database.queryDB("SELECT volunteer_id, institution_id, username, password, volunteer_type FROM volunteer WHERE username = $1;", [username], (result, err) => 
             {
             if (err) 
                 {
@@ -386,9 +384,19 @@ app.post('/api/signIn', function(request, response, next)
                             };
 
                             //if user log in success, generate a JWT token for the user with a secret key
-                            jwt.sign({user}, SECRETKEY, { expiresIn: (isMobile ? APP_EXPIRY : WEB_EXPIRY) }, (err, token) => 
+                            jwt.sign({user}, process.env.SECRETKEY, { expiresIn: (isMobile ? process.env.APP_EXPIRY : process.env.WEB_EXPIRY) }, (err, token) => 
                                 {
-                                if(err) { util.logERROR("/api/signIn(): " + err.message, err.code) }
+                                if(err) 
+                                    { 
+                                    util.logERROR("/api/signIn(): " + err.message, err.code);
+
+                                    if(isMobile)
+                                        response.send({success: false, access_token: null, message: "Something unexpected happened, please try again"});
+                                    else 
+                                        {
+                                        return response.redirect('/');      //Need to test
+                                        }
+                                    }
                                 else
                                     {
                                     if(isMobile)
