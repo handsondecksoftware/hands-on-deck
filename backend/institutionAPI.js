@@ -20,21 +20,25 @@ const util = require('./utils');
 exports.getInstitutionInfo = async user => 
     {
     var response = {success: false, errorcode: -1, iInfo: null};
+    var values = [];
+    var query = "";
 
     try 
         {
         util.logINFO("getInstitutionInfo(): called by: " + user.volunteer_id);
 
         //Set the query
-        var query = "SELECT institution_id AS id, name, location, numvolunteers, totalhours";
+        query =  "SELECT institution_id AS id, name, location, numvolunteers, totalhours";
         query += " FROM institution AS i";
         query += " LEFT JOIN (SELECT institution_id AS id, COUNT(*) AS numvolunteers, SUM(num_hours) AS totalhours FROM volunteer_stats GROUP BY institution_id) i_stats";
         query += " ON i_stats.id = i. institution_id";
-        query += " WHERE i.institution_id = " + user.institution_id + ";"
+        query += " WHERE i.institution_id = $1;"
+
+        values.push(user.institution_id);
 
         if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
-            await database.queryDB(query, (res, e) => 
+            await database.queryDB(query, values, (res, e) => 
                 { 
                 if(e) 
                     {
@@ -83,6 +87,7 @@ exports.getAllInstitutionInfo = async () =>
     {
     var response = {success: false, errorcode: -1, iInfo: []};
     var query = "";
+    var values = [];
 
     try 
         {
@@ -91,7 +96,7 @@ exports.getAllInstitutionInfo = async () =>
         //Set the query -- need to exclude the developer accounts
         query = "SELECT institution_id AS id, name, location FROM institution WHERE institution_id >= 1;";
 
-        await database.queryDB(query, (res, e) => 
+        await database.queryDB(query, values, (res, e) => 
             { 
             if(e) 
                 {
@@ -133,27 +138,31 @@ exports.editInstitutionInfo = async (user, iInfo) =>
     {
     var response = {success: false, errorcode: -1};
     var query = "";
+    var values = [];
 
     try 
         {
         util.logINFO("getAllInstitutionInfo(): called by: " + user.volunteer_id);
 
         //Validate the inputs from iInfo
-        if(util.verifyInput(iInfo.name) && util.verifyInput(iInfo.location) &&
-            iInfo.name.length > 0 && iInfo.location.length > 0)
+        if(iInfo.name.length > 0 && iInfo.location.length > 0)
             {
             //Inputs are valid, Make sure the volunteer is of proper type
             if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
                 {
                 query =  "UPDATE institution SET";
-                query += " name = '" + iInfo.name + "', location = '" + iInfo.location;
-                query += "' WHERE institution_id = " + user.institution_id + ";";
+                query += " name = $1, location = $2";
+                query += " WHERE institution_id = $3;";
+
+                values.push(iInfo.name);
+                values.push(iInfo.location);
+                values.push(user.institution_id);
                 }
             }
 
         if(user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN)
             {
-            await database.queryDB(query, (res, e) => 
+            await database.queryDB(query, values, (res, e) => 
                 { 
                 if(e) 
                     {

@@ -12,11 +12,8 @@ const { Pool, Client } = require('pg');
 //We need to create an environment variable with this string in our heroku environment
 const pool = new Pool(
   {
-  connectionString: "postgres://kuskxdbbzhvwkz:68cbfc9d44fbc241c4f3e26a56327d009f5f6e4b75d04a7c0874e9b2536c1ade@ec2-3-222-30-53.compute-1.amazonaws.com:5432/d8sc0ku4m33dnj", //process.env.DATABASE_URL,
-  ssl: 
-    {
-    rejectUnauthorized: false
-    }
+  connectionString: process.env.DB_URL,
+  ssl: { rejectUnauthorized: false }
   });
 
 
@@ -25,16 +22,17 @@ const pool = new Pool(
 // This will handle all database queries indirectly                
 //
 ////////////////////////////////////////////////////////////////////////
-exports.queryDB = async (queryString, callbackFunction) => {
+exports.queryDB = async (queryString, values, callbackFunction) => {
   
     var queryError = false; 
 
     var client = await pool.connect();      //Gain access to the database
 
-    //console.time("db Start");
+    if(process.env.RECORD_TIME == true)
+        console.time("db Start");
 
     try {
-        result = await client.query(queryString).catch(e => 
+        result = await client.query(queryString, values).catch(e => 
             {
             util.logERROR("queryDB(): " + e.message, e.code);
             util.logINFO("queryDB(): Notified caller of error");
@@ -42,15 +40,16 @@ exports.queryDB = async (queryString, callbackFunction) => {
             callbackFunction(null, e);
             queryError = true;
             }); 
+
+        client.release();          //Remove connection to database
     
             if(!queryError) 
                 {
                 callbackFunction(result, false);
                 }
-        
-        client.release();          //Remove connection to database
-
-        //console.timeEnd("db Start");
+                
+        if(process.env.RECORD_TIME == true)
+            console.timeEnd("db Start");
         }
     catch (err) 
         {

@@ -15,6 +15,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
+require('dotenv').config('./.env');
 
 const jwt = require('jsonwebtoken');
 const SECRETKEY = "it'sALL____ON____";      //Should probably revise this and should probably be an environment variable
@@ -224,7 +225,7 @@ app.post('/api/getTeamInfo', auth.authcheck, async (request, response) =>
     response.send(await team.getTeamInfo(request.user, request.body.teamID));
     });
 
-app.post('/api/getAllTeamInfo', auth.authcheck, async (request, response) =>
+app.post('/api/getAllTeamInfo', async (request, response) =>
     {
     response.send(await team.getAllTeamInfo(request.body.institution_id));
     });

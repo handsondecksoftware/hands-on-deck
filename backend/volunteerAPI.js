@@ -31,6 +31,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
     var response = {success: false, errorcode: -1, volunteerInfo: []};
     var goodQuery = true;
     var query = "";
+    var values = [];
 
     try 
         {
@@ -42,7 +43,10 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         query += " FROM volunteer AS V";
         query += " LEFT JOIN team AS T ON T.team_id = V.team_id";
         query += " LEFT JOIN volunteer_stats AS VS ON VS.volunteer_id = V.volunteer_id";
-        query += " WHERE V.volunteer_type != '" + enumType.VT_DEV + "' AND V.institution_id = " + user.institution_id;
+        query += " WHERE V.volunteer_type != $1 AND V.institution_id = $2";
+
+        values.push(enumType.VT_DEV);
+        values.push(user.institution_id);
 
         //Determine Correct Query to run
         if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
@@ -51,12 +55,16 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
             }
         else if(volunteerID == 0)
             {
-            query += " AND V.volunteer_id = " + user.volunteer_id + ";";
+            query += " AND V.volunteer_id = $3;";
+
+            values.push(user.volunteer_id);
             }
         //To access specific volunteer that is not that user they must have admin or dev privileges
         else if(volunteerID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
-            query += " AND V.volunteer_id = " + user.volunteer_id + ";";
+            query += " AND V.volunteer_id = $3;";
+
+            values.push(volunteerID);
             }
         else 
             {
@@ -70,7 +78,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         //Run query if query is valid
         if(goodQuery)
             {
-            await database.queryDB(query, (res, e) => 
+            await database.queryDB(query, values, (res, e) => 
                 { 
                 if(e) 
                     {
@@ -120,7 +128,9 @@ exports.getVolunteerData = async (user, vol_ID) =>
     var response = {success: false, errorcode: -1, volunteerData: null};
     var goodQuery = true;
     var query = "";
+    var values = [];
     var query2 = "";
+    var values2 = [];
 
     try 
         {
@@ -140,11 +150,15 @@ exports.getVolunteerData = async (user, vol_ID) =>
         //Set the query condition
         if(vol_ID == 0)     //Query from volunteer themself
             {
-            query += " WHERE V.volunteer_id = " + user.volunteer_id + ";";
+            query += " WHERE V.volunteer_id = $1;";
+
+            values.push(user.volunteer_id);
             }
         else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
             {
-            query += " WHERE V.volunteer_id = " + vol_ID + ";";
+            query += " WHERE V.volunteer_id = $1;";
+
+            values.push(vol_ID);
             }
         else 
             {
@@ -158,7 +172,7 @@ exports.getVolunteerData = async (user, vol_ID) =>
         //Run query #1 if query is valid
         if(goodQuery)
             {
-            await database.queryDB(query, (res, e) => 
+            await database.queryDB(query, values, (res, e) => 
                 { 
                 if(e) 
                     {
@@ -192,15 +206,19 @@ exports.getVolunteerData = async (user, vol_ID) =>
                 //Set the query condition
                 if(vol_ID == 0)     //Query by volunteer
                     {
-                    query2 += " WHERE VD.volunteer_id = " + user.volunteer_id + ";";
+                    query2 += " WHERE VD.volunteer_id = $1;";
+
+                    values2.push(user.volunteer_id);
                     }
                 else if(vol_ID > 0 && (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV))
                     {
-                    query2 += " WHERE VD.volunteer_id = " + vol_ID + ";";
+                    query2 += " WHERE VD.volunteer_id = $1;";
+
+                    values2.push(vol_ID);
                     }
                 //We already know the vol_ID is valid at this point since it has been checked
 
-                await database.queryDB(query2, (res, e) => 
+                await database.queryDB(query2, values2, (res, e) => 
                     { 
                     if(e) 
                         {
@@ -249,28 +267,58 @@ exports.editVolunteer = async (user, volunteerData) =>
     {
     var response = {success: false, errorcode: -1};
     var query = "";
+    var values = [];
     var tempResult = {content: true};      //Will be overwritten
     var query2 = "";
+    var values2 = [];
 
     try 
         {
         util.logINFO("editVolunteer(): called by: " + user.volunteer_id);
 
-        //Verify all the inputs from the volunteerData element that will be placed in SQL query
-        if(util.verifyInput(volunteerData.name) && util.verifyInput(volunteerData.username) &&
-            util.verifyInput(volunteerData.email) && util.verifyInput(volunteerData.leaderboards))
+        //Ensure the username and name is not empty
+        if(volunteerData.username != "" && volunteerData.username != undefined && 
+            volunteerData.name != "" && volunteerData.name != undefined && util.isValidEmail(volunteerData.email))
             {
-            //The inputs do not contain SQL injection attacks
+            //Ensure the username provided is not used by anyone else 
+            query = "SELECT * FROM volunteer WHERE username = $1 AND volunteer_id != $2;";
 
-            //Ensure the username and name is not empty
-            if(volunteerData.username != "" && volunteerData.username != undefined && 
-                volunteerData.name != "" && volunteerData.name != undefined && util.isValidEmail(volunteerData.email))
+            values.push(volunteerData.username);
+            values.push(user.volunteer_id);
+
+            await database.queryDB(query, values, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    util.logWARN("editVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                    }
+                else 
+                    {
+                    tempResult = res.rows;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
+
+            //if the username is not duplicated
+            if(tempResult === undefined || tempResult.length == 0)
                 {
-                 //Ensure the username provided is not used by anyone else 
-                query = "SELECT * FROM volunteer";
-                query += " WHERE username = '" + volunteerData.username + "' AND volunteer_id != " + user.volunteer_id;
+                //Update the volunteers information
+                query2 =  "UPDATE volunteer SET";
+                query2 += " firstname = $1, lastname = $2, email = $3,";
+                query2 += " username = $4, leaderboards = $5";
+                query2 += " WHERE volunteer_id = $6;";
 
-                await database.queryDB(query, (res, e) => 
+                values2.push(volunteerData.name.split(' ')[0]);
+                values2.push(volunteerData.name.split(' ')[1]);
+                values2.push(volunteerData.email);
+                values2.push(volunteerData.username);
+                values2.push(volunteerData.leaderboards);
+                values2.push(user.volunteer_id);
+
+                await database.queryDB(query2, values, (res, e) => 
                     { 
                     if(e) 
                         {
@@ -280,50 +328,17 @@ exports.editVolunteer = async (user, volunteerData) =>
                         }
                     else 
                         {
-                        tempResult = res.rows;
                         response.errorcode = error.NOERROR;
                         response.success = true;
                         }
                     });
-
-                //if the username is not duplicated
-                if(tempResult === undefined || tempResult.length == 0)
-                    {
-                    //Update the volunteers information
-                    query2 =  "UPDATE volunteer SET";
-                    query2 += " firstname = '" + volunteerData.name.split(' ')[0] + "', lastname = '" + volunteerData.name.split(' ')[1];
-                    query2 += "', email = '" + volunteerData.email + "', username = '" + volunteerData.username;
-                    query2 += "', leaderboards = " + volunteerData.leaderboards;
-                    query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
-        
-                    await database.queryDB(query2, (res, e) => 
-                        { 
-                        if(e) 
-                            {
-                            response.errorcode = error.DATABASE_ACCESS_ERROR;
-                            response.success = false;
-                            util.logWARN("editVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
-                            }
-                        else 
-                            {
-                            response.errorcode = error.NOERROR;
-                            response.success = true;
-                            }
-                        });
-                    }
-                else
-                    {
-                    response.errorcode = error.INVALID_INPUT_ERROR;
-                    response.success = false;
-                    util.logWARN("editVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
-                    }
                 }
-            else 
-                {
-                response.errorcode = error.INVALID_INPUT_ERROR;
-                response.success = false;
-                util.logWARN("editVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
-                }
+            }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logWARN("deleteVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
             }
         }
     catch (err)
@@ -356,20 +371,45 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
     {
     var response = {success: false, errorcode: -1};
     var query = "";
+    var values = [];
     var query2 = "";
+    var values2 = [];
     var passwordMatch = false;
 
     try 
         {
         util.logINFO("changePassword(): called by: " + user.volunteer_id);
 
-        //Validate the inputs from the passwords 
-        if(util.verifyInput(oldPassword) && util.verifyInput(newPassword))
-            {
-            //Can assume inputs are now valid, check that the old password is valid
-            query = "SELECT password FROM volunteer WHERE volunteer_id = " + user.volunteer_id;
+        //Can assume inputs are now valid, check that the old password is valid
+        query = "SELECT password FROM volunteer WHERE volunteer_id = $1";
 
-            await database.queryDB(query, (res, e) => 
+        values.push(user.volunteer_id);
+
+        await database.queryDB(query, values, (res, e) => 
+            { 
+            if(e) 
+                {
+                response.errorcode = error.DATABASE_ACCESS_ERROR;
+                response.success = false;
+                util.logWARN("changePassword(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                passwordMatch = false;
+                }
+            else if(bcrypt.compareSync(oldPassword, res.rows[0].password))
+                {
+                passwordMatch = true;
+                }
+            });
+
+        //If the passwords match
+        if(passwordMatch)
+            {
+            query2 =  "UPDATE volunteer SET";
+            query2 += " password = $1 WHERE volunteer_id = $2;";
+            
+            values2.push(bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)));
+            values2.push(user.volunteer_id);
+
+            await database.queryDB(query2, values2, (res, e) => 
                 { 
                 if(e) 
                     {
@@ -377,34 +417,12 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
                     response.success = false;
                     util.logWARN("changePassword(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
                     }
-                else if(bcrypt.compareSync(oldPassword, res.rows[0].password))
+                else 
                     {
-                    passwordMatch = true;
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
                     }
                 });
-
-            //If the passwords match
-            if(passwordMatch)
-                {
-                query2 =  "UPDATE volunteer SET";
-                query2 += " password = '" + bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)) + "'";
-                query2 += " WHERE volunteer_id = " + user.volunteer_id + ";";
-
-                await database.queryDB(query2, (res, e) => 
-                    { 
-                    if(e) 
-                        {
-                        response.errorcode = error.DATABASE_ACCESS_ERROR;
-                        response.success = false;
-                        util.logWARN("changePassword(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
-                        }
-                    else 
-                        {
-                        response.errorcode = error.NOERROR;
-                        response.success = true;
-                        }
-                    });
-                }
             }
         }
     catch (err)
@@ -432,10 +450,11 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
 // @param[out] {success, errorcode}
 //
 ////////////////////////////////////////////////////////////
-exports.deleteVolunteer = async (user, vol_ID ) => 
+exports.deleteVolunteer = async (user, vol_ID) => 
     {
     var response = {success: false, errorcode: -1};
     var query = "";
+    var values = [];
 
     try 
         {
@@ -444,33 +463,25 @@ exports.deleteVolunteer = async (user, vol_ID ) =>
         //Verify the user permission
         if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
             {
-            //Ensure vol_ID input is valid
-            if(util.verifyInput(vol_ID))
-                {
-                 // Set the query
-                query = "DELETE FROM volunteer WHERE volunteer_id = " + vol_ID + ";";
-            
-                await database.queryDB(query, (res, e) => 
-                    { 
-                    if(e) 
-                        {
-                        response.errorcode = error.DATABASE_ACCESS_ERROR;
-                        response.success = false;
-                        util.logWARN("deleteVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
-                        }
-                    else 
-                        {
-                        response.errorcode = error.NOERROR;
-                        response.success = true;
-                        }
-                    });
-                }
-            else 
-                {
-                response.errorcode = error.INVALID_INPUT_ERROR;
-                response.success = false;
-                util.logWARN("deleteVolunteer(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
-                }
+            // Set the query
+            query = "DELETE FROM volunteer WHERE volunteer_id = $1;";
+
+            values.push(vol_ID);
+        
+            await database.queryDB(query, values, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    util.logWARN("deleteVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                    }
+                else 
+                    {
+                    response.errorcode = error.NOERROR;
+                    response.success = true;
+                    }
+                });
             }
         else
             {
@@ -507,6 +518,7 @@ exports.getVolunteerLeaderboard = async user =>
     {
     var response = {success: false, errorcode: -1, volunteerLeader: []};
     var query = "";
+    var values = [];
 
     try 
         {
@@ -517,12 +529,12 @@ exports.getVolunteerLeaderboard = async user =>
         query += " FROM volunteer_stats AS VS";
         query += " LEFT JOIN volunteer AS V ON V.volunteer_id = VS.volunteer_id";
         query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
-        query += " WHERE VS.institution_id = " + user.institution_id + " AND V.leaderboards = true";
+        query += " WHERE VS.institution_id = $1 AND V.leaderboards = true";
         query += " ORDER BY num_hours DESC NULLS LAST LIMIT 10;";
 
-        //case when MyDate is null then 1 else 0 end, MyDate
+        values.push(user.institution_id);
        
-        await database.queryDB(query, (res, e) => 
+        await database.queryDB(query, values, (res, e) => 
             { 
             if(e) 
                 {
@@ -580,23 +592,24 @@ exports.createAccount = async vData =>
     {
     var response = {success: false, errorcode: -1};
     var query = "";
+    var values = [];
     var tempResult = [];
     var query2 = "";
+    var values2 = [];
 
 
     try {
         util.logINFO("createAccount(): called by: " +  vData.username + " for institution: " + vData.institution_id);
 
-        //Validate all inputs 
-        if(util.verifyInput(vData.name) && util.verifyInput(vData.username) && 
-            util.verifyInput(vData.leaderboards) && util.verifyInput(vData.password) &&
-            util.verifyInput(vData.institution_id) && util.verifyInput(vData.team_id) &&
-            util.verifyInput(vData.email) && util.isValidEmail(vData.email))
+        //Validate email input 
+        if(util.isValidEmail(vData.email))
             {            
             //Make sure the provided username is unique
-            query = "SELECT volunteer_id FROM volunteer WHERE username = '" + vData.username + "';";
+            query = "SELECT volunteer_id FROM volunteer WHERE username = $1;";
 
-            await database.queryDB(query, (res, e) => 
+            values.push(vData.username);
+
+            await database.queryDB(query, values, (res, e) => 
                 {
                 if(e) 
                     {
@@ -615,11 +628,19 @@ exports.createAccount = async vData =>
             if(tempResult != undefined && tempResult.length == 0)
                 {
                 query2 =  "INSERT INTO volunteer(team_id, institution_id, firstname, lastname, email, password, username, volunteer_type, leaderboards)";
-                query2 += "VALUES (" + vData.team_id + ", " + vData.institution_id + ", '" + vData.name.split(" ")[0] + "', '" + vData.name.split(" ")[1] + "', '";
-                query2 += vData.email + "', '" + bcrypt.hashSync(vData.password, bcrypt.genSaltSync(10)) + "', '" + vData.username + "', '";
-                query2 += enumType.VT_VOLUNTEER + "', '" + vData.leaderboards + "');"
+                query2 += "VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);"
 
-                await database.queryDB(query2, (res, e) => 
+                values2.push(vData.team_id);
+                values2.push(vData.institution_id);
+                values2.push(vData.name.split(" ")[0]);
+                values2.push(vData.name.split(" ")[1]);
+                values2.push(vData.email);
+                values2.push(bcrypt.hashSync(vData.password, bcrypt.genSaltSync(10)));
+                values2.push(vData.username);
+                values2.push(enumType.VT_VOLUNTEER);
+                values2.push(vData.leaderboards);
+
+                await database.queryDB(query2, values2, (res, e) => 
                     {
                     if(e) 
                         {

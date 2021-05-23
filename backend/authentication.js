@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////
 const error = require('./errorCodes');
 const jwt = require('jsonwebtoken');
+const util = require('./utils');
 const database = require('./databaseSetup');
 const SECRETKEY = "it'sALL____ON____";
 
@@ -23,9 +24,9 @@ exports.authcheck = async (req, res, next) =>
     {
     try 
         {
-        //util.logINFO("authcheck(): called");
-        //Extract token
-        const token = req.headers.authorization.split(" ")[1];      //split removes 'Bearer ' from header
+        //Extract token -- split removes 'Bearer ' from header
+        const token = req.headers.authorization.split(" ")[1];
+
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
             {
             //Verify the jwt
@@ -73,9 +74,8 @@ exports.authcheck_get = async (req, res, next) =>
     {
     try
         {
-        //util.logINFO("authcheck_get(): called");
-        //Extract token
-        const token = req.cookies.access_token;      //No need to remove Bearer since it is not in cookie
+        //Extract token -- No need to remove Bearer since it is not in cookie
+        const token = req.cookies.access_token;      //
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
             {
             //Verify the jwt
@@ -123,9 +123,7 @@ async function tokenNotExpired(token)
     {
     var notExpired = false;
 
-    //util.logINFO("tokenNotExpired(): seraching for: " + token);
-    //Query database for token in expired table
-    await database.queryDB("SELECT * FROM expire_table WHERE token='" + token + "';", (result, err) => 
+    await database.queryDB("SELECT * FROM expire_table WHERE token= $1;", [token], (result, err) => 
         {
         if (err) 
             {
@@ -138,12 +136,10 @@ async function tokenNotExpired(token)
             //If there is no token matching the one we are looking for
             if(result.rows[0] == null) 
                 {
-                //util.logINFO("tokenNotExpired(): Token not found in expire_table");
                 notExpired = true;
                 }
             else 
                 {
-                //util.logINFO("tokenNotExpired(): Token found in expire_table. Is currently invalid");
                 notExpired = false;
                 }
             }
@@ -171,8 +167,7 @@ exports.makeTokenInvalid = async (req, res, next) =>
         //Get the token info
         var decodedToken = jwt.decode(token);
 
-        //Query database for token in expired table
-        await database.queryDB("INSERT INTO expire_table VALUES ('" + token + "', '" + decodedToken.exp + "');", (result, err) => 
+        await database.queryDB("INSERT INTO expire_table VALUES ($1, $2);", [token, decodedToken.exp], (result, err) => 
             {
             if (err) 
                 {

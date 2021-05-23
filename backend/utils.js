@@ -9,8 +9,6 @@
 
 const error = require('./errorCodes');
 
-const PRODUCTION = true;
-
 const LOG_SPACE = "  "; 
 
 const INFO = "INFO: ";
@@ -100,7 +98,7 @@ exports.isValidEmail = email =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logINFO = msg =>
     {
-    if(PRODUCTION)
+    if(process.env.PRD)
         {
         console.log(INFO + LOG_SPACE + msg);
         }
@@ -120,7 +118,7 @@ exports.logINFO = msg =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logWARN = (msg, errorcode) =>
     {
-    if(PRODUCTION)
+    if(process.env.PRD)
         {
         console.warn(WARN + LOG_SPACE + error.name[errorcode] + LOG_SPACE + msg);
         }
@@ -140,7 +138,7 @@ exports.logWARN = (msg, errorcode) =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logERROR = (msg, error) =>
     {
-    if(PRODUCTION)
+    if(process.env.PRD)
         {
         console.error(ERROR + LOG_SPACE + error + LOG_SPACE + msg);
         }
