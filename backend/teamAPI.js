@@ -525,6 +525,7 @@ exports.getTeamLeaderboard = async user =>
                 //Set the rank of each volunteer -- assuming they are in sorted order already
                 for(var t = 0; t < response.teamLeader.length; t++)
                     {
+                    response.teamLeader[t].numhours = response.teamLeader[t].numhours ?? 0;
                     response.teamLeader[t]['rank'] = t+1; 
                     }
 

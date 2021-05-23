@@ -359,16 +359,16 @@ exports.editVolunteeringData = async (user, volunteeringData) =>
                 //Can only update validated if this is not the volunteer 
                 if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
                     {
-                    query += ", validated = $5 WHERE volunteeringdata_id = $6;";
+                    query2 += ", validated = $5 WHERE volunteeringdata_id = $6;";
 
-                    values.push(volunteeringData.validated);
-                    values.push(volunteeringData.id);
+                    values2.push(volunteeringData.validated);
+                    values2.push(volunteeringData.id);
                     }
                 else 
                     {
-                    query += " WHERE volunteeringdata_id = $5;";
+                    query2 += " WHERE volunteeringdata_id = $5;";
 
-                    values.push(volunteeringData.id);
+                    values2.push(volunteeringData.id);
                     }
 
                 await database.queryDB(query2, values2, (res, e) => 

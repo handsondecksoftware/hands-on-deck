@@ -344,7 +344,7 @@ app.post('/api/signIn', function(request, response, next)
             // JSON.parse() ensures that isMobile acts as a boolean instead of string
 
         //Query database
-        database.queryDB("SELECT volunteer_id, institution_id, username, password, volunteer_type FROM volunteer WHERE username='" + username + "';", (result, err) => 
+        database.queryDB("SELECT volunteer_id, institution_id, username, password, volunteer_type FROM volunteer WHERE username = $1;", [username], (result, err) => 
             {
             if (err) 
                 {
@@ -386,7 +386,17 @@ app.post('/api/signIn', function(request, response, next)
                             //if user log in success, generate a JWT token for the user with a secret key
                             jwt.sign({user}, process.env.SECRETKEY, { expiresIn: (isMobile ? process.env.APP_EXPIRY : process.env.WEB_EXPIRY) }, (err, token) => 
                                 {
-                                if(err) { util.logERROR("/api/signIn(): " + err.message, err.code) }
+                                if(err) 
+                                    { 
+                                    util.logERROR("/api/signIn(): " + err.message, err.code);
+
+                                    if(isMobile)
+                                        response.send({success: false, access_token: null, message: "Something unexpected happened, please try again"});
+                                    else 
+                                        {
+                                        return response.redirect('/');      //Need to test
+                                        }
+                                    }
                                 else
                                     {
                                     if(isMobile)

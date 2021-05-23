@@ -51,7 +51,7 @@ exports.getVolunteerInfo = async (user, volunteerID) =>
         //Determine Correct Query to run
         if(volunteerID == -1 && (user.volunteer_type == enumType.VT_DEV || user.volunteer_type == enumType.VT_ADMIN))
             {
-            query += "AND V.team_id != 0;";
+            query += ";";
             }
         else if(volunteerID == 0)
             {
@@ -318,7 +318,7 @@ exports.editVolunteer = async (user, volunteerData) =>
                 values2.push(volunteerData.leaderboards);
                 values2.push(user.volunteer_id);
 
-                await database.queryDB(query2, values, (res, e) => 
+                await database.queryDB(query2, values2, (res, e) => 
                     { 
                     if(e) 
                         {
@@ -424,6 +424,13 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
                     }
                 });
             }
+        else 
+            {
+            response.errorcode = error.INVALID_INPUT_ERROR;
+            response.success = false;
+            util.logINFO("changePassword(): Password provided did not match the saved password");
+            util.logWARN("changePassword(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+            }
         }
     catch (err)
         {
@@ -525,7 +532,7 @@ exports.getVolunteerLeaderboard = async user =>
         util.logINFO("getVolunteerLeaderboard(): called by: " + user.volunteer_id);
 
         // Can look at reordering query with innner join so that we do not have to consider null situations with num_hours
-        query =  " SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours";
+        query =  " SELECT CONCAT(V.firstname, ' ', V.lastname) AS name, CONCAT(T.sex, ' - ', T.name) AS teamname, VS.num_hours AS numhours";
         query += " FROM volunteer_stats AS VS";
         query += " LEFT JOIN volunteer AS V ON V.volunteer_id = VS.volunteer_id";
         query += " LEFT JOIN team AS T ON T.team_id = VS.team_id";
@@ -548,13 +555,13 @@ exports.getVolunteerLeaderboard = async user =>
                 var tempRank = res.rows;
 
                 //Set the rank of each volunteer
-                for(var v = 0; v < response.volunteerLeader.length; v++)
+                for(var v = 0; v < tempRank.length; v++)
                     {
-                    if(tempRank.num_hours == null)
+                    if(tempRank[v].numhours == null)
                         break;
 
                     tempRank[v]['rank'] = v+1;
-                    response.volunteerLeader.push(tempRank); 
+                    response.volunteerLeader.push(tempRank[v]); 
                     }
 
                 response.errorcode = error.NOERROR;

@@ -98,7 +98,7 @@ exports.isValidEmail = email =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logINFO = msg =>
     {
-    if(process.env.PRD)
+    if(process.env.PRD == true)
         {
         console.log(INFO + LOG_SPACE + msg);
         }
@@ -118,7 +118,7 @@ exports.logINFO = msg =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logWARN = (msg, errorcode) =>
     {
-    if(process.env.PRD)
+    if(process.env.PRD == true)
         {
         console.warn(WARN + LOG_SPACE + error.name[errorcode] + LOG_SPACE + msg);
         }
@@ -138,7 +138,7 @@ exports.logWARN = (msg, errorcode) =>
 //////////////////////////////////////////////////////////////////////// 
 exports.logERROR = (msg, error) =>
     {
-    if(process.env.PRD)
+    if(process.env.PRD == true)
         {
         console.error(ERROR + LOG_SPACE + error + LOG_SPACE + msg);
         }

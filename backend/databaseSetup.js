@@ -32,7 +32,11 @@ exports.queryDB = async (queryString, values, callbackFunction) => {
         console.time("db Start");
 
     try {
-        result = await client.query(queryString, values).catch(e => 
+        result = await client.query(queryString, values).then(result =>
+            {
+            callbackFunction(result, false);
+            })
+        .catch(e => 
             {
             util.logERROR("queryDB(): " + e.message, e.code);
             util.logINFO("queryDB(): Notified caller of error");
@@ -42,12 +46,7 @@ exports.queryDB = async (queryString, values, callbackFunction) => {
             }); 
 
         client.release();          //Remove connection to database
-    
-            if(!queryError) 
-                {
-                callbackFunction(result, false);
-                }
-                
+        
         if(process.env.RECORD_TIME == true)
             console.timeEnd("db Start");
         }
