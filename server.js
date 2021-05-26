@@ -404,7 +404,7 @@ app.post('/api/signIn', function(request, response, next)
                                     else 
                                         {
                                         response.cookie("access_token", token)
-                                        return response.redirect('../home');
+                                        return response.redirect('/home',);
                                         }
                                     }
                                 });

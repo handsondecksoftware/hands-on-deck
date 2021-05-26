@@ -266,7 +266,7 @@ exports.getOpportunityData = async (user, oppID) =>
 
             values2.push(oppID);
 
-            await database.queryDB(query2, (res, e) => 
+            await database.queryDB(query2, values2, (res, e) => 
                 { 
                 if(e) 
                     {

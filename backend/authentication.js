@@ -74,7 +74,7 @@ exports.authcheck_get = async (req, res, next) =>
     try
         {
         //Extract token -- No need to remove Bearer since it is not in cookie
-        const token = req.cookies.access_token;      //
+        const token = req.cookies.access_token;
         if(typeof token !== 'undefined' && (await tokenNotExpired(token)))
             {
             //Verify the jwt
