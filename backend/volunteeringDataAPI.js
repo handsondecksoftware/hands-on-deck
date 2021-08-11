@@ -242,7 +242,8 @@ exports.addVolunteeringData = async (user, volunteeringData) =>
                     volunteeringData.vol_id = user.volunteer_id;
 
                 query2 =  "INSERT INTO volunteeringdata(volunteer_id, opp_id, starttime, endtime, validated)";
-                query2 += " VALUES ($1, $2, $3, $4, false);";
+                query2 += " SELECT $1, $2, $3, $4, false";
+                query2 += " WHERE NOT EXISTS (SELECT volunteer_id, opp_id FROM volunteeringdata WHERE volunteer_id = $1 AND opp_id = $2);";
 
                 values2.push(volunteeringData.vol_id);
                 values2.push(volunteeringData.opp_id);
