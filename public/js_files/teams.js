@@ -135,8 +135,8 @@ function addTeam()
     //Collect Form Values
     var teamData = {
         name: getRef('addTeam-name').value,
-        leaderboards: getRef('includeLeaderboards').value,
-        sex: getRef('teamSex').value,
+        leaderboard: getRef('includeLeaderboards').value == 0,
+        sex: getRef('teamSex').value == 0 ? "M" : "W",
     };
 
     handleAPIcall({teamData: teamData}, "/api/addTeam", response => 
