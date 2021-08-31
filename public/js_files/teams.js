@@ -326,22 +326,29 @@ function saveEditTeam()
         sex: getRef("dropdown-title-viewTeamSex").innerHTML, 
         numvolunteers: null,
         numhours: null,
-        leaderboard: (getRef("dropdown-title-viewTeamSex").viewTeamLeaderboards == "Yes"),
+        leaderboard: (getRef("dropdown-title-viewTeamLeaderboards").innerHTML == "Yes"),
         volunteers: null,
     }
 
-    setLoaderVisibility(true);
-
-    //Send post request and handle the response
-    handleAPIcall({teamData: teamData}, "/api/editTeam", response => 
+    try 
         {
-        if(response.success)
+        setLoaderVisibility(true);
+
+        //Send post request and handle the response
+        handleAPIcall({teamData: teamData}, "/api/editTeam", response => 
             {
-            alert("You successfully updated the team");
+            if(response.success)
+                {
+                alert("You successfully updated the team");
+                }
+            else 
+                {
+                printUserErrorMessage(response.errorCode);
+                }
 
             //Set the inputs to view only
             getRef('viewTeam-name').readOnly = true;
-
+    
             //Activite dropdown menus
             getRef('viewTeamSex').onclick = function(){return};
             getRef('viewTeamLeaderboards').onclick = function(){return};
@@ -350,18 +357,13 @@ function saveEditTeam()
             getRef('editTeam').innerHTML = "Edit"; 
 
             //Stay on the current page to allow user to do what they want next
-            }
-        else 
-            {
-            printUserErrorMessage(response.errorCode);
-            }
-        
-        setLoaderVisibility(false);
-        })
-    .catch(error)
+            setLoaderVisibility(false);
+            });
+        }
+    catch (error)
         {
         console.log(error.message);
         alert("Error saving team. Please try again");
         setLoaderVisibility(false);
-        };
+        }
     }
