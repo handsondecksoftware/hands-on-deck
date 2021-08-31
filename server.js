@@ -371,7 +371,7 @@ app.post('/api/signIn', function(request, response, next)
                 if(isMobile)
                     response.send({success: false, session: null, message: "Soemthing unexpected happened. Please try again"});
                 else
-                    response.render('pages/signIn', { 'message': "Soemthing unexpected happened. Please try again"}); 
+                    response.render('pages/signIn', { 'message': "Soemthing unexpected happened. Please try again", home: false, privacy: false, about: false, signin: true}); 
                 }
             else 
                 {
@@ -383,7 +383,7 @@ app.post('/api/signIn', function(request, response, next)
                     if(isMobile)
                         response.send({success: false, session: null, message: "Incorrect Username"});
                     else
-                        response.render('pages/signIn', { 'message': "Incorrect Username"}); 
+                        response.render('pages/signIn', { 'message': "Incorrect Username", home: false, privacy: false, about: false, signin: true}); 
                     }
                 else 
                     {
@@ -429,7 +429,7 @@ app.post('/api/signIn', function(request, response, next)
                                             }
                                         else 
                                             {
-                                            response.render('pages/signIn', { 'message': "Invalid Permissions. Please use the iOS or Android apps."}); 
+                                            response.render('pages/signIn', { 'message': "Invalid Permissions. Please use the iOS or Android apps.", home: false, privacy: false, about: false, signin: true}); 
                                             }
                                         }
                                     }
@@ -442,7 +442,7 @@ app.post('/api/signIn', function(request, response, next)
                             if(isMobile)
                                 response.send({success: false, session: null, message: "Incorrect Password"});
                             else
-                                response.render('pages/signIn', { 'message': "Incorrect Password"}); 
+                                response.render('pages/signIn', { 'message': "Incorrect Password", home: false, privacy: false, about: false, signin: true}); 
                             }
                         });
                     }

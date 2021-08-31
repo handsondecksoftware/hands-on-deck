@@ -38,7 +38,7 @@ exports.authcheck = async (req, res, next) =>
                     if(req.body.isMobile)
                         res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
                     else 
-                        res.render('pages/signIn', { message: 'Not authorized, please login' });
+                        res.render('pages/signIn', { message: 'Not authorized, please login', home: false, privacy: false, about: false, signin: true});
                     } 
                 else 
                     { 
@@ -52,7 +52,7 @@ exports.authcheck = async (req, res, next) =>
             if(req.body.isMobile)
                 res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
             else 
-                res.render('pages/signIn', { message: 'Not authorized, please login' });
+                res.render('pages/signIn', { message: 'Not authorized, please login', home: false, privacy: false, about: false, signin: true});
             }
         }
     catch (error)
@@ -87,7 +87,7 @@ exports.authcheck_get = async (req, res, next) =>
                     if(req.body.isMobile)
                         res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
                     else 
-                        res.render('pages/signIn', { message: 'Not authorized, please login' });
+                        res.render('pages/signIn', { message: 'Not authorized, please login', home: false, privacy: false, about: false, signin: true });
                     } 
                 else 
                     { 
@@ -101,7 +101,7 @@ exports.authcheck_get = async (req, res, next) =>
             if(req.body.isMobile)
                 res.send({success: false, errorcode: error.NOT_AUTHENTICATED});
             else 
-                res.render('pages/signIn', { message: 'Not authorized, please login' });
+                res.render('pages/signIn', { message: 'Not authorized, please login', home: false, privacy: false, about: false, signin: true });
             }
         }
     catch (error)
