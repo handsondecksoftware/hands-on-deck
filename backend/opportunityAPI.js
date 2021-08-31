@@ -392,6 +392,7 @@ exports.editOpportunity = async (user, oppData) =>
     var response = {success: false, errorcode: -1};
     var query = "";
     var values = [];
+    var opportunityUpdated = false;
 
     try 
         {
@@ -428,10 +429,34 @@ exports.editOpportunity = async (user, oppData) =>
                     }
                 else 
                     {
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
+                    opportunityUpdated = true;
                     }
                 });
+
+            if (opportunityUpdated)
+                {
+                // Update the related volunteering data
+                var query2 =  "UPDATE volunteeringdata SET";
+                query2 += " starttime = $1, endtime = $2";
+                query2 += " WHERE opp_id = $3;";
+
+                var values2 = [oppData.starttime, oppData.endtime, oppData.id];
+            
+                await database.queryDB(query2, values2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("editOpportunity(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
             }
         else 
             {

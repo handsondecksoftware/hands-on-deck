@@ -82,10 +82,10 @@
         <!-- Used to show the volunteer history of volunteer -->
         <div id="viewVolunteerPage" style="display: none;">
             <div class="volunteerHistoryTitle">
-                <div class="col_33p row_100p">
+                <div class="col_25p row_100p">
                     <button class="button col_16p" style="width: 70%;" id="returnToVolList"> Return to Volunteers</button>
                 </div>
-                <div class="col_33p row_100p">
+                <div class="col_25p row_100p">
                     <div class="row_50p">
                         <div class="col_100p subTitle3"> Name:</div>
                     </div>
@@ -93,13 +93,16 @@
                         <div id="volName" class="subTitle3 text-black"></div>
                     </div>
                 </div>
-                <div class="col_33p row_100p">
+                <div class="col_25p row_100p">
                     <div class="row_50p">
                         <div class="col_100p subTitle3"> Team:</div>
                     </div>
                     <div class="row_50p">
                         <div id="volTeam" class="subTitle3 text-black"></div>
                     </div>
+                </div>
+                <div class="col_25p row_100p">
+                    <button class="button col_16p" style="width: 50%;" id="changeUserPassword">Change Password</button>
                 </div>
             </div>
 
@@ -135,10 +138,10 @@
                         </div>
                         <div class="row_40p">
                             <div class="col_50p subTitle3">
-                            <input class="textInput" type="text" placeholder="Date" id="oppDate">
+                                <input class="textInput" type="text" placeholder="Date" id="oppDate">
                             </div>
                             <div class="col_50p subTitle3">
-                            <input class="textInput" type="text" placeholder="Time" id="oppTime">
+                                <input class="textInput" type="text" placeholder="Time" id="oppTime">
                             </div>
                         </div>
                         <div class="row_40p">
@@ -177,6 +180,33 @@
                 <div class="popup-buttons">
                     <div class="popup-buttons-cancel"><button class="button" id="cancelOppourtunityView">Cancel</button></div>
                     <div class="popup-buttons-add"><button class="button" id="saveOppourtunityView">Save</button></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop up box for changing a users password -->
+        <div id="changeUserPasswordPopup" class="popup-greyOut" style="display:none">
+            <div class="popup-box">
+                <div class="popup-title">
+                    <h1 id="opportunityTitle">Change User Password</h1>
+                </div>
+                <div class="popup-content" style="height:175px">
+                    <div class="row_50p">
+                        <div class="col_35p subTitle3"> Institution Secret:</div>
+                        <div class="col_65p">
+                            <input class="textInput" type="text" placeholder="Secret" id="secret">
+                        </div>
+                    </div>
+                    <div class="row_50p">
+                        <div class="col_35p subTitle3"> New Password:</div>
+                        <div class="col_65p">
+                            <input class="textInput" type="password" placeholder="New Password" id="newPassword">
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-buttons">
+                    <div class="popup-buttons-cancel"><button class="button" id="cancelChangePassword">Cancel</button></div>
+                    <div class="popup-buttons-add"><button class="button" id="confirmChangePassword">Change</button></div>
                 </div>
             </div>
         </div>

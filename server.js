@@ -177,6 +177,11 @@ app.post('/api/changePassword', auth.authcheck, async (request, response) =>
     response.send(await volunteer.changePassword(request.user, request.body.oldPassword, request.body.newPassword));
     });
 
+app.post('/api/changePasswordAdmin', auth.authcheck, async (request, response) =>
+    {
+    response.send(await volunteer.changePasswordAdmin(request.user, request.body.vol_ID, request.body.secret, request.body.newPassword));
+    });
+
 app.post('/api/deleteVolunteer', auth.authcheck, async (request, response) =>
     {
     response.send(await volunteer.deleteVolunteer(request.user, request.body.vol_ID));

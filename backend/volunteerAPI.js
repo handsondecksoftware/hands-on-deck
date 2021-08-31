@@ -447,6 +447,102 @@ exports.changePassword = async (user, oldPassword, newPassword) =>
     return response;
     }
 
+////////////////////////////////////////////////////////////
+// Will update users password in database -- only allowed if user is admin or dev
+//
+// @param[in]  user                     user information
+// @param[in]  userInfo                 Info of user to be updated
+//
+// @param[out] {success, errorcode}     return variables indicating the success or failure of the request 
+//
+////////////////////////////////////////////////////////////
+exports.changePasswordAdmin = async (user, vol_ID, institutionSecret, newPassword) => 
+    {
+    var response = {success: false, errorcode: -1};
+    var query = "";
+    var values = [];
+    var query2 = "";
+    var values2 = [];
+    var secretMatch = false;
+
+    try 
+        {
+        util.logINFO("changePasswordAdmin(): called by: " + user.volunteer_id + " for user: " + vol_ID);
+
+        if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+            {
+            query = "SELECT secret FROM institution WHERE institution_id = $1";
+            values.push(user.institution_id);
+    
+            await database.queryDB(query, values, (res, e) => 
+                { 
+                if(e) 
+                    {
+                    response.errorcode = error.DATABASE_ACCESS_ERROR;
+                    response.success = false;
+                    util.logWARN("changePasswordAdmin(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                    secretMatch = false;
+                    }
+                else if(institutionSecret == res.rows[0].secret)   // Values should be encrypted eventually -- bcrypt.compareSync(oldPassword, res.rows[0].password)
+                    {
+                    secretMatch = true;
+                    }
+                });
+    
+            //If the secret is correct
+            if(secretMatch)
+                {
+                query2 =  "UPDATE volunteer SET";
+                query2 += " password = $1 WHERE volunteer_id = $2;";
+                
+                values2.push(bcrypt.hashSync(newPassword, bcrypt.genSaltSync(10)));
+                values2.push(vol_ID);
+    
+                await database.queryDB(query2, values2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("changePasswordAdmin(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
+            else 
+                {
+                response.errorcode = error.INVALID_INPUT_ERROR;
+                response.success = false;
+                util.logINFO("changePasswordAdmin(): The institution secret provided did not match the expected secret");
+                util.logWARN("changePasswordAdmin(): Set errorcode to: " + error.INVALID_INPUT_ERROR, error.INVALID_INPUT_ERROR);
+                }
+            }
+        else
+            {
+            response.errorcode = error.PERMISSION_ERROR;
+            response.success = false;
+            util.logWARN("changePasswordAdmin(): User is of type: " + user.volunteer_type, error.PERMISSION_ERROR);
+            }
+        }
+    catch (err)
+        {
+        response.errorcode = error.SERVER_ERROR;
+        response.success = false;
+
+        util.logWARN("changePasswordAdmin(): Set errorcode to: " + error.SERVER_ERROR, error.SERVER_ERROR);
+        util.logERROR("changePasswordAdmin(): " + err.message, err.code);
+        }
+
+    //Log completion of function
+    util.logINFO("changePasswordAdmin(): Result is: " + response.success);
+    
+    return response;
+    }
+
 
 ////////////////////////////////////////////////////////////
 // Will delete a user from the database
@@ -470,7 +566,9 @@ exports.deleteVolunteer = async (user, vol_ID) =>
         //Verify the user permission
         if(user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
             {
-            // Set the query
+            var volunteerDeleteSuccess = false;
+
+            // Set the query to delete the volunteer
             query = "DELETE FROM volunteer WHERE volunteer_id = $1;";
 
             values.push(vol_ID);
@@ -485,10 +583,32 @@ exports.deleteVolunteer = async (user, vol_ID) =>
                     }
                 else 
                     {
-                    response.errorcode = error.NOERROR;
-                    response.success = true;
+                    volunteerDeleteSuccess = true;
                     }
                 });
+
+            if (volunteerDeleteSuccess)
+                {
+                // Set the query to delete the volunteering 
+                var query2 = "DELETE FROM volunteeringdata WHERE volunteer_id = $1;";
+
+                var values2 = [vol_ID];
+
+                await database.queryDB(query2, values2, (res, e) => 
+                    { 
+                    if(e) 
+                        {
+                        response.errorcode = error.DATABASE_ACCESS_ERROR;
+                        response.success = false;
+                        util.logWARN("deleteVolunteer(): Set errorcode to: " + error.DATABASE_ACCESS_ERROR, error.DATABASE_ACCESS_ERROR);
+                        }
+                    else 
+                        {
+                        response.errorcode = error.NOERROR;
+                        response.success = true;
+                        }
+                    });
+                }
             }
         else
             {

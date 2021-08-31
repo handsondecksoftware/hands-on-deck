@@ -8,6 +8,10 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////
+// Global Variables
+//////////////////////////////////////////////////////////////////////// 
+var currentVolunteer_gv = null; 
 
 ////////////////////////////////////////////////////////////////////////
 // 
@@ -23,6 +27,9 @@ function init()
     getRef('returnToVolList').onclick = function(){toggleViewVolunteerVisibility()};
     getRef('cancelOppourtunityView').onclick = function(){toggleViewOppDetails()};  
     getRef('saveOppourtunityView').onclick = function(){saveOppDetails()};
+    getRef('changeUserPassword').onclick = function(){toggleChangePasswordPopup()};
+    getRef('cancelChangePassword').onclick = function(){toggleChangePasswordPopup()};  
+    getRef('confirmChangePassword').onclick = function(){changeUserPassword()};
 
     initSlider('Volunteers');
 
@@ -53,6 +60,9 @@ function loadVolunteers()
                 //Get reference to table 
                 var volunteerTable = getRef('volunteersTable');
                 var rowNum = 1;
+
+                //Remove the current elements if any 
+                for(var i = volunteerTable.rows.length - 1; i >= 1; i--) { volunteerTable.deleteRow(i); }
     
                 //Fill in table elements
                 for(var volNum = 0; volNum < response.volunteerInfo.length; volNum++)
@@ -75,7 +85,7 @@ function loadVolunteers()
                     volunteerHrs.innerHTML = response.volunteerInfo[volNum].numhours ?? 0;
     
                     view.innerHTML = "<i id=\"view_" + response.volunteerInfo[volNum].id + "\" class=\"fas fa-eye table-view\" onclick=\"viewVolunteer(this.id)\"></i>";
-                    remove.innerHTML = "<i id=\"delete_" + response.volunteerInfo[volNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id)\"></i>";
+                    remove.innerHTML = "<i id=\"delete_" + response.volunteerInfo[volNum].id + "\"class=\"fas fa-trash table-view\" onclick=\"deleteVolunteer(this.id, '" + response.volunteerInfo[volNum].name + "')\"></i>";
                     }
                 }
             else 
@@ -115,6 +125,26 @@ function toggleAddVolunteerBoxVisibility()
         }
     }
 
+////////////////////////////////////////////////////////////////////////
+// 
+// Will eiter display or hide the add oppourtuntiy box depending on the current state
+//
+////////////////////////////////////////////////////////////////////////
+function toggleChangePasswordPopup()
+    {
+    //Open the add oppourtuntiy popup box
+    var currentState = getRef('changeUserPasswordPopup').style.display; 
+
+    if(currentState === "none")
+        {
+        getRef('changeUserPasswordPopup').style.display = "block"; 
+        }
+    else 
+        {
+        getRef('changeUserPasswordPopup').style.display = "none"; 
+        }
+    }
+
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -135,6 +165,7 @@ function toggleViewVolunteerVisibility()
         {
         getRef('viewVolunteerPage').style.display = "none";
         getRef('volunteerMainPage').style.display = "block";
+        currentVolunteer_gv = null;
         }
 
     return;
@@ -185,6 +216,46 @@ function addVolunteer()
 
 ////////////////////////////////////////////////////////////////////////
 //
+// Will submit a request to change the user password
+//
+////////////////////////////////////////////////////////////////////////
+function changeUserPassword()
+    {
+    //Collect Form Values
+    var requestData = {
+        vol_ID: currentVolunteer_gv,
+        secret: getRef('secret').value,
+        newPassword: getRef('newPassword').value,
+    };
+
+    // confirm that this is desired action
+    if (confirm("Are you sure you want to change the user password to: ******" + requestData.newPassword.slice(-2) + "?"))
+        {
+        try 
+            {
+            handleAPIcall(requestData, "/api/changePasswordAdmin", response => 
+                {
+                if(response.success)
+                    {
+                    alert("You successfully changed the volunteer password");
+                    toggleChangePasswordPopup();
+                    }
+                else 
+                    {
+                    printUserErrorMessage(response.errorCode);
+                    }
+                })
+            }
+        catch(error)
+            {
+            alert("Something unexpected happened while trying to update the password. Please try again");
+            };
+        }    
+    }
+
+
+////////////////////////////////////////////////////////////////////////
+//
 // Populates a specific volunteer's name and team from the full Volunteers
 // list to the individual's volunteering page
 //
@@ -194,6 +265,7 @@ function viewVolunteer(buttonID)
     try
         {
         var vol_ID = Number(buttonID.slice(5));      //Remove "view_"
+        currentVolunteer_gv = vol_ID;
 
         // Show the new page while the user waits for the content to load
         toggleViewVolunteerVisibility();
@@ -257,6 +329,47 @@ function viewVolunteer(buttonID)
         {
         alert("Oops, looks like something went wrong while loading the volunteer information. Try again");
         setLoaderVisibility(false);
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////
+//
+// Deletes the volunteer
+//
+////////////////////////////////////////////////////////////////////////
+function deleteVolunteer(buttonID, volunteerName)
+    {
+    try 
+        {
+        if(confirm("Are you sure you want to delete the volunteer: " + volunteerName + "?"))
+            {
+            var vol_ID = Number(buttonID.slice(7));       //Remove "delete_"
+
+            setLoaderVisibility(true);
+
+            handleAPIcall({vol_ID: vol_ID}, "/api/deleteVolunteer", response => 
+                {
+                if(response.success)
+                    {
+                    alert("Deletion was successful!");
+                    
+                    //Reload the volunteer table
+                    loadVolunteers();
+                    }
+                else 
+                    {
+                    printUserErrorMessage(response.errorcode);
+                    }
+
+                setLoaderVisibility(false);
+                });
+            }
+        }
+    catch (error)
+        {
+        alert("Oops, something unexpected happened. Please try again");
+        setLoaderVisibility(false);
+        console.log(error.message);
         }
     }
 
