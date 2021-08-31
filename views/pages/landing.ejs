@@ -1,0 +1,88 @@
+<!-------------------------------------------------------------
+- landing.ejs -- the unauthenticated home page 
+-
+- Ryan Stolys, 31/08/21
+-     - Created Page 
+-
+-------------------------------------------------------------->
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Style Sheets -->
+    <link rel="stylesheet" href="../css_files/general.css"> 
+    <link rel="stylesheet" href="../css_files/components.css"> 
+    <link rel="stylesheet" href="../css_files/publicPages.css"> 
+
+    <!-- Font Awesome 6-->
+    <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
+
+    <!-- Scripts -->
+    <script src="../js_files/publicPages.js"></script>
+
+    <!-- Page Title -->
+    <title>Hands On Deck - Home</title>
+
+    </head>
+
+    <body onload="landingLoad()">
+
+        <!--Add navigation bar-->
+        <%- include ("../partials/publicNav.ejs") %>
+
+        <div id="loader" style="display:none;"></div>
+
+        <div class="bg">
+            <div class="topTitle">
+                <h1>Welcome to Hands-On-Deck Volunteer Tracking</h1>
+            </div>
+            
+            <div class="col_50p marginBottom25">
+                <div class="sectionText">
+                    <h3>Have an account?</h3>
+                </div>
+                <div class="sectionInfo">
+                    <button class="button width50" id="goToSignIn">Sign In</button>
+                </div>
+            </div>
+            <div class="col_50p marginBottom25">
+                <div class="sectionText">
+                    <h3>Need an account?</h3>
+                </div>
+                <div class="sectionInfo">
+                    <button class="button width50" id="contactUs">Contact Us</button>
+                </div>
+            </div>
+            <div class="col_50p padding-16">
+                <div class="appWindow blurBox15">
+                    <div class="appWindow-title">
+                        <h2>iOS App</h2>
+                    </div>
+                    <div class="appWindow-logo">
+                        <i class="fab fa-app-store-ios fa-10x"></i>
+                    </div>
+                    <div class="appWindow-download">
+                        <h3>Download Link Coming Soon!</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col_50p padding-16">
+                <div class="appWindow blurBox15">
+                    <div class="appWindow-title">
+                        <h2>Android App</h2>
+                    </div>
+                    <div class="appWindow-logo">
+                        <i class="fab fa-google-play fa-10x"></i>
+                    </div>
+                    <div class="appWindow-download">
+                        <h3>Download Link Coming Soon!</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

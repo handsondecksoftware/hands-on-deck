@@ -1,0 +1,56 @@
+<!-------------------------------------------------------------
+- landing.ejs -- the unauthenticated home page 
+-
+- Ryan Stolys, 31/08/21
+-     - Created Page 
+-
+-------------------------------------------------------------->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Style Sheets -->
+        <link rel="stylesheet" href="../css_files/general.css"> 
+        <link rel="stylesheet" href="../css_files/components.css">
+        <link rel="stylesheet" href="../css_files/publicPages.css">  
+
+        <!-- Font Awesome 6-->
+        <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
+
+        <!-- Scripts -->
+
+
+        <!-- Page Title -->
+        <title>Hands On Deck - Privacy</title>
+
+    </head>
+
+    <body>
+
+        <!--Add navigation bar-->
+        <%- include ("../partials/publicNav.ejs") %>
+
+        <div id="loader" style="display:none;"></div>
+
+        <div class="bg">
+            <div class="privacyPolicy">
+                <b>Privacy Policy:</b> 
+                <br><br>
+                We value your privacy and as a result only collect the minimum data nessicary to enable our offered funtionality. 
+                <br>
+                We store data about the volunteer opportunities you signed up for and your account information. Nothing else.
+                <br>
+                If you want to cancel your account and delete all of your data, you are welcome to do so at any time. Contact your system administrator.
+                <br>
+                Your data will be deleted within 48 hours of our reciept of the request.
+                <br>
+                <br>
+                If you have any questions, please contact using using the information provided on the <a href="/">home page.</a>
+            </div>
+        </div>
+    </body>
+  
+</html>

@@ -31,15 +31,7 @@
   <body>
 
     <!--Add navigation bar-->
-    <div class="navigationBar">
-      <a href="/"><img src="../images/HOD_Logo.svg" class="logo" alt="Hands on Deck Logo"/></a>
-      <div class="topnav">
-        <a href="/" class="name">Hands-On-Deck Volunteering</a>
-        <div class="right" style="padding-right: 20px;">
-          <a href="/" class="active">Sign In</a>
-        </div>
-      </div>
-    </div>
+    <%- include ("../partials/publicNav.ejs") %>
 
     <div id="loader" style="display:none;"></div>
 
@@ -78,13 +70,6 @@
         </div>
 
     </div>
-
-    <!-- Load React. -->
-    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
-    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-
-    <!-- Add React js scripts here -->
   </body>
   
 </html>

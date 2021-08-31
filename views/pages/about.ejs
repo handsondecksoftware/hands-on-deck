@@ -1,0 +1,45 @@
+<!-------------------------------------------------------------
+- landing.ejs -- the unauthenticated home page 
+-
+- Ryan Stolys, 31/08/21
+-     - Created Page 
+-
+-------------------------------------------------------------->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Style Sheets -->
+        <link rel="stylesheet" href="../css_files/general.css"> 
+        <link rel="stylesheet" href="../css_files/components.css"> 
+        <link rel="stylesheet" href="../css_files/publicPages.css">
+
+        <!-- Font Awesome 6-->
+        <script src="https://kit.fontawesome.com/30087e3184.js" crossorigin="anonymous"></script>
+
+        <!-- Scripts -->
+
+
+        <!-- Page Title -->
+        <title>Hands On Deck - About</title>
+
+    </head>
+
+    <body>
+
+        <!--Add navigation bar-->
+        <%- include ("../partials/publicNav.ejs") %>
+
+        <div id="loader" style="display:none;"></div>
+
+        <div class="bg">
+            <div class="privacyPolicy">
+                <b>Coming Soon!</b>
+            </div>
+        </div>
+    </body>
+  
+</html>

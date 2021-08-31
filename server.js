@@ -42,6 +42,7 @@ const team = require('./backend/teamAPI');
 const auth = require('./backend/authentication');
 const error = require('./backend/errorCodes');
 const util = require('./backend/utils');
+const enumType = require('./backend/enumTypes');
 ////////////////////////////////////////////////////////////////////////
 // END OF REQUIRED BACKEND FUCNTIONS
 ////////////////////////////////////////////////////////////////////////
@@ -89,12 +90,28 @@ app.get('*', async function (req, res, next) { // universal access variable, kee
 })
 */
 
-
+///////////////////////--PUBLIC PAGES--/////////////////////////////////////////////////
 app.get('/', (request, response) => {
-    //Always send to signin
-	response.redirect('signIn');
+    util.logINFO("WEB SERVER: Rendering landing page");
+    response.render('pages/landing', { home: true, privacy: false, about: false, signin: false });
 });
 
+app.get('/privacy', (request, response) => {
+    util.logINFO("WEB SERVER: Rendering privacy page");
+    response.render('pages/privacy', { home: false, privacy: true, about: false, signin: false });
+});
+
+app.get('/about', (request, response) =>  {
+    util.logINFO("WEB SERVER: Rendering about page");
+    response.render('pages/about', { home: false, privacy: false, about: true, signin: false });
+});
+
+app.get('/signIn', (request, response) =>  {
+    util.logINFO("WEB SERVER: Rendering signIn page");
+    response.render('pages/signIn', { home: false, privacy: false, about: false, signin: true, message: (request.message || ''), });
+});
+
+///////////////////////--PRIVATE PAGES--/////////////////////////////////////////////////
 app.get('/home', auth.authcheck_get, (request, response) => {
     util.logINFO("WEB SERVER: Rendering home");
     response.render('pages/home', { home: true, opps: false, volunt: false, teams: false, settings: false});
@@ -118,10 +135,6 @@ app.get('/teams', auth.authcheck_get, (request, response) => {
 app.get('/settings', auth.authcheck_get, (request, response) => {
     util.logINFO("WEB SERVER: Rendering settings");
     response.render('pages/settings', { home: false, opps: false, volunt: false, teams: false, settings: true});
-});
-
-app.get('/signIn', (request, response) =>  {
-    response.render('pages/signIn', { 'message': (request.message || '')});
 });
 ////////////////////////////////////////////////////////////////////////
 // END OF GET REQUESTS
@@ -399,7 +412,7 @@ app.post('/api/signIn', function(request, response, next)
                                         response.send({success: false, access_token: null, message: "Something unexpected happened, please try again"});
                                     else 
                                         {
-                                        return response.redirect('/');      //Need to test
+                                        return response.redirect('/');
                                         }
                                     }
                                 else
@@ -408,8 +421,16 @@ app.post('/api/signIn', function(request, response, next)
                                         response.send({success: true, access_token: token, message: "Successful Sign In"});
                                     else 
                                         {
-                                        response.cookie("access_token", token)
-                                        return response.redirect('/home',);
+                                        // Check if the user is allowed to access the admin portal
+                                        if (user.volunteer_type == enumType.VT_ADMIN || user.volunteer_type == enumType.VT_DEV)
+                                            {
+                                            response.cookie("access_token", token)
+                                            return response.redirect('/home',);
+                                            }
+                                        else 
+                                            {
+                                            response.render('pages/signIn', { 'message': "Invalid Permissions. Please use the iOS or Android apps."}); 
+                                            }
                                         }
                                     }
                                 });

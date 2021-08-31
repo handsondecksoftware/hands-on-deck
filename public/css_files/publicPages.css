@@ -1,0 +1,68 @@
+/*******************************************************************
+* publicPages.css -- styling for the public pages
+*                   
+* Ryan Stolys,	18/01/21
+*    - File Created
+*
+*******************************************************************/
+
+
+.bg {
+    /* The image used */
+    background-color: rgba(248, 215, 24, 0.15);
+    min-height: 100%;
+}
+
+.topTitle{
+    float: left;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.sectionText{
+    float: left;
+    width: 40%;
+    text-align: center;
+}
+
+.sectionInfo{
+    float: left;
+    width: 60%;
+    text-align: center;
+}
+
+.appWindow{
+    padding: 10px;
+    min-height: 70vh;
+    border-radius: 8px;
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    background-color: rgba(248, 215, 24, 0.25); 
+}
+
+.appWindow-title{
+    font-weight: bold;
+    color: rgb(26, 102, 0);
+    text-align: center;
+    padding: 5px;
+}
+
+.appWindow-logo{
+    float: left;
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+}
+
+.appWindow-download{
+    text-align: center;
+    padding: 5px;
+}
+
+.privacyPolicy {
+    padding-top: 50px;
+    text-align: center;
+    font-size: 20px;
+    color: black;
+}
