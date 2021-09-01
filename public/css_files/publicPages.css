@@ -13,6 +13,17 @@
     min-height: 100%;
 }
 
+.react_50_100{
+    float: left;
+    width: 50%;
+}
+
+@media (max-width: 950px) {
+    .react_50_100{
+        width: 100%;
+    }
+}
+
 .topTitle{
     float: left;
     width: 100%;
@@ -56,6 +67,9 @@
 }
 
 .appWindow-download{
+    float: left;
+    width: 100%;
+    margin-top: 50px;
     text-align: center;
     padding: 5px;
 }
