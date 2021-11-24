@@ -140,7 +140,9 @@ exports.getOpportunityInfo = async (user, oppID) =>
         //Set the query condiditon
         if(oppID == -1)
             {
-            query += " WHERE institution_id = $1 AND endtime > NOW() ORDER BY starttime DESC;";
+            // Note that this timestamp adjustment will work for the current timezone difference between UTC and PST.
+            // This is not a great practice and a better solution should be found
+            query += " WHERE institution_id = $1 AND endtime > (NOW() - interval '8 hours') ORDER BY starttime ASC;";
             //Only provide opportunities that have not passed
 
             values.push(user.institution_id);
