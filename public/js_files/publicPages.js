@@ -23,7 +23,7 @@ function getRef(id)
 //////////////////////////////////////////////////////////////////////// 
 function landingLoad()
     {
-    getRef("goToSignIn").onclick = function() {window.href="signIn"};
+    getRef("goToSignIn").onclick = function() {window.location.href="signIn"};
     getRef("contactUs").onclick = function() {showContactInfo()}
     }
 

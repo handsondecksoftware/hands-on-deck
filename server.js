@@ -353,7 +353,6 @@ app.post('/api/logout', auth.makeTokenInvalid, (request, response) =>
 
 app.post('/api/signIn', function(request, response, next) 
     {
-
     try 
         {
         const username = request.body.username;
